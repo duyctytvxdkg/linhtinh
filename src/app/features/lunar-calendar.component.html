@@ -1,0 +1,41 @@
+<h1>Lịch Âm</h1>
+<p>Hôm nay (âm lịch): {{ todayLunar }}</p>
+<p>Ngày dương: {{ todaySolar }}</p>
+<p>Can chi: {{ canChiVi }}</p>
+<p>Tiết khí: {{ jieQi }}</p>
+
+<p><strong>✨ Giờ hoàng đạo hôm nay:</strong></p>
+<ul>
+  <li *ngFor="let hour of zodiacHoursVi">{{ hour }}</li>
+</ul>
+
+<p><strong>⚡ Giờ hắc đạo hôm nay:</strong></p>
+<ul>
+  <li *ngFor="let hour of zodiacHoursZh">{{ hour }}</li>
+</ul>
+
+<h2>Lịch tháng {{ currentMonth + 1 }}/{{ currentYear }}</h2>
+<table border="1" style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr>
+      <th>CN</th>
+      <th>T2</th>
+      <th>T3</th>
+      <th>T4</th>
+      <th>T5</th>
+      <th>T6</th>
+      <th>T7</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let week of monthDays">
+      <td *ngFor="let day of week" [style.background]="day.isToday ? '#fffa90' : 'transparent'">
+        <div *ngIf="day.solar !== 0">
+          <strong>{{ day.solar }}</strong><br/>
+          <small style="color: blue">{{ day.lunar }}</small>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
