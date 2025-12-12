@@ -1,237 +1,37 @@
- <div class="min-h-screen bg-gray-50 flex flex-col font-sans">
-            <!-- Header / Menu Bar -->
-            <header class="bg-indigo-800 shadow-md sticky top-0 z-20">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between items-center h-16">
-                        <!-- Logo / Tên App -->
-                        <div class="flex-shrink-0">
-                            <span class="text-2xl font-bold text-white tracking-wide">
-                                CÔNG CỤ NHỎ
-                            </span>
-                        </div>
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <h2 class="title">Kho Tools</h2>
 
-                        <!-- Desktop Navigation -->
-                        <nav class="hidden md:flex space-x-4">
-                            <a href="#home" (click)="setPath('home')"
-                               [class]="getNavLinkClass('home')">
-                                <span [innerHTML]="ICON_HOME" class="w-5 h-5 mr-2"></span>
-                                Trang Chủ
-                            </a>
-                            <a href="#calculator" (click)="setPath('calculator')"
-                               [class]="getNavLinkClass('calculator')">
-                                <span [innerHTML]="ICON_CALCULATOR" class="w-5 h-5 mr-2"></span>
-                                Tính Lãi Vay
-                            </a>
-                            <a href="#lunar" (click)="setPath('lunar')"
-                               [class]="getNavLinkClass('lunar')">
-                                <span [innerHTML]="ICON_MOON" class="w-5 h-5 mr-2"></span>
-                                Lịch âm
-                            </a>
-                            <a href="#tide" (click)="setPath('tide')"
-                               [class]="getNavLinkClass('tide')">
-                                <span [innerHTML]="ICON_WAVES" class="w-5 h-5 mr-2"></span>
-                                Thủy triều
-                            </a>
-                        </nav>
+    <ul class="menu">
+      <li>
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          Trang chủ
+        </a>
+      </li>
 
-                        <!-- Mobile Menu Button -->
-                        <button class="md:hidden p-2 rounded-md text-indigo-200 hover:bg-indigo-700"
-                                (click)="isMenuOpen.set(!isMenuOpen())">
-                            <span [innerHTML]="ICON_MENU" class="w-6 h-6"></span>
-                        </button>
-                    </div>
-                </div>
+      <li>
+        <a routerLink="/tinhlai" routerLinkActive="active"> Tính lãi vay </a>
+      </li>
 
-                <!-- Mobile Menu -->
-                @if (isMenuOpen()) {
-                    <div class="md:hidden px-4 pt-2 pb-3 space-y-2">
-                        <a href="#home" (click)="setPath('home')"
-                           [class]="getNavLinkClass('home', true)">
-                            <span [innerHTML]="ICON_HOME" class="w-5 h-5 mr-2"></span>
-                            Trang Chủ
-                        </a>
-                        <a href="#calculator" (click)="setPath('calculator')"
-                           [class]="getNavLinkClass('calculator', true)">
-                            <span [innerHTML]="ICON_CALCULATOR" class="w-5 h-5 mr-2"></span>
-                            Tính Lãi Vay
-                        </a>
-                        <a href="#lunar" (click)="setPath('lunar')"
-                           [class]="getNavLinkClass('lunar', true)">
-                            <span [innerHTML]="ICON_MOON" class="w-5 h-5 mr-2"></span>
-                            Lịch âm
-                        </a>
-                        <a href="#tide" (click)="setPath('tide')"
-                           [class]="getNavLinkClass('tide', true)">
-                            <span [innerHTML]="ICON_WAVES" class="w-5 h-5 mr-2"></span>
-                            Thủy triều
-                        </a>
-                    </div>
-                }
-            </header>
+      <li>
+        <a routerLink="/licham" routerLinkActive="active"> Lịch âm </a>
+      </li>
 
-            <!-- Main Content -->
-            <main class="flex-grow p-4">
-                @switch (path()) {
-                    @case ('calculator') {
-                        <!-- Loan Calculator Page -->
-                        <div class="max-w-7xl mx-auto p-4 md:p-8">
-                            <h2 class="text-3xl font-bold text-indigo-700 mb-6 border-b pb-2">Tính Toán Lãi Vay Trả Góp</h2>
+      <li>
+        <a routerLink="/thuytrieu" routerLinkActive="active"> Thủy triều </a>
+      </li>
+    </ul>
+  </nav>
 
-                            <!-- Input Form -->
-                            <div class="bg-white shadow-lg rounded-xl p-6 mb-8 border border-gray-100 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                                <div class="space-y-1">
-                                    <label for="principal" class="block text-sm font-medium text-gray-700">Số tiền vay gốc (VND)</label>
-                                    <input type="number" id="principal" [value]="calculator.principal()" (change)="calculator.handleInputChange(calculator.principal.set.bind(calculator), $event)"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-                                </div>
-                                <div class="space-y-1">
-                                    <label for="rate" class="block text-sm font-medium text-gray-700">Lãi suất hàng năm (%)</label>
-                                    <input type="number" id="rate" [value]="calculator.annualRate()" (change)="calculator.handleInputChange(calculator.annualRate.set.bind(calculator), $event)" min="0.1" step="0.1"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-                                </div>
-                                <div class="space-y-1">
-                                    <label for="years" class="block text-sm font-medium text-gray-700">Thời hạn vay (Năm)</label>
-                                    <input type="number" id="years" [value]="calculator.years()" (change)="calculator.handleInputChange(calculator.years.set.bind(calculator), $event)" min="1"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-                                </div>
-                                <button (click)="calculator.calculatePayment()" [disabled]="!!calculator.error()"
-                                        class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                    Tính Toán
-                                </button>
-                            </div>
-
-                            @if (calculator.error()) {
-                                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative mb-6">
-                                    <strong class="font-bold">Lỗi: </strong>
-                                    <span class="block sm:inline">{{ calculator.error() }}</span>
-                                </div>
-                            }
-
-                            <!-- Summary Results -->
-                            @if (calculator.summary() && !calculator.error()) {
-                                <div id="results" class="mt-6 border-t pt-6">
-                                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Kết Quả Tóm Tắt</h3>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                                        <!-- Monthly Payment -->
-                                        <div class="p-4 bg-indigo-100 rounded-xl shadow-inner">
-                                            <span class="text-sm font-medium text-gray-700 block">Trả hàng tháng ước tính:</span>
-                                            <span class="text-2xl font-extrabold text-indigo-800">{{ formatVND(calculator.summary()!.monthlyPayment) }}</span>
-                                        </div>
-                                        <!-- Total Payments -->
-                                        <div class="p-4 bg-gray-100 rounded-xl shadow-inner">
-                                            <span class="text-sm font-medium text-gray-600 block">Tổng số tiền đã trả:</span>
-                                            <span class="text-xl font-semibold text-gray-800">{{ formatVND(calculator.summary()!.totalAmountPaid) }}</span>
-                                        </div>
-                                        <!-- Total Interest Paid -->
-                                        <div class="p-4 bg-red-100 rounded-xl shadow-inner">
-                                            <span class="text-sm font-medium text-gray-600 block">Tổng tiền lãi phải trả:</span>
-                                            <span class="text-xl font-semibold text-red-800">{{ formatVND(calculator.summary()!.totalInterest) }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-                            <!-- Amortization Schedule -->
-                            @if (calculator.schedule().length > 0 && !calculator.error()) {
-                                <div id="scheduleContainer" class="mt-8 pt-4 border-t border-gray-200">
-                                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Chi Tiết Trả Góp Hàng Tháng ({{ calculator.schedule().length }} Kỳ)</h3>
-                                    <div class="overflow-x-auto overflow-y-auto max-h-[400px] rounded-xl shadow-lg border">
-                                        <table class="min-w-full divide-y divide-gray-200">
-                                            <thead class="bg-indigo-600 text-white sticky top-0 z-10">
-                                                <tr>
-                                                    <th class="px-3 py-2 text-center text-xs font-medium uppercase tracking-wider w-16">Kỳ</th>
-                                                    <th class="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider">Vốn Gốc Đầu Kỳ</th>
-                                                    <th class="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider">Trả Gốc</th>
-                                                    <th class="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider">Trả Lãi</th>
-                                                    <th class="px-3 py-2 text-right text-xs font-medium uppercase tracking-wider">Dư Cuối Kỳ</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="bg-white divide-y divide-gray-200 text-sm">
-                                                @for (item of calculator.schedule(); track item.period) {
-                                                    <tr class="hover:bg-gray-50 transition duration-100">
-                                                        <td class="px-3 py-2 whitespace-nowrap text-center text-gray-700">{{ item.period }}</td>
-                                                        <td class="px-3 py-2 whitespace-nowrap text-right text-gray-900">{{ formatVND(item.startingBalance) }}</td>
-                                                        <td class="px-3 py-2 whitespace-nowrap text-right text-green-700">{{ formatVND(item.principalPayment) }}</td>
-                                                        <td class="px-3 py-2 whitespace-nowrap text-right text-red-700">{{ formatVND(item.interestPayment) }}</td>
-                                                        <td class="px-3 py-2 whitespace-nowrap text-right text-gray-700 font-semibold">{{ formatVND(item.endingBalance) }}</td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    @case ('lunar') {
-                        <!-- Lịch âm Page Placeholder -->
-                        <div class="max-w-4xl mx-auto p-4 md:p-8 text-center">
-                            <div class="bg-white shadow-xl rounded-2xl p-10 mt-10 border-t-4 border-indigo-600">
-                                <span [innerHTML]="ICON_MOON" class="mx-auto text-6xl text-indigo-500 mb-6 w-16 h-16"></span>
-                                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Lịch Âm (Đang Phát Triển)</h2>
-                                <p class="text-lg text-gray-600 mb-6">
-                                    Đây là nơi hiển thị lịch âm, thông tin ngày giờ âm lịch và các sự kiện liên quan.
-                                </p>
-                                <p class="text-md text-gray-700">
-                                    Vui lòng thêm logic và giao diện hiển thị lịch âm vào đây.
-                                </p>
-                            </div>
-                        </div>
-                    }
-                    @case ('tide') {
-                        <!-- Thủy triều Page Placeholder -->
-                        <div class="max-w-4xl mx-auto p-4 md:p-8 text-center">
-                            <div class="bg-white shadow-xl rounded-2xl p-10 mt-10 border-t-4 border-indigo-600">
-                                <span [innerHTML]="ICON_WAVES" class="mx-auto text-6xl text-indigo-500 mb-6 w-16 h-16"></span>
-                                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Dự Báo Thủy Triều (Đang Phát Triển)</h2>
-                                <p class="text-lg text-gray-600 mb-6">
-                                    Công cụ này sẽ cung cấp thông tin về giờ nước lên/xuống cho các khu vực ven biển.
-                                </p>
-                                <p class="text-md text-gray-700">
-                                    Vui lòng thêm logic gọi API và hiển thị dữ liệu thủy triều vào đây.
-                                </p>
-                            </div>
-                        </div>
-                    }
-                    @case ('home') {
-                        <!-- Home Page -->
-                        <div class="max-w-4xl mx-auto p-4 md:p-8 text-center">
-                            <div class="bg-white shadow-xl rounded-2xl p-10 mt-10 border-t-4 border-indigo-600">
-                                <span [innerHTML]="ICON_HOME" class="mx-auto text-6xl text-indigo-500 mb-6 w-16 h-16"></span>
-                                <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chào Mừng Đến Với Kho Tools</h2>
-                                <p class="text-lg text-gray-600 mb-6">
-                                    Đây là trang web tổng hợp các công cụ tính toán và tiện ích nhỏ.
-                                </p>
-                                <p class="text-md text-gray-700">
-                                    Sử dụng thanh điều hướng phía trên để truy cập các công cụ: Tính Lãi Vay, Lịch âm, Thủy triều.
-                                </p>
-                                <div class="mt-8 space-x-4">
-                                    <a href="#calculator" (click)="setPath('calculator')" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150">
-                                        <span [innerHTML]="ICON_CALCULATOR" class="mr-2 h-5 w-5"></span>
-                                        Tính Lãi Vay
-                                    </a>
-                                    <a href="#lunar" (click)="setPath('lunar')" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150">
-                                        <span [innerHTML]="ICON_MOON" class="mr-2 h-5 w-5"></span>
-                                        Lịch âm
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    @default {
-                        <!-- 404/Default Page -->
-                        <div class="text-center p-10">
-                            <h1 class="text-6xl font-bold text-gray-800">404</h1>
-                            <p class="text-xl text-gray-600">Không tìm thấy trang.</p>
-                            <button (click)="setPath('home')" class="mt-6 text-indigo-600 hover:text-indigo-800 font-medium">Quay lại Trang Chủ</button>
-                        </div>
-                    }
-                }
-            </main>
-
-            <!-- Footer (Optional) -->
-            <footer class="bg-gray-200 text-gray-600 text-center p-4 text-sm mt-8">
-                &copy; {{ currentYear() }} Công Cụ Nhỏ. Được xây dựng để tối ưu hóa.
-            </footer>
-        </div>
+  <!-- Content -->
+  <main class="content">
+    <div class="content-box">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
