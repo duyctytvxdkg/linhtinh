@@ -1,16 +1,15 @@
+import { LoanComponent } from './features/loan.component';
 import { Component, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-
-import { LoanCalculatorComponent } from './features/loan-calculator.component';
 import { LunarCalendarComponent } from './features/lunar-calendar.component';
 import { TideComponent } from './features/tide.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NgIf, LoanCalculatorComponent, LunarCalendarComponent, TideComponent, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [NgIf, LoanComponent, LunarCalendarComponent, TideComponent, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

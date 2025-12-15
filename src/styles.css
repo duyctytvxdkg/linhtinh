@@ -1,3 +1,19 @@
+/* ===============================
+   1️⃣ ANGULAR MATERIAL THEME (GLOBAL – BẮT BUỘC)
+   =============================== */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* ===============================
+   2️⃣ TAILWIND
+   =============================== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===============================
+   3️⃣ GLOBAL LAYOUT & CUSTOM CSS
+   =============================== */
+
 /* Toàn bộ nền gradient */
 body {
   margin: 0;
@@ -84,4 +100,29 @@ app-root {
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(5px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+
+/* ===============================
+   CUSTOM BO GÓC MAT INPUT (OUTLINE)
+   =============================== */
+.mat-mdc-form-field-appearance-outline .mdc-notched-outline__leading,
+.mat-mdc-form-field-appearance-outline .mdc-notched-outline__trailing,
+.mat-mdc-form-field-appearance-outline .mdc-notched-outline__notch {
+  border-radius: 64px;
+}
+
+.content-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.table-scroll {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 16px;
+  border-radius: 10px;
 }

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { LoanCalculatorComponent } from './features/loan-calculator.component';
+import { LoanComponent } from './features/loan.component';
 import { LunarCalendarComponent } from './features/lunar-calendar.component';
 import { TideComponent } from './features/tide.component';
 
@@ -12,7 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'tinhlai',
-    component: LoanCalculatorComponent
+    component: LoanComponent
   },
   {
     path: 'licham',
