@@ -113,16 +113,60 @@ app-root {
   border-radius: 64px;
 }
 
-.content-box {
+
+.content-box-minor {
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding-bottom: 12px;
 }
-
 
 .table-scroll {
   flex: 1;
   overflow-y: auto;
   margin-top: 16px;
-  border-radius: 10px;
+  padding-bottom: 16px;
 }
+
+/* Container tổng (nếu cần giới hạn chiều rộng) */
+.finance-block {
+  width: 60%;
+}
+
+/* 1 dòng gồm: input | EMI label | EMI value */
+.finance-row {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) auto auto;
+  align-items: center;
+  column-gap: 12px;
+  width: 70%;
+}
+
+/* Fix lỗi grid + Angular Material */
+.finance-control {
+  min-width: 0;
+}
+
+.finance-label {
+  white-space: nowrap;
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.finance-value {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  font-size: 1.1rem;
+  font-weight: 700;
+  min-width: 160px;
+}
+
+.finance-unit {
+  font-size: 0.75rem;
+  margin-left: 4px;
+  color: #6b7280;
+}
+

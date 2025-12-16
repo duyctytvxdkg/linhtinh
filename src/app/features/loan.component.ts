@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +15,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
+
+import { Chart, registerables } from 'chart.js';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { CurrencyInputDirective } from './currency-input.directive';
+
+Chart.register(...registerables);
 
 interface AmortizationItem {
   period: number;
@@ -21,7 +34,7 @@ interface AmortizationItem {
 function currencyFormat(value: number): string {
   const roundedValue = Math.round(value);
   if (!roundedValue || isNaN(roundedValue) || roundedValue < 0) return '0';
-  return roundedValue.toLocaleString('vi-VN');
+  return roundedValue.toLocaleString('en-EN');
 }
 
 @Component({
@@ -33,12 +46,24 @@ function currencyFormat(value: number): string {
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
+    CurrencyInputDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './loan.component.html',
 })
 export class LoanComponent implements OnInit {
   form!: FormGroup;
+
+  @ViewChild('paymentChart') chartRef!: ElementRef<HTMLCanvasElement>;
+  chart!: Chart;
+  viewInitialized = false;
+  chartVisible = false;
+
+  pageSize = 12;
+  currentPage = 0;
+
+  fullSchedule: AmortizationItem[] = [];
+  pagedSchedule: AmortizationItem[] = [];
 
   displayedColumns = [
     'period',
@@ -51,13 +76,19 @@ export class LoanComponent implements OnInit {
   monthlyPayment = 0;
   totalInterest = 0;
   totalPayment = 0;
-  amortizationSchedule: AmortizationItem[] = [];
 
   currencyFormat = currencyFormat;
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.viewInitialized = true;
+
+    // nếu đã có data trước đó thì render
+    if (this.pagedSchedule?.length) {
+      this.renderChart();
+    }
+
     this.form = this.fb.group({
       principal: [500_000_000, [Validators.required, Validators.min(1)]],
       annualRate: [7.5, [Validators.required, Validators.min(0)]],
@@ -98,6 +129,11 @@ export class LoanComponent implements OnInit {
     this.totalInterest = Math.max(0, this.totalPayment - P);
 
     this.buildSchedule(P, R, N);
+
+    this.chartVisible = true;
+
+    // ⬇️ QUAN TRỌNG: đợi Angular render DOM xong
+    setTimeout(() => this.renderChart());
   }
 
   private buildSchedule(P: number, R: number, N: number): void {
@@ -127,13 +163,100 @@ export class LoanComponent implements OnInit {
       if (balance <= 0) break;
     }
 
-    this.amortizationSchedule = schedule;
+    this.fullSchedule = schedule;
+    this.setPage(0); // luôn về trang đầu khi tính lại
+  }
+
+  setPage(page: number): void {
+    if (page < 0) return;
+
+    const maxPage = this.totalPages - 1;
+    if (page > maxPage) return;
+
+    this.currentPage = page;
+
+    const start = page * this.pageSize;
+    const end = start + this.pageSize;
+
+    this.pagedSchedule = this.fullSchedule.slice(start, end);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.fullSchedule.length / this.pageSize);
   }
 
   private resetResult(): void {
     this.monthlyPayment = 0;
     this.totalInterest = 0;
     this.totalPayment = 0;
-    this.amortizationSchedule = [];
+    this.fullSchedule = [];
+    this.pagedSchedule = [];
+  }
+
+  renderChart() {
+
+  if (!this.chartRef) return;
+
+  const ctx = this.chartRef.nativeElement.getContext('2d');
+  if (!ctx) return;
+
+  // 🔥 QUAN TRỌNG: destroy chart cũ
+  if (this.chart) {
+    this.chart.destroy();
+  }
+
+    const labels = this.fullSchedule.map((x) => `T${x.period}`);
+    const principal = this.fullSchedule.map((x) => x.principalPaid);
+    const interest = this.fullSchedule.map((x) => x.interestPaid);
+
+    this.chart = new Chart(this.chartRef.nativeElement, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Gốc',
+            data: principal,
+            backgroundColor: '#3b82f6',
+          },
+          {
+            label: 'Lãi',
+            data: interest,
+            backgroundColor: '#f59e0b',
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: (v) => new Intl.NumberFormat('vi-VN').format(Number(v)),
+            },
+          },
+        },
+      },
+    });
+  }
+
+  exportExcel() {
+    const ws = XLSX.utils.json_to_sheet(this.fullSchedule);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, 'PaymentSchedule');
+
+    const excelBuffer = XLSX.write(wb, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    saveAs(blob, 'lich-thanh-toan.xlsx');
   }
 }
