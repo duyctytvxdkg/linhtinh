@@ -170,3 +170,373 @@ app-root {
   color: #6b7280;
 }
 
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  font-family: 'Arial', sans-serif;
+}
+
+.calendar-bloc {
+  width: 320px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  padding: 20px;
+  position: relative;
+  border: 1px solid #ddd;
+}
+
+/* Hiệu ứng lỗ treo lịch */
+.hanger {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40px;
+  margin-bottom: 15px;
+}
+
+.hole {
+  width: 12px;
+  height: 12px;
+  background: #eee;
+  border-radius: 50%;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.badge {
+  background: #e91e63;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Ngày Dương */
+.body {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.solar-number {
+  font-size: 120px;
+  margin: 0;
+  color: #e91e63;
+  font-weight: 900;
+  line-height: 1;
+  font-family: 'Times New Roman', serif; /* Tạo nét thanh đậm */
+}
+
+.solar-weekday {
+  font-size: 32px;
+  color: #e91e63;
+  font-style: italic;
+  font-weight: bold;
+  margin-top: -5px;
+}
+
+/* Đường kẻ vàng */
+.divider {
+  margin: 15px 0;
+}
+
+.gold-line {
+  height: 3px;
+  background: linear-gradient(to right, transparent, #ffd700, transparent);
+}
+
+/* Ngày Âm */
+.lunar-main {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.lunar-number {
+  font-size: 64px;
+  color: #c2185b;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.lunar-month {
+  color: #b08d57;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Chi tiết Can chi */
+.lunar-details {
+  background: #fffdf5;
+  border: 1px dashed #ffd700;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.label { color: #666; font-weight: bold; }
+.value { color: #333; }
+
+.quote {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+}
+/* Bao quanh toàn bộ khối giờ giấc */
+.zodiac-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  margin-top: 30px; /* Khoảng cách với tờ lịch phía trên */
+}
+
+/* Khối chứa 2 cột */
+.zodiac-container {
+  display: flex;
+  width: 100%;
+  max-width: 600px; /* Giới hạn chiều rộng để 2 cột co vào giữa */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.zodiac-column {
+  flex: 1;
+  padding: 0 15px;
+}
+
+/* Căn lề trái cho danh sách để trông thẳng hàng */
+.zodiac-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline-block; /* Giúp nội dung thu gọn theo chữ */
+  text-align: left;
+}
+
+.zodiac-column li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #444;
+  white-space: nowrap; /* Giữ giờ trên 1 dòng */
+}
+
+/* Tiêu đề */
+.title-hoang-dao, .title-hac-dao {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 12px;
+  text-align: center; /* Căn giữa tiêu đề mỗi cột */
+}
+
+.title-hoang-dao { color: #b8860b; } /* Vàng đậm */
+.title-hac-dao { color: #d35400; }   /* Cam đất */
+
+.bullet {
+  color: #ffd700;
+  margin-right: 8px;
+  font-size: 10px;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 600px) {
+  .zodiac-container {
+    flex-direction: column;
+    align-items: center;
+    max-width: 90%;
+  }
+  .zodiac-column {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+}
+
+
+/* Căn giữa toàn bộ khối lịch tháng */
+.calendar-month-wrapper {
+  max-width: 700px; /* Độ rộng lý tưởng để nhìn cân đối */
+  margin: 40px auto;
+  padding: 0 15px;
+  text-align: center;
+}
+
+.calendar-month-wrapper h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Định dạng bảng */
+.month-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-radius: 8px;
+  overflow: hidden; /* Để bo góc table */
+  table-layout: fixed; /* Giúp các cột luôn bằng nhau */
+}
+
+.month-table th, .month-table td {
+  border: 1px solid #eee;
+  padding: 10px 5px;
+  text-align: center; /* Đẩy nội dung vào giữa */
+  vertical-align: middle;
+}
+
+/* Header bảng */
+.month-table th {
+  background-color: #f8f9fa;
+  color: #555;
+  font-weight: 600;
+  padding: 12px 5px;
+}
+
+.month-table th.sunday { color: #e91e63; }
+.month-table th.saturday { color: #2196f3; }
+
+/* Nội dung ngày */
+.day-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+}
+
+.solar-num {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.lunar-num {
+  font-size: 0.75rem;
+  color: #3912e6;
+  margin-top: 2px;
+}
+
+/* Trạng thái đặc biệt */
+.is-today {
+  background-color: #fff9c4 !important; /* Màu vàng nhạt giống hình bạn gửi */
+  border: 2px solid #ffd700 !important;
+}
+
+.empty-cell {
+  background-color: #fafafa;
+}
+
+/* Hiệu ứng di chuột */
+.month-table td:not(.empty-cell):hover {
+  background-color: #f0f7ff;
+  cursor: pointer;
+}
+
+
+/* Màu cho tiêu đề cột CN và T7 */
+.month-table th.sunday,
+.month-table th.saturday {
+  color: #d32f2f; /* Màu đỏ đậm chuyên nghiệp */
+}
+
+/* Class dành cho ô cuối tuần */
+.is-weekend .solar-num {
+  color: #d32f2f !important; /* Ép kiểu màu đỏ cho số ngày dương */
+}
+
+/* Nếu bạn muốn ngày âm vẫn giữ màu xám hoặc màu khác để dễ nhìn */
+.is-weekend .lunar-num {
+  color: #3912e6;
+  font-weight: normal;
+}
+
+/* Các thuộc tính còn lại giữ nguyên như cũ */
+.solar-num {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333; /* Mặc định ngày thường màu đen/xám đậm */
+}
+
+.day-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.footer {
+  margin-top: 15px;
+  padding: 10px 0;
+}
+
+.footer-columns {
+  display: flex;
+  align-items: center; /* Căn giữa nội dung theo chiều dọc */
+  justify-content: space-around; /* Chia đều không gian hai bên */
+  gap: 10px;
+}
+
+/* Cột ngày âm */
+.lunar-main-col {
+  text-align: center;
+  flex: 1;
+}
+
+.lunar-number {
+  font-size: 50px;
+  font-weight: bold;
+  color: #d32f2f; /* Màu đỏ cho ngày âm nổi bật */
+  line-height: 1;
+}
+
+.lunar-month {
+  font-size: 13px;
+  color: #b08d57;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* Cột chi tiết can chi */
+.lunar-details-col {
+  flex: 1.2; /* Cho cột thông tin rộng hơn một chút */
+  border-left: 1px solid #eee; /* Đường kẻ ngăn cách giữa 2 cột */
+  padding-left: 15px;
+}
+
+.detail-box {
+  text-align: left;
+}
+
+.detail-row {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+  white-space: nowrap; /* Tránh xuống dòng làm vỡ khung */
+}
+
+/* Tùy chỉnh thêm để giống tờ lịch Bloc */
+.footer-columns {
+  border-radius: 8px;
+  padding: 10px;
+}

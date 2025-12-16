@@ -26,8 +26,17 @@ export class LunarCalendarComponent implements OnInit {
 
   currentMonth = 0;
   currentYear = 0;
-  monthDays: { solar: number; lunar: number | null; isToday: boolean }[][] = [];
+  currentDay: number = 0;
+  currentWeekday: string = '';
 
+  lunarMonthNumber: number = 0;
+  lunarDayNumber: number = 0;
+
+  yearGC = '';
+  monthGC = '';
+   dayGC = '';
+
+  monthDays: { solar: number; lunar: number | null; isToday: boolean }[][] = [];
 
   // Tiết khí tiếng Việt
   tietZh: string = '';
@@ -93,6 +102,19 @@ export class LunarCalendarComponent implements OnInit {
     this.currentMonth = today.getMonth();
     this.currentYear = today.getFullYear();
 
+    this.currentDay = today.getDate();
+
+    const daysOfWeek = [
+      'Chủ Nhật',
+      'Thứ Hai',
+      'Thứ Ba',
+      'Thứ Tư',
+      'Thứ Năm',
+      'Thứ Sáu',
+      'Thứ Bảy',
+    ];
+    this.currentWeekday = daysOfWeek[today.getDay()];
+
     this.generateMonthCalendar();
 
     const lunar = Lunar.fromDate(today);
@@ -111,15 +133,22 @@ export class LunarCalendarComponent implements OnInit {
     const dayGC = lunar.getDayInGanZhi();
     this.todayLunar = `${this.todayLunarZh}`;
 
+    this.parseLunarDate(this.todayLunar);
+
     // Can Chi
     this.canChiVi = `Năm ${convertGanChi(yearGC)} Tháng ${convertGanChi(
       monthGC
     )} Ngày ${convertGanChi(dayGC)} `;
     this.canChiEn = this.todayLunarZh; // giữ chữ Hán
 
+
+    this.yearGC =  `Năm ${convertGanChi(yearGC)} - ${yearGC} `;
+    this.monthGC = `Tháng ${convertGanChi(monthGC)} - ${monthGC}`;
+    this.dayGC = `Ngày ${convertGanChi(dayGC)} - ${dayGC} `;
+
     // Tiết khí
     const jieQi = lunar.getJieQi() || lunar.getPrevJieQi();
-    this.jieQi = `${jieQi} - ${this.tietMap[jieQi] || jieQi}`;
+    this.jieQi = `${this.tietMap[jieQi] || jieQi} - ${jieQi}`;
 
     // Giờ hoàng đạo / hắc đạo
     const hoangDaoZhi = this.getHoangDaoHours(lunar.getDayGan());
@@ -168,6 +197,38 @@ export class LunarCalendarComponent implements OnInit {
     console.log('✅ Giờ hắc đạo:', this.zodiacHoursZh);
   }
 
+parseLunarDate(lunarStr: string) {
+    const afterYear = lunarStr.split('年')[1]; // "十月廿七"
+
+    if (afterYear) {
+      const parts = afterYear.split('月');
+      const monthPart = parts[0]; // "十"
+      const dayPart = parts[1];   // "廿七"
+
+      this.lunarMonthNumber = this.decodeLunarValue(monthPart);
+      this.lunarDayNumber = this.decodeLunarValue(dayPart);
+    }
+  }
+
+  // Hàm chuyển đổi ký tự Hán Việt sang số
+  decodeLunarValue(text: string): number {
+    const map: { [key: string]: number } = {
+      '正': 1, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
+      '六': 6, '七': 7, '八': 8, '九': 9, '十': 10,
+      '廿': 20, '卅': 30
+    };
+
+    if (text.length === 1) return map[text] || 0;
+
+    // Trường hợp 2 ký tự (ví dụ: 十二 = 12, 廿七 = 27, 初五 = 5)
+    if (text.startsWith('初')) return map[text[1]] || 0;
+    if (text.startsWith('十')) return 10 + (map[text[1]] || 0);
+    if (text.startsWith('廿')) return 20 + (map[text[1]] || 0);
+    if (text.startsWith('卅')) return 30 + (map[text[1]] || 0);
+
+    return 0;
+  }
+
   private getHoangDaoHours(can: string): string[] {
     switch (can) {
       case '甲':
@@ -191,48 +252,45 @@ export class LunarCalendarComponent implements OnInit {
   }
 
   generateMonthCalendar() {
-  const today = new Date();
+    const today = new Date();
 
-  const firstDay = new Date(this.currentYear, this.currentMonth, 1);
-  const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
-  const startWeekDay = firstDay.getDay(); // 0=CN, 1=T2...
-  const totalDays = lastDay.getDate();
+    const firstDay = new Date(this.currentYear, this.currentMonth, 1);
+    const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
+    const startWeekDay = firstDay.getDay(); // 0=CN, 1=T2...
+    const totalDays = lastDay.getDate();
 
-  let week: { solar: number; lunar: number; isToday: boolean }[] = [];
-  const calendar: { solar: number; lunar: number; isToday: boolean }[][] = [];
+    let week: { solar: number; lunar: number; isToday: boolean }[] = [];
+    const calendar: { solar: number; lunar: number; isToday: boolean }[][] = [];
 
-  for (let i = 0; i < startWeekDay; i++) {
-    week.push({ solar: 0, lunar: 0, isToday: false }); // ô trống đầu tuần
-  }
+    for (let i = 0; i < startWeekDay; i++) {
+      week.push({ solar: 0, lunar: 0, isToday: false }); // ô trống đầu tuần
+    }
 
-  for (let day = 1; day <= totalDays; day++) {
-    const date = new Date(this.currentYear, this.currentMonth, day);
-    const lunar = Lunar.fromDate(date);
+    for (let day = 1; day <= totalDays; day++) {
+      const date = new Date(this.currentYear, this.currentMonth, day);
+      const lunar = Lunar.fromDate(date);
 
-    const lunarNumber = lunar.getDay(); // số âm 1-30
-    const isToday = date.toDateString() === today.toDateString();
+      const lunarNumber = lunar.getDay(); // số âm 1-30
+      const isToday = date.toDateString() === today.toDateString();
 
-    week.push({ solar: day, lunar: lunarNumber, isToday });
+      week.push({ solar: day, lunar: lunarNumber, isToday });
 
-    if (week.length === 7) {
+      if (week.length === 7) {
+        calendar.push(week);
+        week = [];
+      }
+    }
+
+    // ô trống cuối tuần
+    if (week.length > 0) {
+      while (week.length < 7) {
+        week.push({ solar: 0, lunar: 0, isToday: false });
+      }
       calendar.push(week);
-      week = [];
     }
+
+    this.monthDays = calendar;
   }
-
-  // ô trống cuối tuần
-  if (week.length > 0) {
-    while (week.length < 7) {
-      week.push({ solar: 0, lunar: 0, isToday: false });
-    }
-    calendar.push(week);
-  }
-
-  this.monthDays = calendar;
-}
-
-
-
 
   private lunarNumberMap: { [han: string]: number } = {
     初一: 1,

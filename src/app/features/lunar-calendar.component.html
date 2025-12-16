@@ -1,42 +1,98 @@
-<!DOCTYPE html>
 <h1>Lịch Âm</h1>
-<p>Hôm nay (âm lịch): {{ todayLunar }}</p>
-<p>Ngày dương: {{ todaySolar }}</p>
-<p>Can chi: {{ canChiVi }}</p>
-<p>Tiết khí: {{ jieQi }}</p>
 
-<p><strong>✨ Giờ hoàng đạo hôm nay:</strong></p>
-<ul>
-  <li *ngFor="let hour of zodiacHoursVi">{{ hour }}</li>
-</ul>
+<div class="calendar-wrapper">
+  <div class="calendar-bloc">
+    <div class="hanger">
+      <div class="hole left"></div>
+      <div class="hole right"></div>
+    </div>
 
-<p><strong>⚡ Giờ hắc đạo hôm nay:</strong></p>
-<ul>
-  <li *ngFor="let hour of zodiacHoursZh">{{ hour }}</li>
-</ul>
+    <div class="header">
+      <div class="badge year">{{ currentYear }}</div>
+      <div class="badge month">{{ currentMonth + 1 }}</div>
+    </div>
 
-<h2>Lịch tháng {{ currentMonth + 1 }}/{{ currentYear }}</h2>
-<table border="1" style="border-collapse: collapse; width: 100%;">
-  <thead>
-    <tr>
-      <th>CN</th>
-      <th>T2</th>
-      <th>T3</th>
-      <th>T4</th>
-      <th>T5</th>
-      <th>T6</th>
-      <th>T7</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let week of monthDays">
-      <td *ngFor="let day of week" [style.background]="day.isToday ? '#fffa90' : 'transparent'">
-        <div *ngIf="day.solar !== 0">
-          <strong>{{ day.solar }}</strong><br/>
-          <small style="color: blue">{{ day.lunar }}</small>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <div class="body">
+      <h1 class="solar-number">{{ currentDay }}</h1>
+      <div class="solar-weekday">{{ currentWeekday }}</div>
+    </div>
 
+    <div class="divider">
+      <div class="gold-line"></div>
+    </div>
+
+<div class="footer">
+  <div class="footer-columns">
+    <div class="lunar-main-col">
+      <div class="lunar-number">{{ lunarDayNumber }}</div>
+      <div class="lunar-month">Tháng {{ lunarMonthNumber }} (ÂL)</div>
+    </div>
+
+    <div class="lunar-details-col">
+      <div class="detail-box">
+        <div class="detail-row">{{ yearGC }}</div>
+        <div class="detail-row">{{ monthGC }}</div>
+        <div class="detail-row">{{ dayGC }}</div>
+        <div class="detail-row">Tiết {{ jieQi }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="quote">"Ăn quả nhớ kẻ trồng cây"</div>
+  </div>
+</div>
+
+<div class="zodiac-wrapper">
+  <div class="zodiac-container">
+    <div class="zodiac-column">
+      <p class="title-hoang-dao">✨ Giờ hoàng đạo hôm nay:</p>
+      <ul>
+        <li *ngFor="let hour of zodiacHoursVi">
+          <span class="bullet">●</span> {{ hour }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="zodiac-column">
+      <p class="title-hac-dao">⚡ Giờ hắc đạo hôm nay:</p>
+      <ul>
+        <li *ngFor="let hour of zodiacHoursZh">
+          <span class="bullet">●</span> {{ hour }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="calendar-month-wrapper">
+  <h2>Lịch tháng {{ currentMonth + 1 }}/{{ currentYear }}</h2>
+
+  <table class="month-table">
+    <thead>
+      <tr>
+        <th class="sunday">CN</th>
+        <th>T2</th>
+        <th>T3</th>
+        <th>T4</th>
+        <th>T5</th>
+        <th>T6</th>
+        <th class="saturday">T7</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let week of monthDays">
+        <td
+          *ngFor="let day of week; let j = index"
+          [class.is-today]="day.isToday"
+          [class.is-weekend]="j === 0 || j === 6"
+          [class.empty-cell]="day.solar === 0"
+        >
+          <div class="day-content" *ngIf="day.solar !== 0">
+            <div class="solar-num">{{ day.solar }}</div>
+            <div class="lunar-num">{{ day.lunar }}</div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
