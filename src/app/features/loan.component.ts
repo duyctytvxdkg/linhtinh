@@ -20,6 +20,7 @@ import { Chart, registerables } from 'chart.js';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { CurrencyInputDirective } from './currency-input.directive';
+import { MatRadioModule } from '@angular/material/radio';
 
 Chart.register(...registerables);
 
@@ -47,6 +48,7 @@ function currencyFormat(value: number): string {
     MatInputModule,
     MatTableModule,
     CurrencyInputDirective,
+    MatRadioModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './loan.component.html',
