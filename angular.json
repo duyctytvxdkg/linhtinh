@@ -11,6 +11,12 @@
       "prefix": "app",
       "architect": {
         "build": {
+          "allowedCommonJsDependencies": [
+            "lunar-javascript",
+            "chart.js",
+            "file-saver",
+            "xlsx"
+          ],
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/linhtinhapp",
@@ -36,7 +42,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
