@@ -1,0 +1,59 @@
+/* Bloc lịch tờ */
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.calendar-bloc {
+  width: 100%;
+  max-width: 320px; /* Không quá to trên Desktop */
+  background: #fff;
+  border-radius: 4px;
+  padding: 15px;
+  box-sizing: border-box; /* Quan trọng để padding không làm tăng width */
+}
+
+/* Giảm kích thước số ngày dương trên mobile nếu cần */
+@media (max-width: 400px) {
+  .solar-number { font-size: 80px; }
+  .lunar-number { font-size: 40px; }
+}
+
+/* Bảng lịch tháng */
+.month-table {
+  width: 100%;
+  table-layout: fixed; /* Ép các cột bằng nhau, không bị vỡ */
+  border-collapse: collapse;
+}
+
+.month-table td {
+  padding: 5px 2px; /* Giảm padding trên mobile */
+}
+
+.solar-num { font-size: 1rem; }
+.lunar-num { font-size: 0.65rem; }
+
+/* Giờ hoàng đạo */
+.zodiac-container {
+  display: flex;
+  flex-wrap: wrap; /* Cho phép rớt dòng */
+}
+
+@media (max-width: 600px) {
+  .zodiac-column {
+    flex: 0 0 100%; /* Chiếm 100% chiều rộng trên mobile */
+    margin-bottom: 20px;
+    padding: 0;
+  }
+  .footer-columns {
+    flex-direction: column; /* Cột âm lịch và can chi chồng lên nhau */
+    gap: 20px;
+  }
+  .lunar-details-col {
+    border-left: none;
+    border-top: 1px solid #eee;
+    padding-left: 0;
+    padding-top: 15px;
+  }
+}

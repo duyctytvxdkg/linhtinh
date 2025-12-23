@@ -52,6 +52,7 @@ function currencyFormat(value: number): string {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './loan.component.html',
+      styleUrls: ['./loan.component.scss'],
 })
 export class LoanComponent implements OnInit {
   form!: FormGroup;

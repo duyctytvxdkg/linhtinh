@@ -1,0 +1,115 @@
+/* Container chính */
+.content-box-minor {
+  width: 100%;
+  max-width: 1000px; /* Giới hạn để không quá rộng trên màn hình lớn */
+  margin: 0 auto;
+}
+
+/* 1. XỬ LÝ BẢNG NHẬP LIỆU (MAT-TABLE) */
+.mat-table {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+
+  /* Headers */
+  .mat-mdc-header-cell {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    font-weight: 700;
+    padding: 12px 8px;
+  }
+
+  /* Cells */
+  .mat-mdc-cell {
+    padding: 8px;
+  }
+}
+
+/* Custom Input bên trong bảng */
+input.border {
+  width: 100%;
+  min-width: 100px; /* Tránh input bị teo quá nhỏ */
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+}
+
+/* 2. XỬ LÝ RESPONSIVE CHO BẢNG */
+/* Vì bảng có nhiều input, ta cho phép cuộn ngang trên mobile để không bị vỡ layout */
+@media (max-width: 768px) {
+  .work-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+
+  .mat-table {
+    min-width: 600px; /* Ép bảng giữ độ rộng tối thiểu để người dùng nhập liệu */
+  }
+
+  /* Chỉnh lại các nút thao tác trên mobile */
+  .flex.gap-3 {
+    flex-direction: column; /* Stacking buttons (Lưu CSV, Import) */
+    gap: 10px;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  /* Nút tính toán full width */
+  button[mat-raised-button].primary {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+/* 3. KẾT QUẢ TÍNH TOÁN */
+.result-box {
+  background: #f0fdf4; /* Màu xanh lá nhạt */
+  border: 1px solid #bbf7d0;
+  transition: all 0.3s ease;
+
+  p {
+    margin: 5px 0;
+  }
+
+  b {
+    color: #166534;
+  }
+}
+
+/* 4. ĐIỀU CHỈNH RADIO BUTTON */
+mat-radio-group {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tinh chỉnh nút xóa */
+button[mat-icon-button].color-warn {
+  &:hover {
+    background-color: #fee2e2;
+  }
+}
+
+/* Class bổ trợ cho việc cuộn bảng */
+:host {
+  display: block;
+
+  /* Bọc bảng mat-table trong một div có class này ở HTML nếu cần */
+  table {
+    width: 100%;
+  }
+}

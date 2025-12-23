@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './lunar-calendar.component.html',
+    styleUrls: ['./lunar-calendar.component.scss'],
 })
 export class LunarCalendarComponent implements OnInit {
   todaySolar: string = '';

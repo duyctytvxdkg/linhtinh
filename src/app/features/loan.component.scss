@@ -1,0 +1,138 @@
+/* Container chính */
+.content-box-minor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+}
+
+/* 1. KHỐI FORM NHẬP LIỆU */
+.finance-block {
+  width: 100%; /* Mặc định 100% trên mobile */
+  max-width: 900px; /* Giới hạn độ rộng tối đa trên desktop */
+}
+
+.finance-row {
+  display: grid;
+  /* Desktop: Input rộng, nhãn và giá trị nằm sau */
+  grid-template-columns: 1.5fr 1fr 1fr;
+  align-items: center;
+  column-gap: 20px;
+  row-gap: 10px;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.finance-label {
+  font-size: 0.95rem;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.finance-value {
+  text-align: right;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #059669; /* Green 600 */
+  white-space: nowrap;
+}
+
+.finance-unit {
+  font-size: 0.75rem;
+  margin-left: 4px;
+  color: #6b7280;
+}
+
+/* 2. BẢNG DỮ LIỆU (MAT-TABLE) */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto; /* Cho phép vuốt ngang bảng trên mobile */
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  background: white;
+
+  table {
+    width: 100%;
+    min-width: 600px; /* Ép bảng có độ rộng tối thiểu để không bị dồn chữ */
+  }
+
+  .mat-mdc-header-cell {
+    background-color: #f3f4f6;
+    font-weight: bold;
+    color: #374151;
+  }
+}
+
+/* 3. PHÂN TRANG (PAGINATION) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* 4. BIỂU ĐỒ & CARD */
+.ocb-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
+}
+
+/* --- RESPONSIVE CHO MOBILE (< 768px) --- */
+@media (max-width: 768px) {
+  .text-3xl {
+    font-size: 1.5rem; /* Thu nhỏ tiêu đề trên mobile */
+  }
+
+  .finance-row {
+    /* Chuyển sang 1 cột duy nhất trên điện thoại */
+    grid-template-columns: 1fr;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+
+    .finance-label {
+      margin-top: -5px;
+    }
+
+    .finance-value {
+      text-align: left; /* Căn trái cho dễ đọc trên mobile */
+      font-size: 1.4rem;
+      border-top: 1px dashed #ccc;
+      padding-top: 8px;
+    }
+  }
+
+  .finance-block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Điều chỉnh nút bấm trên mobile */
+  button[mat-raised-button] {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+/* --- RESPONSIVE CHO MÀN HÌNH RẤT NHỎ (< 480px) --- */
+@media (max-width: 480px) {
+  .content-box-minor {
+    padding: 10px;
+  }
+
+  .relative.h-\[320px\] {
+    height: 250px; /* Thu nhỏ chiều cao biểu đồ */
+  }
+}
