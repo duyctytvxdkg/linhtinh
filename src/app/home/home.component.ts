@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router'; // <--- PHẢI CÓ DÒNG NÀY
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [RouterModule], // <--- PHẢI CÓ TRONG MẢNG IMPORTS
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
-
-}
+export class HomeComponent { }

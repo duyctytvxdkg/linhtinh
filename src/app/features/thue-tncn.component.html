@@ -39,36 +39,30 @@
     </div>
   </form>
 
-<div class="result-container mt-8">
-  <div class="summary-grid">
-    <div class="summary-card info">
-      <div class="card-icon">📉</div>
-      <div class="card-content">
-        <p class="label">Thu nhập tính thuế</p>
-        <p class="value">{{ formatCurrency(thuNhapTinhThue) }} <span class="unit">VND</span></p>
+  <div class="result-container mt-8">
+    <div class="summary-grid">
+      <div class="summary-card info">
+        <div class="card-icon">📉</div>
+        <div class="card-content">
+          <p class="label">Thu nhập tính thuế</p>
+          <p class="value">{{ formatCurrency(thuNhapTinhThue) }} <span class="unit">VND</span></p>
+        </div>
+      </div>
+      <div class="summary-card danger">
+        <div class="card-icon">💸</div>
+        <div class="card-content">
+          <p class="label">Thuế TNCN phải nộp</p>
+          <p class="value">{{ formatCurrency(thuePhaiNop) }} <span class="unit">VND</span></p>
+        </div>
       </div>
     </div>
 
-    <div class="summary-card danger">
-      <div class="card-icon">💸</div>
-      <div class="card-content">
-        <p class="label">Thuế TNCN phải nộp</p>
-        <p class="value">{{ formatCurrency(thuePhaiNop) }} <span class="unit">VND</span></p>
-      </div>
+    <div class="net-salary-card mt-4">
+      <div class="net-label">THU NHẬP THỰC NHẬN (NET)</div>
+      <div class="net-value">{{ formatCurrency(luongNet) }}</div>
+      <div class="net-unit">VND / Tháng</div>
     </div>
   </div>
-
-  <div class="net-salary-card">
-    <div class="net-label">THU NHẬP THỰC NHẬN (NET)</div>
-    <div class="net-value">{{ formatCurrency(luongNet) }}</div>
-    <div class="net-unit">VND / Tháng</div>
-  </div>
-</div>
-
-<div class="content-box-minor">
-  <h2 class="text-2xl font-bold text-blue-700 mb-6">
-    ⚖️ TÍNH THUẾ THU NHẬP CÁ NHÂN (DỰ KIẾN 2026)
-  </h2>
 
   <div class="tax-details-container mt-8">
     <div class="tax-header-row hide-on-mobile">
@@ -77,28 +71,23 @@
       <div class="col-rate">Thuế suất</div>
       <div class="col-tax">Tiền thuế</div>
     </div>
-
     <div class="tax-body">
       <div *ngFor="let detail of thueChiTiet; let i = index"
            class="tax-item-row"
            [class.active-level]="detail.tax > 0"
            [class.inactive-level]="detail.tax <= 0">
-
         <div class="col-bac">
           <span class="mobile-label">Bậc:</span>
           <span class="badge-bac">{{ i + 1 }}</span>
         </div>
-
         <div class="col-range">
           <span class="mobile-label">Thu nhập:</span>
           {{ detail.range }}
         </div>
-
         <div class="col-rate">
           <span class="mobile-label">Thuế suất:</span>
           <span class="text-rate">{{ detail.rate }}%</span>
         </div>
-
         <div class="col-tax">
           <span class="mobile-label">Tiền thuế:</span>
           <span class="text-tax">{{ formatCurrency(detail.tax) }}</span>
@@ -106,11 +95,4 @@
       </div>
     </div>
   </div>
-
-  <div class="flex flex-col md:flex-row gap-4 mt-8">
-     <button mat-raised-button color="primary" class="flex-1 py-6 text-lg">
-       Xuất báo cáo chi tiết
-     </button>
-  </div>
-</div>
 </div>

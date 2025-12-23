@@ -6,31 +6,34 @@ import { LunarCalendarComponent } from './features/lunar-calendar.component';
 import { TideComponent } from './features/tide.component';
 import { ThueTncnComponent } from './features/thue-tncn.component';
 
-
 export const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'tinhlai',
-    component: LoanComponent
+    component: LoanComponent,
   },
   {
     path: 'licham',
-    component: LunarCalendarComponent
+    component: LunarCalendarComponent,
   },
   {
     path: 'luonghuu',
-    component: SocialInsurranceComponent
+    component: SocialInsurranceComponent,
   },
-    {
+  {
     path: 'thuetncn',
-    component: ThueTncnComponent
+    component: ThueTncnComponent,
+  },
+  {
+    path: 'tide',
+    component: TideComponent,
   },
   {
     path: '**',
-    redirectTo: ''
-  }
+    redirectTo: '',
+  },
 ];

@@ -1,0 +1,37 @@
+<div class="content-box-minor">
+  <div class="header-tide">
+    <h2 class="text-2xl font-bold text-blue-800">🌊 THỦY TRIỀU TP. HỒ CHÍ MINH</h2>
+    <p class="text-gray-500">Trạm quan trắc: Nhà Bè - Ngày {{ today | date:'dd/MM/yyyy' }}</p>
+  </div>
+
+  <div class="current-status-card">
+    <div class="info">
+      <span class="label">Mực nước hiện tại</span>
+      <div class="value">{{ currentWaterLevel }}m</div>
+      <span class="status-tag pulse">{{ tideStatus }}</span>
+    </div>
+    <div class="water-bg">
+      <div class="wave"></div>
+    </div>
+  </div>
+
+  <div class="chart-container mt-8">
+    <h3 class="text-lg font-semibold mb-4 text-blue-700">Biểu đồ diễn biến mực nước</h3>
+    <div class="canvas-wrapper">
+      <canvas #tideChart></canvas>
+    </div>
+  </div>
+
+  <div class="tide-events-grid mt-8">
+    <div *ngFor="let event of tideEvents" class="event-card" [ngClass]="event.type">
+      <div class="time">{{ event.time }}</div>
+      <div class="level">{{ event.level }}m</div>
+      <div class="type">{{ event.label }}</div>
+      <div class="icon">{{ event.type === 'high' ? '🔼' : '🔽' }}</div>
+    </div>
+  </div>
+
+  <div class="warning-box mt-6">
+    <p>⚠️ <strong>Lưu ý:</strong> Dữ liệu trên mang tính chất tham khảo mô phỏng. Đối với các kế hoạch vận tải hoặc xây dựng, vui lòng kiểm tra bảng thủy triều chính thức từ Đài Khí tượng Thủy văn.</p>
+  </div>
+</div>

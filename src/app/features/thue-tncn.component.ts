@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button'; // Thêm để dùng mat-raised-button
 import { CurrencyInputDirective } from './currency-input.directive';
 
 @Component({
@@ -20,15 +21,24 @@ import { CurrencyInputDirective } from './currency-input.directive';
     MatTableModule,
     CurrencyInputDirective,
     MatRadioModule,
+    MatButtonModule
   ],
 })
 export class ThueTncnComponent implements OnInit {
   thueForm!: FormGroup;
 
-  // Các hằng số định mức dự kiến 2026 (Ví dụ minh họa)
-  readonly GIAM_TRU_BAN_THAN = 15000000; // Tăng lên 15tr
-  readonly GIAM_TRU_PHU_THUOC = 5500000; // Tăng lên 5.5tr
-  readonly TY_LE_BHXH = 0.105; // 8% BHXH + 1.5% BHYT + 1% BHTN
+  // Hằng số định mức
+  readonly GIAM_TRU_BAN_THAN = 15000000;
+  readonly GIAM_TRU_PHU_THUOC = 5500000;
+  readonly TY_LE_BHXH = 0.105;
+
+  // Các biến chứa kết quả (Thay cho Getter)
+  tienBaoHiem = 0;
+  giamTruPhuThuoc = 0;
+  thuNhapTinhThue = 0;
+  thueChiTiet: any[] = [];
+  thuePhaiNop = 0;
+  luongNet = 0;
 
   constructor(private fb: FormBuilder) {}
 
@@ -38,31 +48,34 @@ export class ThueTncnComponent implements OnInit {
       dependents: [0],
       insuranceSalary: [null],
     });
+
+    // Lắng nghe thay đổi của form để tính toán - TRÁNH TREO MÁY
+    this.thueForm.valueChanges.subscribe(() => {
+      this.calculateAll();
+    });
+
+    // Tính lần đầu tiên
+    this.calculateAll();
   }
 
-  get tienBaoHiem(): number {
-    const gross = this.parseNumber(this.thueForm.value.grossSalary);
-    const bhSalary =
-      this.parseNumber(this.thueForm.value.insuranceSalary) || gross;
-    // Mức lương đóng BH tối đa thường là 20 lần lương cơ sở (Giả định lương cơ sở 2.34tr -> Max 46.8tr)
-    const validBhSalary = Math.min(bhSalary, 46800000);
-    return validBhSalary * this.TY_LE_BHXH;
-  }
+  calculateAll() {
+    const formVal = this.thueForm.getRawValue();
+    const gross = this.parseNumber(formVal.grossSalary);
+    const dependents = formVal.dependents || 0;
+    const insuranceBase = this.parseNumber(formVal.insuranceSalary) || gross;
 
-  get giamTruPhuThuoc(): number {
-    return (this.thueForm.value.dependents || 0) * this.GIAM_TRU_PHU_THUOC;
-  }
+    // 1. Bảo hiểm
+    const validBhSalary = Math.min(insuranceBase, 46800000);
+    this.tienBaoHiem = validBhSalary * this.TY_LE_BHXH;
 
-  get thuNhapTinhThue(): number {
-    const gross = this.parseNumber(this.thueForm.value.grossSalary);
-    const val =
-      gross - this.tienBaoHiem - this.GIAM_TRU_BAN_THAN - this.giamTruPhuThuoc;
-    return val > 0 ? val : 0;
-  }
+    // 2. Giảm trừ
+    this.giamTruPhuThuoc = dependents * this.GIAM_TRU_PHU_THUOC;
 
-  get thueChiTiet() {
-    const tntt = this.thuNhapTinhThue;
-    // Biểu thuế lũy tiến từng phần dự kiến 2026 (Rút gọn còn 5 bậc)
+    // 3. Thu nhập tính thuế
+    const tntt = gross - this.tienBaoHiem - this.GIAM_TRU_BAN_THAN - this.giamTruPhuThuoc;
+    this.thuNhapTinhThue = tntt > 0 ? tntt : 0;
+
+    // 4. Tính thuế lũy tiến (Logic chuẩn, không gây loop)
     const taxBrackets = [
       { limit: 5000000, rate: 5, range: 'Đến 5tr' },
       { limit: 10000000, rate: 10, range: 'Trên 5tr - 10tr' },
@@ -71,29 +84,24 @@ export class ThueTncnComponent implements OnInit {
       { limit: Infinity, rate: 25, range: 'Trên 32tr' },
     ];
 
-    let remaining = tntt;
+    let remaining = this.thuNhapTinhThue;
     let prevLimit = 0;
+    let totalTax = 0;
 
-    return taxBrackets.map((b) => {
+    this.thueChiTiet = taxBrackets.map((b) => {
       const currentLevelCap = b.limit - prevLimit;
-      const amountAtThisLevel = Math.max(
-        0,
-        Math.min(remaining, currentLevelCap)
-      );
+      const amountAtThisLevel = Math.max(0, Math.min(remaining, currentLevelCap));
       const tax = amountAtThisLevel * (b.rate / 100);
+
       remaining -= amountAtThisLevel;
       prevLimit = b.limit;
-      return { ...b, amount: amountAtThisLevel, tax: tax };
+      totalTax += tax;
+
+      return { ...b, tax: tax };
     });
-  }
 
-  get thuePhaiNop(): number {
-    return this.thueChiTiet.reduce((sum, item) => sum + item.tax, 0);
-  }
-
-  get luongNet(): number {
-    const gross = this.parseNumber(this.thueForm.value.grossSalary);
-    return gross - this.tienBaoHiem - this.thuePhaiNop;
+    this.thuePhaiNop = totalTax;
+    this.luongNet = gross - this.tienBaoHiem - this.thuePhaiNop;
   }
 
   formatCurrency(val: any): string {
@@ -101,7 +109,11 @@ export class ThueTncnComponent implements OnInit {
   }
 
   private parseNumber(val: any): number {
-    if (typeof val === 'string') return Number(val.replace(/[^0-9]/g, ''));
+    if (val === null || val === undefined) return 0;
+    if (typeof val === 'string') {
+      const cleanVal = val.replace(/[^0-9]/g, '');
+      return cleanVal ? parseInt(cleanVal, 10) : 0;
+    }
     return Number(val);
   }
 }

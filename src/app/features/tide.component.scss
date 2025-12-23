@@ -1,0 +1,78 @@
+.content-box-minor {
+  background: #f0f7ff;
+}
+
+.current-status-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-top: 20px;
+
+  .info {
+    position: relative;
+    z-index: 2;
+    .label { color: #666; font-size: 0.9rem; }
+    .value { font-size: 2.5rem; font-weight: 800; color: #0056b3; }
+    .status-tag {
+      background: #e1f0ff;
+      color: #007bff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.canvas-wrapper {
+  height: 300px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.tide-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+
+  .event-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    border-bottom: 4px solid #ddd;
+
+    .time { font-weight: bold; font-size: 1.1rem; }
+    .level { color: #555; margin: 5px 0; }
+    .type { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    &.high { border-color: #28a745; .level { color: #28a745; font-weight: bold; } }
+    &.low { border-color: #dc3545; .level { color: #dc3545; font-weight: bold; } }
+  }
+}
+
+.warning-box {
+  background: #fff3cd;
+  border-left: 5px solid #ffc107;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* Hiệu ứng nhấp nháy cho thẻ trạng thái */
+.pulse {
+  animation: pulse-blue 2s infinite;
+}
+
+@keyframes pulse-blue {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
