@@ -34,26 +34,30 @@
 .solar-num { font-size: 1rem; }
 .lunar-num { font-size: 0.65rem; }
 
-/* Giờ hoàng đạo */
+/* Khối chứa 2 cột giờ */
 .zodiac-container {
   display: flex;
-  flex-wrap: wrap; /* Cho phép rớt dòng */
+  flex-direction: row; /* Mặc định nằm ngang trên máy tính */
+  width: 100%;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
+/* Quan trọng: Fix lỗi mất cột trên mobile */
+@media (max-width: 768px) {
+  .zodiac-container {
+    flex-direction: column; /* Chuyển thành hàng dọc để hiện cả 2 cột */
+    padding: 0 10px;
+  }
+
   .zodiac-column {
-    flex: 0 0 100%; /* Chiếm 100% chiều rộng trên mobile */
+    width: 100%;
     margin-bottom: 20px;
-    padding: 0;
   }
-  .footer-columns {
-    flex-direction: column; /* Cột âm lịch và can chi chồng lên nhau */
-    gap: 20px;
-  }
-  .lunar-details-col {
-    border-left: none;
-    border-top: 1px solid #eee;
-    padding-left: 0;
-    padding-top: 15px;
+
+  /* Đảm bảo text không bị tràn */
+  .zodiac-column li {
+    white-space: normal; /* Cho phép xuống dòng nếu giờ quá dài */
+    font-size: 14px;
   }
 }
