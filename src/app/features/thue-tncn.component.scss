@@ -1,0 +1,215 @@
+.result-card {
+  animation: slideUp 0.5s ease-out;
+}
+
+.summary-item {
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.table-scroll {
+  border-radius: 8px;
+  overflow: hidden;
+  table {
+    border-collapse: collapse;
+  }
+  th { background: #f8fafc; color: #64748b; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Fix */
+@media (max-width: 768px) {
+  .finance-row {
+    grid-template-columns: 1fr;
+    .finance-value {
+      text-align: left;
+      font-size: 1.1rem;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+.tax-details-container {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef2f6;
+}
+
+/* Header cho Desktop */
+.tax-header-row {
+  display: flex;
+  background: #f8fafc;
+  padding: 15px 20px;
+  font-weight: 700;
+  color: #64748b;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Từng dòng dữ liệu */
+.tax-item-row {
+  display: flex;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s;
+  align-items: center;
+
+  &:last-child { border-bottom: none; }
+
+  &.active-level {
+    background-color: #f0f9ff;
+    .badge-bac { background: #3b82f6; color: white; }
+    .text-tax { color: #ef4444; font-weight: 700; }
+  }
+
+  &.inactive-level {
+    opacity: 0.5;
+    background-color: #fafafa;
+    .badge-bac { background: #cbd5e1; color: white; }
+  }
+}
+
+/* Chia cột */
+.col-bac { width: 10%; text-align: center; }
+.col-range { width: 40%; font-weight: 500; }
+.col-rate { width: 20%; text-align: center; }
+.col-tax { width: 30%; text-align: right; }
+
+.badge-bac {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.mobile-label { display: none; }
+
+/* RESPONSIVE: Biến bảng thành Card trên điện thoại */
+@media (max-width: 768px) {
+  .hide-on-mobile { display: none; }
+
+  .tax-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+    gap: 8px;
+
+    & > div {
+      width: 100% !important;
+      text-align: left !important;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .mobile-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .badge-bac { padding: 2px 8px; }
+
+  .tax-details-container {
+    border-radius: 12px;
+  }
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Lưới 2 cột cho các thông số phụ */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+
+  .card-icon {
+    font-size: 24px;
+    margin-right: 12px;
+  }
+
+  .label {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .value {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+
+    .unit { font-size: 12px; font-weight: normal; }
+  }
+
+  /* Màu sắc riêng cho từng loại */
+  &.info { border-left: 4px solid #3b82f6; }
+  &.danger { border-left: 4px solid #ef4444; .value { color: #ef4444; } }
+}
+
+/* Thẻ Lương NET nổi bật nhất */
+.net-salary-card {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+
+  .net-label {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+
+  .net-value {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .net-unit {
+    font-size: 14px;
+    margin-top: 8px;
+    opacity: 0.8;
+  }
+}
+
+/* Responsive cho Mobile */
+@media (max-width: 600px) {
+  .summary-grid {
+    grid-template-columns: 1fr; /* Mobile chồng thành 1 hàng dọc */
+  }
+
+  .net-value {
+    font-size: 32px;
+  }
+}

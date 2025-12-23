@@ -55,7 +55,7 @@ const ADJUSTMENT_FACTORS: Record<number, number> = {
 @Component({
   selector: 'app-social-insurrnace',
   templateUrl: './socialinsurrance.component.html',
-      styleUrls: ['./socialinsurrance.component.scss'],
+  styleUrls: ['./socialinsurrance.component.scss'],
   standalone: true,
   imports: [
     CommonModule,

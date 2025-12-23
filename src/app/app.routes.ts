@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { LoanComponent } from './features/loan.component';
 import { LunarCalendarComponent } from './features/lunar-calendar.component';
 import { TideComponent } from './features/tide.component';
+import { ThueTncnComponent } from './features/thue-tncn.component';
 
 
 export const routes: Routes = [
@@ -23,6 +24,10 @@ export const routes: Routes = [
   {
     path: 'luonghuu',
     component: SocialInsurranceComponent
+  },
+    {
+    path: 'thuetncn',
+    component: ThueTncnComponent
   },
   {
     path: '**',
