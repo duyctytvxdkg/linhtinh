@@ -13,6 +13,7 @@
       </mat-radio-group>
     </div>
 
+    <div class="table-responsive-wrapper">
     <!-- BẢNG QUÁ TRÌNH LÀM VIỆC -->
     <table mat-table [dataSource]="dataSource" class="w-full" #workTable>
       <!-- TỪ -->
@@ -70,6 +71,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    </div>
 
     <button type="button" mat-stroked-button (click)="addRow()">
       ➕ Thêm dòng

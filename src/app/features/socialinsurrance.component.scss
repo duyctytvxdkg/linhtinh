@@ -113,3 +113,44 @@ button[mat-icon-button].color-warn {
     width: 100%;
   }
 }
+
+/* Tạo khung cuộn ngang cho bảng trên mobile */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Cho phép vuốt ngang trong phạm vi bảng */
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+/* Ép bảng giữ kích thước tối thiểu để không bị dồn chữ */
+.mat-table {
+  min-width: 500px;
+}
+
+/* Fix các nút bấm và tiêu đề không được tràn lề */
+@media (max-width: 768px) {
+  .content-box-minor {
+    padding: 10px !important;
+    overflow-x: hidden; /* Chặn tràn lề tuyệt đối cho box chính */
+  }
+
+  /* Các nút bấm (Lưu CSV, Import) xếp chồng lên nhau */
+  .flex.gap-3 {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .flex.gap-3 button {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Thu nhỏ font tiêu đề để không chiếm chỗ */
+  h2.text-2xl {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+}
