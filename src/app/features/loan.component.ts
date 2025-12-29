@@ -93,9 +93,9 @@ export class LoanComponent implements OnInit {
     }
 
     this.form = this.fb.group({
-      principal: [500_000_000, [Validators.required, Validators.min(1)]],
-      annualRate: [7.5, [Validators.required, Validators.min(0)]],
-      termMonths: [120, [Validators.required, Validators.min(1)]],
+      principal: [100_000_000, [Validators.required, Validators.min(1)]],
+      annualRate: [11.99, [Validators.required, Validators.min(0)]],
+      termMonths: [48, [Validators.required, Validators.min(1)]],
     });
 
     // ✅ TÍNH NGAY KHI LOAD

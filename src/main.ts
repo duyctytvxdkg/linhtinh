@@ -1,6 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
 
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -8,6 +9,7 @@ import { routes } from './app/app.routes';
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),   // ✅ CỰC KỲ QUAN TRỌNG
-    provideAnimations()      // ✅ cho Angular Material
+    provideAnimations()  ,    // ✅ cho Angular Material
+    provideHttpClient()  ,    // ✅ cho HttpClient
   ]
 });

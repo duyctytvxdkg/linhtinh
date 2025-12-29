@@ -44,9 +44,9 @@ export class ThueTncnComponent implements OnInit {
 
   ngOnInit() {
     this.thueForm = this.fb.group({
-      grossSalary: [20000000],
-      dependents: [0],
-      insuranceSalary: [null],
+      grossSalary: [60000000],
+      dependents: [2],
+      insuranceSalary: [30690000],
     });
 
     // Lắng nghe thay đổi của form để tính toán - TRÁNH TREO MÁY

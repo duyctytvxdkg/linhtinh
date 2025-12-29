@@ -15,6 +15,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTable } from '@angular/material/table';
 import { AfterViewInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 // Hệ số điều chỉnh tiền lương BHXH (áp dụng năm 2025)
 const ADJUSTMENT_FACTORS: Record<number, number> = {
@@ -67,7 +68,7 @@ const ADJUSTMENT_FACTORS: Record<number, number> = {
     MatRadioModule,
   ],
 })
-export class SocialInsurranceComponent {
+export class SocialInsurranceComponent implements AfterViewInit {
   dataSource: AbstractControl[] = [];
 
   displayedColumns = ['from', 'to', 'salary', 'action'];
@@ -75,13 +76,55 @@ export class SocialInsurranceComponent {
   form: FormGroup;
   result: any;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     this.form = this.fb.group({
       gender: ['male', Validators.required],
       periods: this.fb.array([]),
     });
 
     this.addRow(); // ✅ 1 dòng mặc định
+  }
+
+  resetForm(): void {
+    this.form.reset({ gender: 'male' });
+    this.periods.clear();
+    this.addRow();
+    this.result = null;
+  }
+
+  ngAfterViewInit(): void {
+    this.loadCSVFromAssets();
+  }
+
+  private loadCSVFromAssets(): void {
+    this.http
+      .get('assets/defaultvalue/bhxh.csv', { responseType: 'text' })
+      .subscribe((text) => {
+        this.parseCSV(text);
+      });
+  }
+
+  private parseCSV(text: string): void {
+    const lines = text
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    this.periods.clear();
+
+    for (let i = 1; i < lines.length; i++) {
+      const [from, to, salary] = lines[i].split(',');
+
+      this.periods.push(
+        this.fb.group({
+          from: [from, Validators.required],
+          to: [to, Validators.required],
+          salary: [Number(salary), Validators.required],
+        })
+      );
+    }
+
+    this.dataSource = [...this.periods.controls];
   }
 
   get periods(): FormArray {
