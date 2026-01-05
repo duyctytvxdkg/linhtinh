@@ -1,0 +1,11 @@
+{
+  "/api/tide/*": {
+    "target": "https://cau-ca.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/tide": ""
+    }
+  }
+}

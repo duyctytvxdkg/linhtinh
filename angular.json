@@ -74,7 +74,8 @@
               "buildTarget": "amplify-angular-template:build:production"
             },
             "development": {
-              "buildTarget": "amplify-angular-template:build:development"
+              "buildTarget": "amplify-angular-template:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

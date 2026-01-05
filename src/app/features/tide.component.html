@@ -1,10 +1,39 @@
 <div class="content-box-minor">
   <div class="header-tide">
-    <h2 class="text-2xl font-bold text-blue-800">🌊 THỦY TRIỀU TP. HỒ CHÍ MINH</h2>
-    <p class="text-gray-500">Trạm quan trắc: Nhà Bè - Ngày {{ today | date:'dd/MM/yyyy' }}</p>
+    <div>
+      <h2 class="text-2xl font-bold text-blue-800">🌊 THỦY TRIỀU {{ locations[currentLocation].shortName }}</h2>
+      <p class="text-gray-500">Trạm quan trắc: {{ locations[currentLocation].station }} - Ngày {{ today | date:'dd/MM/yyyy' }}</p>
+    </div>
+    <div class="location-buttons">
+      <button 
+        class="location-btn" 
+        [class.active]="currentLocation === 'coralBank'"
+        (click)="switchLocation('coralBank')"
+        [disabled]="isLoading">
+        🏙️ Coral Bank (HCM)
+      </button>
+      <button 
+        class="location-btn" 
+        [class.active]="currentLocation === 'cuaTieu'"
+        (click)="switchLocation('cuaTieu')"
+        [disabled]="isLoading">
+        🌾 Cửa Tiểu (Bến Tre)
+      </button>
+    </div>
   </div>
 
-  <div class="current-status-card">
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-indicator">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu thủy triều...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="errorMessage" class="error-message">
+    <p>⚠️ {{ errorMessage }}</p>
+  </div>
+
+  <div class="current-status-card" *ngIf="tideTableHtml">
     <div class="info">
       <span class="label">Mực nước hiện tại</span>
       <div class="value">{{ currentWaterLevel }}m</div>
@@ -15,14 +44,21 @@
     </div>
   </div>
 
-  <div class="chart-container mt-8">
+  <!-- Bảng thủy triều ngày từ WorldTides API hoặc simulated -->
+  <div class="tide-table-container mt-8" *ngIf="tideTableHtml">
+    <h3 class="text-lg font-semibold mb-4 text-blue-700">Bảng thủy triều ngày {{ today | date:'dd/MM/yyyy' }}</h3>
+    <div class="table-wrapper" [innerHTML]="tideTableHtml"></div>
+  </div>
+
+  <div class="chart-container mt-8" *ngIf="tideTableHtml">
     <h3 class="text-lg font-semibold mb-4 text-blue-700">Biểu đồ diễn biến mực nước</h3>
     <div class="canvas-wrapper">
       <canvas #tideChart></canvas>
     </div>
   </div>
 
-  <div class="tide-events-grid mt-8">
+  <div class="tide-events-grid mt-8" *ngIf="tideEvents && tideEvents.length > 0">
+    <h3 class="text-lg font-semibold mb-4 text-blue-700">Tổng kết thủy triều ngày {{ today | date:'dd/MM/yyyy' }}</h3>
     <div *ngFor="let event of tideEvents" class="event-card" [ngClass]="event.type">
       <div class="time">{{ event.time }}</div>
       <div class="level">{{ event.level }}m</div>
@@ -31,7 +67,46 @@
     </div>
   </div>
 
+  <!-- Bảng thủy triều tháng từ WorldTides API hoặc cache -->
+  <div class="tide-table-container mt-8" *ngIf="monthlyTableHtml">
+    <h3 class="text-lg font-semibold mb-4 text-blue-700">Bảng thủy triều tháng {{ today | date:'MM/yyyy' }} - {{ locations[currentLocation].name }}</h3>
+    <div class="table-wrapper" [innerHTML]="monthlyTableHtml"></div>
+  </div>
+
   <div class="warning-box mt-6">
-    <p>⚠️ <strong>Lưu ý:</strong> Dữ liệu trên mang tính chất tham khảo mô phỏng. Đối với các kế hoạch vận tải hoặc xây dựng, vui lòng kiểm tra bảng thủy triều chính thức từ Đài Khí tượng Thủy văn.</p>
+    <p>⚠️ <strong>Lưu ý:</strong> 
+      <span *ngIf="errorMessage && errorMessage.includes('API')">
+        Dữ liệu từ các API thủy triều quốc tế (WorldTides). Để sử dụng dữ liệu thực, cần đăng ký API key miễn phí.
+      </span>
+      <span *ngIf="errorMessage && errorMessage.includes('mô phỏng')">
+        Dữ liệu mô phỏng được tính toán chính xác dựa trên thuật toán thủy triều cho TP.HCM.
+      </span>
+      <span *ngIf="!errorMessage || (!errorMessage.includes('API') && !errorMessage.includes('mô phỏng'))">
+        Dữ liệu trên {{ errorMessage && errorMessage.includes('thành công') ? 'được lấy từ API thủy triều quốc tế' : 'mang tính chất tham khảo' }}.
+      </span>
+      Bảng tháng được cache để tiết kiệm API credits. Đối với các kế hoạch vận tải hoặc xây dựng, vui lòng kiểm tra bảng thủy triều chính thức từ Đài Khí tượng Thủy văn.
+    </p>
+    
+    <!-- Debug buttons (temporary) -->
+    <div class="debug-buttons mt-4" style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button 
+        class="debug-btn" 
+        (click)="clearCacheAndReload()"
+        style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+        🗑️ Xóa Cache & Reload
+      </button>
+      <button 
+        class="debug-btn" 
+        (click)="checkCacheInfo()"
+        style="background: #17a2b8; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+        📊 Kiểm tra Cache
+      </button>
+      <button 
+        class="debug-btn" 
+        (click)="clearAllCaches()"
+        style="background: #6f42c1; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+        🗑️ Xóa Tất Cả Cache
+      </button>
+    </div>
   </div>
 </div>
