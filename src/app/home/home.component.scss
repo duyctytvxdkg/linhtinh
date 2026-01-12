@@ -71,6 +71,17 @@
     justify-content: center;
     font-size: 1.5rem;
     margin-bottom: 20px;
+    
+    &.bg-blue-100 { background-color: #dbeafe; }
+    &.bg-yellow-100 { background-color: #fef3c7; }
+    &.bg-green-100 { background-color: #dcfce7; }
+    &.bg-red-100 { background-color: #fee2e2; }
+    &.bg-cyan-100 { background-color: #cffafe; }
+    &.bg-emerald-100 { background-color: #d1fae5; }
+    &.bg-orange-100 { background-color: #fed7aa; }
+    &.bg-purple-100 { background-color: #e9d5ff; }
+    &.bg-indigo-100 { background-color: #e0e7ff; }
+    &.bg-gray-100 { background-color: #f3f4f6; }
   }
 
   h3 {

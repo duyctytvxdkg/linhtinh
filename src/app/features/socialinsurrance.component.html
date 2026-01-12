@@ -1,153 +1,317 @@
 <div class="content-box-minor space-y-6">
   <h2 class="text-2xl font-bold text-blue-700">
-    🧓 TÍNH LƯƠNG HƯU (THEO BHXH 2025 – ƯỚC TÍNH)
+    🧓 TÍNH BẢO HIỂM XÃ HỘI (THEO BHXH 2025)
   </h2>
 
-  <form [formGroup]="form" class="space-y-6">
-    <!-- GIỚI TÍNH -->
-    <div>
-      <label class="font-semibold mr-4">Giới tính:</label>
-      <mat-radio-group formControlName="gender">
-        <mat-radio-button value="male">Nam</mat-radio-button>
-        <mat-radio-button value="female" class="ml-4">Nữ</mat-radio-button>
-      </mat-radio-group>
-    </div>
+  <mat-tab-group class="bhxh-tabs" animationDuration="300ms">
+    <!-- Tab 1: Tính lương hưu -->
+    <mat-tab label="🧓 LƯƠNG HƯU">
+      <div class="tab-content">
+        <div class="tab-header">
+          <h3>Tính lương hưu dựa trên quá trình đóng BHXH</h3>
+          <p>Nhập thông tin các giai đoạn làm việc để tính lương hưu ước tính</p>
+        </div>
 
-    <div class="table-responsive-wrapper">
-    <!-- BẢNG QUÁ TRÌNH LÀM VIỆC -->
-    <table mat-table [dataSource]="dataSource" class="w-full" #workTable>
-      <!-- TỪ -->
-      <ng-container matColumnDef="from">
-        <th mat-header-cell *matHeaderCellDef>Từ</th>
-        <td mat-cell *matCellDef="let row">
-          <input
-            type="month"
-            class="border p-1"
-            [formControl]="row.get('from')"
-          />
-        </td>
-      </ng-container>
+        <form [formGroup]="form" class="space-y-6">
+          <!-- GIỚI TÍNH -->
+          <div>
+            <label class="font-semibold mr-4">Giới tính:</label>
+            <mat-radio-group formControlName="gender">
+              <mat-radio-button value="male">Nam</mat-radio-button>
+              <mat-radio-button value="female" class="ml-4">Nữ</mat-radio-button>
+            </mat-radio-group>
+          </div>
 
-      <!-- ĐẾN -->
-      <ng-container matColumnDef="to">
-        <th mat-header-cell *matHeaderCellDef>Đến</th>
-        <td mat-cell *matCellDef="let row">
-          <input
-            type="month"
-            class="border p-1"
-            [formControl]="row.get('to')"
-          />
-        </td>
-      </ng-container>
+          <div class="table-responsive-wrapper">
+            <!-- BẢNG QUÁ TRÌNH LÀM VIỆC -->
+            <table mat-table [dataSource]="dataSource" class="w-full" #workTable>
+              <!-- TỪ -->
+              <ng-container matColumnDef="from">
+                <th mat-header-cell *matHeaderCellDef>Từ</th>
+                <td mat-cell *matCellDef="let row">
+                  <input
+                    type="month"
+                    class="border p-1"
+                    [formControl]="row.get('from')"
+                  />
+                </td>
+              </ng-container>
 
-      <!-- LƯƠNG -->
-      <ng-container matColumnDef="salary">
-        <th mat-header-cell *matHeaderCellDef>Lương đóng BHXH</th>
-        <td mat-cell *matCellDef="let row">
-          <input
-            type="text"
-            currencyInput
-            class="border p-1 text-right"
-            [formControl]="row.get('salary')"
-          />
-        </td>
-      </ng-container>
+              <!-- ĐẾN -->
+              <ng-container matColumnDef="to">
+                <th mat-header-cell *matHeaderCellDef>Đến</th>
+                <td mat-cell *matCellDef="let row">
+                  <input
+                    type="month"
+                    class="border p-1"
+                    [formControl]="row.get('to')"
+                  />
+                </td>
+              </ng-container>
 
-      <!-- XÓA -->
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let row; let i = index">
-          <button
-            type="button"
-            mat-icon-button
-            color="warn"
-            (click)="removeRow(i)"
-          >
-            ✖
+              <!-- LƯƠNG -->
+              <ng-container matColumnDef="salary">
+                <th mat-header-cell *matHeaderCellDef>Lương đóng BHXH</th>
+                <td mat-cell *matCellDef="let row">
+                  <input
+                    type="text"
+                    currencyInput
+                    class="border p-1 text-right"
+                    [formControl]="row.get('salary')"
+                  />
+                </td>
+              </ng-container>
+
+              <!-- XÓA -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let row; let i = index">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="warn"
+                    (click)="removeRow(i)"
+                  >
+                    ✖
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+
+          <button type="button" mat-stroked-button (click)="addRow()">
+            ➕ Thêm dòng
           </button>
-        </td>
-      </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-    </div>
+          <div class="flex gap-3 mt-4">
+            <button
+              type="button"
+              mat-stroked-button
+              color="primary"
+              (click)="exportCSV()"
+            >
+              💾 Lưu ra CSV
+            </button>
 
-    <button type="button" mat-stroked-button (click)="addRow()">
-      ➕ Thêm dòng
-    </button>
+            <button
+              type="button"
+              mat-stroked-button
+              color="accent"
+              (click)="fileInput.click()"
+            >
+              📂 Import CSV
+            </button>
 
-    <div class="flex gap-3 mt-4">
-      <button
-        type="button"
-        mat-stroked-button
-        color="primary"
-        (click)="exportCSV()"
-      >
-        💾 Lưu ra CSV
-      </button>
+            <input
+              #fileInput
+              type="file"
+              accept=".csv"
+              hidden
+              (change)="importCSV($event)"
+            />
+          </div>
 
-      <button
-        type="button"
-        mat-stroked-button
-        color="accent"
-        (click)="fileInput.click()"
-      >
-        📂 Import CSV
-      </button>
+          <div>
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              (click)="calculate()"
+            >
+              Tính lương hưu
+            </button>
 
-      <input
-        #fileInput
-        type="file"
-        accept=".csv"
-        hidden
-        (change)="importCSV($event)"
-      />
-    </div>
+            <button
+              type="button"
+              mat-stroked-button
+              color="primary"
+              (click)="resetForm()"
+            >
+              Reset form
+            </button>
+          </div>
+        </form>
 
-    <div>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        (click)="calculate()"
-      >
-        Tính lương hưu
-      </button>
+        <!-- KẾT QUẢ LƯƠNG HƯU -->
+        <div *ngIf="result" class="border rounded p-4 space-y-2">
+          <p>
+            ⏳ Tổng thời gian đóng: <b>{{ result.totalYears }}</b> năm
+          </p>
 
-      <button
-        type="button"
-        mat-stroked-button
-        color="primary"
-        (click)="resetForm()"
-      >
-        Reset form
-      </button>
+          <p *ngIf="!result.eligible" class="text-red-600">
+            ⚠️ Chưa đủ điều kiện hưởng lương hưu (tối thiểu {{ result.minYears || 20 }} năm)
+          </p>
 
-    </div>
-  </form>
+          <ng-container *ngIf="result.eligible">
+            <p>
+              📈 Tỷ lệ hưởng: <b>{{ result.rate }}%</b>
+            </p>
+            <p>
+              💰 Bình quân lương: <b>{{ result.avgSalary | number }}</b> VND
+            </p>
+            <p>
+              🎂 Tuổi nghỉ hưu: <b>{{ result.retirementAge }}</b> tuổi
+            </p>
+            <p class="text-green-700 text-xl font-bold">
+              👉 Lương hưu ước tính:
+              {{ result.pension | number }} VND / tháng
+            </p>
+          </ng-container>
+        </div>
+      </div>
+    </mat-tab>
 
-  <!-- KẾT QUẢ -->
-  <div *ngIf="result" class="border rounded p-4 space-y-2">
-    <p>
-      ⏳ Tổng thời gian đóng: <b>{{ result.totalYears }}</b> năm
-    </p>
+    <!-- Tab 2: Tính bảo hiểm thất nghiệp -->
+    <mat-tab label="💼 BẢO HIỂM THẤT NGHIỆP">
+      <div class="tab-content">
+        <div class="tab-header">
+          <h3>Tính trợ cấp bảo hiểm thất nghiệp</h3>
+          <p>Nhập thông tin để tính số tiền trợ cấp BHTN được nhận</p>
+        </div>
 
-    <p *ngIf="!result.eligible" class="text-red-600">
-      ⚠️ Chưa đủ điều kiện hưởng lương hưu (tối thiểu 20 năm)
-    </p>
+        <form [formGroup]="unemploymentForm" class="space-y-6 finance-block">
+          <div class="finance-row">
+            <label class="finance-label">Số tháng đã đóng BHTN:</label>
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Số tháng đã đóng BHTN</mat-label>
+                <input matInput type="number" formControlName="monthsContributed" min="1" max="360" />
+                <span matSuffix class="pr-2">tháng</span>
+              </mat-form-field>
+            </div>
+            <div class="finance-value text-blue-600">{{ unemploymentForm.get('monthsContributed')?.value }} tháng</div>
+          </div>
 
-    <ng-container *ngIf="result.eligible">
-      <p>
-        📈 Tỷ lệ hưởng: <b>{{ result.rate }}%</b>
+          <div class="finance-row">
+            <label class="finance-label">Lương bình quân 6 tháng gần nhất:</label>
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Lương bình quân 6 tháng gần nhất</mat-label>
+                <input matInput type="text" formControlName="averageSalary" currencyInput placeholder="Nhập lương bình quân" />
+                <span matSuffix class="pr-2">VND</span>
+              </mat-form-field>
+            </div>
+            <div class="finance-value text-green-600">{{ formatCurrency(unemploymentForm.get('averageSalary')?.value) }} VND</div>
+          </div>
+
+          <div class="finance-row">
+            <label class="finance-label">Lý do thôi việc:</label>
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Lý do thôi việc</mat-label>
+                <mat-select formControlName="reasonForLeaving">
+                  <mat-option value="involuntary">Bị sa thải / Hết hạn hợp đồng</mat-option>
+                  <mat-option value="voluntary">Tự ý nghỉ việc</mat-option>
+                  <mat-option value="company_closure">Doanh nghiệp giải thể</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="finance-value text-orange-600">
+              {{ unemploymentForm.get('reasonForLeaving')?.value === 'involuntary' ? 'Bị sa thải / Hết hạn HĐ' : 
+                 unemploymentForm.get('reasonForLeaving')?.value === 'voluntary' ? 'Tự ý nghỉ việc' : 'Doanh nghiệp giải thể' }}
+            </div>
+          </div>
+        </form>
+
+        <!-- KẾT QUẢ BHTN -->
+        <div *ngIf="unemploymentResult" class="result-container mt-8">
+          <div *ngIf="!unemploymentResult.eligible" class="summary-card danger">
+            <div class="card-icon">⚠️</div>
+            <div class="card-content">
+              <p class="label">Chưa đủ điều kiện</p>
+              <p class="value">Cần tối thiểu {{ unemploymentResult.minMonths }} tháng đóng BHTN</p>
+              <p class="small-text">Hiện tại: {{ unemploymentResult.monthsContributed }} tháng</p>
+            </div>
+          </div>
+
+          <ng-container *ngIf="unemploymentResult.eligible">
+            <div class="summary-grid">
+              <div class="summary-card info">
+                <div class="card-icon">📅</div>
+                <div class="card-content">
+                  <p class="label">Số tháng được hưởng</p>
+                  <p class="value">{{ unemploymentResult.monthsEligible }} <span class="unit">tháng</span></p>
+                </div>
+              </div>
+              <div class="summary-card warning">
+                <div class="card-icon">📊</div>
+                <div class="card-content">
+                  <p class="label">Tỷ lệ hưởng</p>
+                  <p class="value">{{ unemploymentResult.benefitRate }}% <span class="unit">lương BQ</span></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="unemployment-benefit-card mt-4">
+              <div class="benefit-label">TRỢ CẤP BHTN HÀNG THÁNG</div>
+              <div class="benefit-value">{{ formatCurrency(unemploymentResult.monthlyBenefit) }}</div>
+              <div class="benefit-unit">VND / Tháng</div>
+              
+              <div class="total-benefit-info mt-3">
+                <div class="total-label">Tổng số tiền được nhận:</div>
+                <div class="total-value">{{ formatCurrency(unemploymentResult.totalBenefit) }} VND</div>
+              </div>
+            </div>
+
+            <div class="unemployment-details mt-6">
+              <h4>📋 Chi tiết tính toán</h4>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Lương bình quân 6 tháng:</span>
+                  <span class="detail-value">{{ formatCurrency(unemploymentResult.averageSalary) }} VND</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Tỷ lệ hưởng theo thời gian đóng:</span>
+                  <span class="detail-value">{{ unemploymentResult.benefitRate }}%</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Hệ số điều chỉnh theo lý do:</span>
+                  <span class="detail-value">{{ unemploymentResult.adjustmentFactor * 100 }}%</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Số tháng đã đóng BHTN:</span>
+                  <span class="detail-value">{{ unemploymentResult.monthsContributed }} tháng</span>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Thông tin tham số CSV -->
+  <div class="csv-params-info mt-6" *ngIf="bhxhParams && paramsLastUpdate">
+    <div class="params-card">
+      <h4>📊 Tham số BHXH từ CSV</h4>
+      <div class="params-grid">
+        <div class="param-item">
+          <span class="param-label">Số năm đóng tối thiểu:</span>
+          <span class="param-value">{{ bhxhParams.minContributionYears }} năm</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Tỷ lệ thay thế cơ bản:</span>
+          <span class="param-value">{{ (bhxhParams.replacementRate * 100) }}%</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Tỷ lệ tăng hàng năm:</span>
+          <span class="param-value">{{ (bhxhParams.yearlyIncreaseRate * 100) }}%/năm</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Tuổi nghỉ hưu Nam/Nữ:</span>
+          <span class="param-value">{{ bhxhParams.retirementAgeM }}/{{ bhxhParams.retirementAgeF }} tuổi</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Cập nhật lần cuối:</span>
+          <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+      <p class="params-note">
+        💡 Tham số được tải từ file <code>bhxh.csv</code> và có thể cập nhật hàng tháng
       </p>
-      <p>
-        💰 Bình quân lương: <b>{{ result.avgSalary | number }}</b> VND
-      </p>
-      <p class="text-green-700 text-xl font-bold">
-        👉 Lương hưu ước tính:
-        {{ result.pension | number }} VND / tháng
-      </p>
-    </ng-container>
+    </div>
   </div>
 </div>

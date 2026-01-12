@@ -65,7 +65,19 @@
 </div>
 
 <div class="calendar-month-wrapper">
-  <h2>Lịch tháng {{ currentMonth + 1 }}/{{ currentYear }}</h2>
+  <div class="month-navigation">
+    <button class="nav-btn prev-btn" (click)="previousMonth()">
+      <span class="nav-arrow">‹</span>
+      <span class="nav-text">Tháng trước</span>
+    </button>
+    
+    <h2>Lịch tháng {{ currentMonth + 1 }}/{{ currentYear }}</h2>
+    
+    <button class="nav-btn next-btn" (click)="nextMonth()">
+      <span class="nav-text">Tháng sau</span>
+      <span class="nav-arrow">›</span>
+    </button>
+  </div>
 
   <table class="month-table">
     <thead>
@@ -84,8 +96,11 @@
         <td
           *ngFor="let day of week; let j = index"
           [class.is-today]="day.isToday"
+          [class.is-selected]="day.isSelected"
           [class.is-weekend]="j === 0 || j === 6"
           [class.empty-cell]="day.solar === 0"
+          [class.clickable]="day.solar !== 0"
+          (click)="onDayClick(day)"
         >
           <div class="day-content" *ngIf="day.solar !== 0">
             <div class="solar-num">{{ day.solar }}</div>

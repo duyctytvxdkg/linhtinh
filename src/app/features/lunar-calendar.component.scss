@@ -21,6 +21,91 @@
 }
 
 /* Bảng lịch tháng */
+.calendar-month-wrapper {
+  margin-top: 30px;
+}
+
+.month-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+.month-navigation h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+  flex: 1;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-btn:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.nav-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-arrow {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.prev-btn .nav-arrow {
+  margin-right: 4px;
+}
+
+.next-btn .nav-arrow {
+  margin-left: 4px;
+}
+
+@media (max-width: 768px) {
+  .month-navigation {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .month-navigation h2 {
+    order: -1;
+    margin-bottom: 10px;
+  }
+  
+  .nav-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .nav-text {
+    display: none;
+  }
+  
+  .nav-arrow {
+    font-size: 20px;
+  }
+}
+
 .month-table {
   width: 100%;
   table-layout: fixed; /* Ép các cột bằng nhau, không bị vỡ */
@@ -29,6 +114,33 @@
 
 .month-table td {
   padding: 5px 2px; /* Giảm padding trên mobile */
+  position: relative;
+}
+
+.month-table td.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.month-table td.clickable:hover {
+  background-color: #f0f8ff;
+}
+
+.month-table td.is-today {
+  background-color: #e3f2fd;
+  border: 2px solid #2196f3;
+}
+
+.month-table td.is-selected {
+  background-color: #fff3e0;
+  border: 2px solid #ff9800;
+  box-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
+}
+
+.month-table td.is-today.is-selected {
+  background-color: #f3e5f5;
+  border: 2px solid #9c27b0;
+  box-shadow: 0 0 8px rgba(156, 39, 176, 0.3);
 }
 
 .solar-num { font-size: 1rem; }

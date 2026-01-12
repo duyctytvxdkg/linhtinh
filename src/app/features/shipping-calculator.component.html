@@ -1,0 +1,331 @@
+<div class="content-box-minor">
+  <div class="header-section">
+    <h2 class="text-2xl font-bold text-blue-700 mb-2">
+      📦 TÍNH PHÍ GIAO HÀNG
+    </h2>
+    <p class="text-gray-600 mb-4">
+      So sánh giá ship giữa các đơn vị: Grab, Shopee, Lazada, GHN, Viettel Post, J&T Express
+    </p>
+    
+    <!-- Price update info -->
+    <div class="price-update-info">
+      <div class="update-status">
+        <span class="status-dot"></span>
+        <span class="update-text">
+          Giá cập nhật: {{ getLastUpdateText() }}
+          <span class="update-date" *ngIf="lastUpdate">
+            ({{ lastUpdate | date:'dd/MM/yyyy' }})
+          </span>
+        </span>
+        <button mat-icon-button (click)="refreshPriceData()" class="refresh-btn" title="Làm mới dữ liệu">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Form -->
+  <div class="form-section">
+    <h3 class="section-title">📋 Thông tin gói hàng</h3>
+    
+    <form [formGroup]="shippingForm" class="shipping-form">
+      <div class="form-grid">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Gửi từ</mat-label>
+            <mat-select formControlName="fromProvince">
+              <mat-optgroup label="Thành phố lớn">
+                <mat-option *ngFor="let province of provinces.slice(0, 3)" [value]="province.code">
+                  {{ province.name }}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Ngoại thành">
+                <mat-option *ngFor="let province of provinces.slice(3, 9)" [value]="province.code">
+                  {{ province.name }}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Tỉnh lẻ">
+                <mat-option *ngFor="let province of provinces.slice(9)" [value]="province.code">
+                  {{ province.name }}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Gửi đến</mat-label>
+            <mat-select formControlName="toProvince">
+              <mat-optgroup label="Thành phố lớn">
+                <mat-option *ngFor="let province of provinces.slice(0, 3)" [value]="province.code">
+                  {{ province.name }}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Ngoại thành">
+                <mat-option *ngFor="let province of provinces.slice(3, 9)" [value]="province.code">
+                  {{ province.name }}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Tỉnh lẻ">
+                <mat-option *ngFor="let province of provinces.slice(9)" [value]="province.code">
+                  {{ province.name }}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Trọng lượng (kg)</mat-label>
+            <input matInput type="number" formControlName="weight" step="0.1" min="0.1" />
+            <mat-hint>Tối thiểu 0.1kg</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Giá trị hàng hóa (VND)</mat-label>
+            <input matInput type="text" formControlName="itemValue" currencyInput />
+            <mat-hint>Để tính phí bảo hiểm</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Loại hàng hóa</mat-label>
+            <mat-select formControlName="itemType">
+              <mat-option *ngFor="let type of itemTypes" [value]="type.code">
+                {{ type.name }} (x{{ type.multiplier }})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="checkbox-group half-width">
+            <mat-checkbox formControlName="isInsured" class="insurance-checkbox">
+              Mua bảo hiểm hàng hóa
+            </mat-checkbox>
+            <mat-checkbox formControlName="isCOD" class="cod-checkbox">
+              Thu hộ COD
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="shippingForm.get('isCOD')?.value">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Số tiền thu hộ (VND)</mat-label>
+            <input matInput type="text" formControlName="codAmount" currencyInput />
+            <mat-hint>Số tiền cần thu hộ từ người nhận</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+
+    <!-- Quick presets -->
+    <div class="preset-buttons">
+      <h4>⚡ Thiết lập nhanh:</h4>
+      <div class="button-group">
+        <button mat-raised-button (click)="setQuickPreset('local_light')" class="preset-btn">
+          Nội thành nhẹ (0.5kg)
+        </button>
+        <button mat-raised-button (click)="setQuickPreset('local_heavy')" class="preset-btn">
+          Nội thành nặng (5kg)
+        </button>
+        <button mat-raised-button (click)="setQuickPreset('national_light')" class="preset-btn">
+          Liên tỉnh nhẹ (1kg)
+        </button>
+        <button mat-raised-button (click)="setQuickPreset('national_heavy')" class="preset-btn">
+          Liên tỉnh nặng (10kg)
+        </button>
+        <button mat-raised-button (click)="setQuickPreset('documents')" class="preset-btn">
+          Giấy tờ (0.2kg)
+        </button>
+        <button mat-raised-button (click)="setQuickPreset('food')" class="preset-btn">
+          Thực phẩm (2kg)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-section" *ngIf="shippingResults.length > 0">
+    <div class="summary-cards">
+      <div class="summary-card best-deal">
+        <div class="card-icon">🏆</div>
+        <div class="card-content">
+          <h4>Rẻ nhất</h4>
+          <p class="provider">{{ getBestDeal()?.providerName }}</p>
+          <p class="price">{{ formatCurrency(getBestDeal()?.finalStandardFee || 0) }} VND</p>
+        </div>
+      </div>
+
+      <div class="summary-card savings">
+        <div class="card-icon">💰</div>
+        <div class="card-content">
+          <h4>Tiết kiệm</h4>
+          <p class="amount">{{ formatCurrency(getSavings()) }} VND</p>
+          <p class="description">So với đắt nhất</p>
+        </div>
+      </div>
+
+      <div class="summary-card total-options">
+        <div class="card-icon">📊</div>
+        <div class="card-content">
+          <h4>Lựa chọn</h4>
+          <p class="count">{{ shippingResults.length }} đơn vị</p>
+          <p class="description">Vận chuyển</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-section" *ngIf="shippingResults.length > 0">
+    <h3 class="section-title">📊 So sánh giá ship</h3>
+    
+    <div class="results-grid">
+      <div *ngFor="let result of shippingResults; let i = index" 
+           class="result-card" 
+           [class.best-deal]="i === 0"
+           [class.worst-deal]="i === shippingResults.length - 1">
+        
+        <div class="card-header">
+          <div class="provider-info">
+            <span class="logo">{{ result.logo }}</span>
+            <div class="provider-details">
+              <h4 class="provider-name">{{ result.providerName }}</h4>
+              <div class="rank-badge" *ngIf="i === 0">🏆 RẺ NHẤT</div>
+              <div class="rank-badge expensive" *ngIf="i === shippingResults.length - 1">💸 ĐẮT NHẤT</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pricing-section">
+          <div class="price-option standard">
+            <div class="price-header">
+              <span class="service-type">Tiêu chuẩn</span>
+              <span class="delivery-time">{{ result.standardTime }}</span>
+            </div>
+            <div class="price-details">
+              <span class="original-price" *ngIf="result.discount">
+                {{ formatCurrency(result.standardFee) }} VND
+              </span>
+              <span class="final-price">{{ formatCurrency(result.finalStandardFee) }} VND</span>
+              <span class="discount" *ngIf="result.discount">
+                -{{ formatCurrency(result.discount) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="price-option express">
+            <div class="price-header">
+              <span class="service-type">Nhanh</span>
+              <span class="delivery-time">{{ result.expressTime }}</span>
+            </div>
+            <div class="price-details">
+              <span class="final-price">{{ formatCurrency(result.finalExpressFee) }} VND</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="features-section">
+          <h5>✨ Ưu điểm:</h5>
+          <ul class="features-list">
+            <li *ngFor="let feature of result.features">{{ feature }}</li>
+          </ul>
+        </div>
+
+        <div class="action-section">
+          <button mat-raised-button color="primary" class="select-btn">
+            Chọn {{ result.providerName }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Information -->
+  <div class="info-section">
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>📚 Thông tin về phí giao hàng</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <h4>🚗 Grab Express</h4>
+            <ul>
+              <li>• Giao hàng nhanh trong ngày</li>
+              <li>• Theo dõi realtime GPS</li>
+              <li>• Phí cao nhưng nhanh nhất</li>
+              <li>• Phù hợp hàng gấp, giá trị cao</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>🛒 Shopee Express</h4>
+            <ul>
+              <li>• Ưu đãi cho seller Shopee</li>
+              <li>• Tích hợp với hệ thống Shopee</li>
+              <li>• Miễn phí đổi trả</li>
+              <li>• Giá cạnh tranh cho e-commerce</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>🛍️ Lazada Express</h4>
+            <ul>
+              <li>• Tương tự Shopee</li>
+              <li>• Hỗ trợ đa ngôn ngữ</li>
+              <li>• Bảo hành mở rộng</li>
+              <li>• Phí hơi cao hơn Shopee</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>📦 Giao Hàng Nhanh</h4>
+            <ul>
+              <li>• Mạng lưới phủ sóng rộng</li>
+              <li>• API tích hợp tốt</li>
+              <li>• Báo cáo chi tiết</li>
+              <li>• Phù hợp doanh nghiệp</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>📮 Viettel Post</h4>
+            <ul>
+              <li>• Uy tín nhà nước</li>
+              <li>• Phủ sóng toàn quốc</li>
+              <li>• Giá ổn định</li>
+              <li>• An toàn, bảo mật cao</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>⚡ J&T Express</h4>
+            <ul>
+              <li>• Giá cạnh tranh nhất</li>
+              <li>• Tốc độ giao hàng nhanh</li>
+              <li>• Hỗ trợ khách hàng tốt</li>
+              <li>• Phù hợp khối lượng lớn</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="calculation-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <strong>Lưu ý về dữ liệu giá:</strong>
+            <p>Giá ship được cập nhật thủ công từ file CSV dựa trên bảng giá chính thức. Giá thực tế có thể khác do:</p>
+            <ul>
+              <li>• Chương trình khuyến mãi đặc biệt</li>
+              <li>• Hợp đồng doanh nghiệp</li>
+              <li>• Khu vực giao hàng cụ thể</li>
+              <li>• Thời điểm cao điểm (Tết, Black Friday...)</li>
+              <li>• <strong>Dữ liệu cập nhật: {{ getLastUpdateText() }}</strong></li>
+              <li>• Nên kiểm tra giá chính thức trước khi gửi</li>
+            </ul>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

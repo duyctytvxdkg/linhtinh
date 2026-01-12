@@ -1,0 +1,375 @@
+<div class="content-box-minor">
+  <div class="header-section">
+    <h2 class="text-2xl font-bold text-blue-700 mb-4">
+      🏠 TÍNH THUẾ BẤT ĐỘNG SẢN
+    </h2>
+    <p class="text-gray-600 mb-6">
+      Công cụ tính toán các loại thuế và phí liên quan đến bất động sản theo quy định 2026
+    </p>
+  </div>
+
+  <mat-tab-group class="tax-tabs" animationDuration="300ms">
+    
+    <!-- Tab 1: Thuế sử dụng đất -->
+    <mat-tab label="🌱 Thuế sử dụng đất">
+      <div class="tab-content">
+        <div class="form-section">
+          <h3 class="section-title">📋 Thông tin đất đai</h3>
+          
+          <form [formGroup]="landUseTaxForm" class="tax-form">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Diện tích đất (m²)</mat-label>
+                <input matInput type="text" formControlName="landArea" currencyInput placeholder="200" />
+                <mat-hint>Diện tích tổng của thửa đất</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Giá đất (VND)</mat-label>
+                <input matInput type="text" formControlName="landPrice" currencyInput placeholder="50,000,000" />
+                <mat-hint>Giá đất theo bảng giá nhà nước</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Loại bất động sản</mat-label>
+                <mat-select formControlName="propertyType">
+                  <mat-option *ngFor="let type of propertyTypes" [value]="type.code">
+                    {{ type.name }} ({{ type.landUseTaxRate }}%/năm)
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Khu vực</mat-label>
+                <mat-select formControlName="location">
+                  <mat-option *ngFor="let location of locationTypes" [value]="location.code">
+                    {{ location.name }} (x{{ location.coefficient }})
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Mục đích sử dụng</mat-label>
+                <mat-select formControlName="landUsePurpose">
+                  <mat-option *ngFor="let purpose of landUsePurposes" [value]="purpose.code">
+                    {{ purpose.name }} (miễn {{ purpose.exemptionArea }}m²)
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Số năm tính thuế</mat-label>
+                <input matInput type="number" formControlName="ownershipYears" min="1" />
+                <mat-hint>Số năm cần tính thuế sử dụng đất</mat-hint>
+              </mat-form-field>
+            </div>
+          </form>
+
+          <!-- Quick presets -->
+          <div class="preset-buttons">
+            <h4>⚡ Thiết lập nhanh:</h4>
+            <div class="button-group">
+              <button mat-raised-button (click)="setLandPreset('small_house')" class="preset-btn">
+                Nhà nhỏ (100m²)
+              </button>
+              <button mat-raised-button (click)="setLandPreset('medium_house')" class="preset-btn">
+                Nhà vừa (200m²)
+              </button>
+              <button mat-raised-button (click)="setLandPreset('large_house')" class="preset-btn">
+                Nhà lớn (500m²)
+              </button>
+              <button mat-raised-button (click)="setLandPreset('commercial')" class="preset-btn">
+                Thương mại (300m²)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="result-section">
+          <mat-card class="result-card land-use-result">
+            <mat-card-header>
+              <mat-card-title>💰 Kết quả tính thuế sử dụng đất</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="result-summary">
+                <div class="main-result">
+                  <span class="label">Tổng thuế phải nộp:</span>
+                  <span class="amount">{{ formatCurrency(landUseTaxResult.taxAmount) }} VND</span>
+                </div>
+                <div class="sub-result">
+                  <span class="label">Thuế hàng năm:</span>
+                  <span class="amount">{{ formatCurrency(getDetailNumber(landUseTaxResult.details, 'annualTax')) }} VND</span>
+                </div>
+              </div>
+              
+              <mat-divider></mat-divider>
+              
+              <div class="breakdown">
+                <h4>📊 Chi tiết tính toán:</h4>
+                <ul class="breakdown-list">
+                  <li *ngFor="let item of landUseTaxResult.breakdown">{{ item }}</li>
+                </ul>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 2: Thuế chuyển nhượng -->
+    <mat-tab label="💸 Thuế chuyển nhượng">
+      <div class="tab-content">
+        <div class="form-section">
+          <h3 class="section-title">📋 Thông tin giao dịch</h3>
+          
+          <form [formGroup]="transferTaxForm" class="tax-form">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Giá bán (VND)</mat-label>
+                <input matInput type="text" formControlName="salePrice" currencyInput placeholder="3,000,000,000" />
+                <mat-hint>Giá bán thực tế trong hợp đồng</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Giá mua ban đầu (VND)</mat-label>
+                <input matInput type="text" formControlName="originalPrice" currencyInput placeholder="2,000,000,000" />
+                <mat-hint>Giá mua khi mua lần đầu</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Loại bất động sản</mat-label>
+                <mat-select formControlName="propertyType">
+                  <mat-option *ngFor="let type of propertyTypes" [value]="type.code">
+                    {{ type.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Thời gian nắm giữ (năm)</mat-label>
+                <input matInput type="number" formControlName="ownershipYears" min="1" />
+                <mat-hint>Ảnh hưởng đến thuế suất áp dụng</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Chi phí cải tạo (VND)</mat-label>
+                <input matInput type="text" formControlName="improvementCosts" currencyInput placeholder="100,000,000" />
+                <mat-hint>Chi phí sửa chữa, nâng cấp có hóa đơn</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Chi phí bán (VND)</mat-label>
+                <input matInput type="text" formControlName="sellingCosts" currencyInput placeholder="50,000,000" />
+                <mat-hint>Môi giới, quảng cáo, pháp lý...</mat-hint>
+              </mat-form-field>
+            </div>
+          </form>
+
+          <!-- Quick presets -->
+          <div class="preset-buttons">
+            <h4>⚡ Tình huống mẫu:</h4>
+            <div class="button-group">
+              <button mat-raised-button (click)="setTransferPreset('profit')" class="preset-btn profit">
+                Có lãi (3 năm)
+              </button>
+              <button mat-raised-button (click)="setTransferPreset('loss')" class="preset-btn loss">
+                Thua lỗ (2 năm)
+              </button>
+              <button mat-raised-button (click)="setTransferPreset('long_term')" class="preset-btn long-term">
+                Dài hạn (6 năm)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="result-section">
+          <mat-card class="result-card transfer-result">
+            <mat-card-header>
+              <mat-card-title>💰 Kết quả tính thuế chuyển nhượng</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="result-summary">
+                <div class="main-result">
+                  <span class="label">Thuế phải nộp:</span>
+                  <span class="amount" [class.zero]="transferTaxResult.taxAmount === 0">
+                    {{ formatCurrency(transferTaxResult.taxAmount) }} VND
+                  </span>
+                </div>
+                <div class="sub-result">
+                  <span class="label">Số tiền thực nhận:</span>
+                  <span class="amount">{{ formatCurrency(transferTaxResult.totalAmount) }} VND</span>
+                </div>
+              </div>
+              
+              <mat-divider></mat-divider>
+              
+              <div class="breakdown">
+                <h4>📊 Chi tiết tính toán:</h4>
+                <ul class="breakdown-list">
+                  <li *ngFor="let item of transferTaxResult.breakdown">{{ item }}</li>
+                </ul>
+              </div>
+
+              <div class="tax-info">
+                <h4>ℹ️ Thông tin thuế suất:</h4>
+                <ul>
+                  <li>• < 2 năm: 20% lợi nhuận</li>
+                  <li>• 2-5 năm: 15% lợi nhuận</li>
+                  <li>• ≥ 5 năm: 10% lợi nhuận</li>
+                  <li>• Nhà ở duy nhất ≥ 2 năm: Miễn thuế</li>
+                </ul>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 3: Lệ phí trước bạ -->
+    <mat-tab label="📋 Lệ phí trước bạ">
+      <div class="tab-content">
+        <div class="form-section">
+          <h3 class="section-title">📋 Thông tin đăng ký</h3>
+          
+          <form [formGroup]="registrationFeeForm" class="tax-form">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Giá trị BDS (VND)</mat-label>
+                <input matInput type="text" formControlName="propertyValue" currencyInput placeholder="2,500,000,000" />
+                <mat-hint>Giá trị ghi trong hợp đồng</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Loại bất động sản</mat-label>
+                <mat-select formControlName="propertyType">
+                  <mat-option *ngFor="let type of propertyTypes" [value]="type.code">
+                    {{ type.name }} ({{ type.registrationFeeRate }}%)
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Loại giao dịch</mat-label>
+                <mat-select formControlName="transactionType">
+                  <mat-option value="purchase">Mua bán</mat-option>
+                  <mat-option value="gift">Tặng cho</mat-option>
+                  <mat-option value="inheritance">Thừa kế</mat-option>
+                  <mat-option value="exchange">Trao đổi</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Lần đầu mua nhà ở?</mat-label>
+                <mat-select formControlName="isFirstTime">
+                  <mat-option [value]="true">Có (giảm 50%)</mat-option>
+                  <mat-option [value]="false">Không</mat-option>
+                </mat-select>
+                <mat-hint>Chỉ áp dụng cho nhà ở</mat-hint>
+              </mat-form-field>
+            </div>
+          </form>
+        </div>
+
+        <!-- Results -->
+        <div class="result-section">
+          <mat-card class="result-card registration-result">
+            <mat-card-header>
+              <mat-card-title>💰 Kết quả tính lệ phí trước bạ</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="result-summary">
+                <div class="main-result">
+                  <span class="label">Tổng chi phí:</span>
+                  <span class="amount">{{ formatCurrency(registrationFeeResult.taxAmount) }} VND</span>
+                </div>
+                <div class="sub-result">
+                  <span class="label">Tổng thanh toán:</span>
+                  <span class="amount">{{ formatCurrency(registrationFeeResult.totalAmount) }} VND</span>
+                </div>
+              </div>
+              
+              <mat-divider></mat-divider>
+              
+              <div class="breakdown">
+                <h4>📊 Chi tiết các khoản phí:</h4>
+                <ul class="breakdown-list">
+                  <li *ngFor="let item of registrationFeeResult.breakdown">{{ item }}</li>
+                </ul>
+              </div>
+
+              <div class="fee-info">
+                <h4>ℹ️ Thông tin lệ phí:</h4>
+                <ul>
+                  <li>• Lệ phí trước bạ: 0.5% giá trị BDS</li>
+                  <li>• Giảm 50% cho lần đầu mua nhà ở</li>
+                  <li>• Phí thẩm định hồ sơ: 100,000 VND</li>
+                  <li>• Phí cấp giấy chứng nhận: 500,000 VND</li>
+                  <li>• Phí công chứng: 0.1% giá trị</li>
+                </ul>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+
+  <!-- General Information -->
+  <div class="info-section">
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>📚 Thông tin chung về thuế BDS</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <h4>🌱 Thuế sử dụng đất</h4>
+            <ul>
+              <li>• Thuế hàng năm dựa trên giá đất</li>
+              <li>• Có diện tích miễn thuế</li>
+              <li>• Thuế suất khác nhau theo loại đất</li>
+              <li>• Hệ số điều chỉnh theo khu vực</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>💸 Thuế chuyển nhượng</h4>
+            <ul>
+              <li>• Thuế trên lợi nhuận từ bán BDS</li>
+              <li>• Thuế suất giảm theo thời gian nắm giữ</li>
+              <li>• Miễn thuế nhà ở duy nhất ≥ 2 năm</li>
+              <li>• Trừ chi phí cải tạo và bán</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>📋 Lệ phí trước bạ</h4>
+            <ul>
+              <li>• Phí đăng ký quyền sở hữu</li>
+              <li>• 0.5% giá trị bất động sản</li>
+              <li>• Giảm 50% lần đầu mua nhà ở</li>
+              <li>• Cộng các phí thủ tục khác</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="disclaimer">
+          <mat-icon>warning</mat-icon>
+          <div>
+            <strong>Lưu ý quan trọng:</strong>
+            <p>Kết quả tính toán chỉ mang tính chất tham khảo. Thuế và phí thực tế có thể khác do:</p>
+            <ul>
+              <li>• Quy định pháp luật thay đổi</li>
+              <li>• Chính sách ưu đãi đặc biệt</li>
+              <li>• Tình huống cụ thể của từng trường hợp</li>
+              <li>• Cần tham khảo cơ quan thuế để có thông tin chính xác</li>
+            </ul>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

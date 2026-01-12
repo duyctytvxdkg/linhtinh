@@ -1,98 +1,261 @@
 <div class="content-box-minor">
   <h2 class="text-2xl font-bold text-blue-700 mb-6">
-    ⚖️ TÍNH THUẾ THU NHẬP CÁ NHÂN (DỰ KIẾN 2026)
+    ⚖️ TÍNH THUẾ THU NHẬP CÁ NHÂN 2026
   </h2>
 
-  <form [formGroup]="thueForm" class="space-y-4 finance-block">
-    <div class="finance-row">
-      <div class="finance-control">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tổng thu nhập (Gross)</mat-label>
-          <input matInput type="text" formControlName="grossSalary" currencyInput placeholder="Nhập tổng thu nhập" />
-          <span matSuffix class="pr-2">VND</span>
-        </mat-form-field>
-      </div>
-      <label class="finance-label">Lương Gross:</label>
-      <div class="finance-value text-blue-600">{{ formatCurrency(thueForm.get('grossSalary')?.value) }}</div>
-    </div>
+  <mat-tab-group class="tax-tabs" animationDuration="300ms">
+    <!-- Tab 1: Tính từ GROSS → NET -->
+    <mat-tab label="💰 GROSS → NET">
+      <div class="tab-content">
+        <div class="tab-header">
+          <h3>Tính lương thực nhận từ lương Gross</h3>
+          <p>Nhập lương Gross để tính lương NET sau thuế và bảo hiểm</p>
+        </div>
 
-    <div class="finance-row">
-      <div class="finance-control">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Số người phụ thuộc</mat-label>
-          <input matInput type="number" formControlName="dependents" min="0" />
-        </mat-form-field>
-      </div>
-      <label class="finance-label">Giảm trừ PT:</label>
-      <div class="finance-value text-orange-600">- {{ formatCurrency(giamTruPhuThuoc) }}</div>
-    </div>
+        <form [formGroup]="thueForm" class="space-y-4 finance-block">
+          <div class="finance-row">
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Tổng thu nhập (Gross)</mat-label>
+                <input matInput type="text" formControlName="grossSalary" currencyInput placeholder="Nhập tổng thu nhập" />
+                <span matSuffix class="pr-2">VND</span>
+              </mat-form-field>
+            </div>
+            <label class="finance-label">Lương Gross:</label>
+            <div class="finance-value text-blue-600">{{ formatCurrency(thueForm.get('grossSalary')?.value) }}</div>
+          </div>
 
-    <div class="finance-row">
-      <div class="finance-control">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Lương đóng BH (nếu khác Gross)</mat-label>
-          <input matInput type="text" formControlName="insuranceSalary" currencyInput />
-        </mat-form-field>
-      </div>
-      <label class="finance-label">BHXH (10.5%):</label>
-      <div class="finance-value text-red-500">- {{ formatCurrency(tienBaoHiem) }}</div>
-    </div>
-  </form>
+          <div class="finance-row">
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Số người phụ thuộc</mat-label>
+                <input matInput type="number" formControlName="dependents" min="0" />
+              </mat-form-field>
+            </div>
+            <label class="finance-label">Giảm trừ PT:</label>
+            <div class="finance-value text-orange-600">- {{ formatCurrency(giamTruPhuThuoc) }}</div>
+          </div>
 
-  <div class="result-container mt-8">
-    <div class="summary-grid">
-      <div class="summary-card info">
-        <div class="card-icon">📉</div>
-        <div class="card-content">
-          <p class="label">Thu nhập tính thuế</p>
-          <p class="value">{{ formatCurrency(thuNhapTinhThue) }} <span class="unit">VND</span></p>
+          <div class="finance-row">
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Lương đóng BH (nếu khác Gross)</mat-label>
+                <input matInput type="text" formControlName="insuranceSalary" currencyInput placeholder="Để trống nếu bằng Gross" />
+              </mat-form-field>
+            </div>
+            <label class="finance-label">BHXH (10.5%):</label>
+            <div class="finance-value text-red-500">- {{ formatCurrency(tienBaoHiem) }}</div>
+          </div>
+        </form>
+
+        <div class="result-container mt-8">
+          <div class="summary-grid">
+            <div class="summary-card info">
+              <div class="card-icon">📉</div>
+              <div class="card-content">
+                <p class="label">Thu nhập tính thuế</p>
+                <p class="value">{{ formatCurrency(thuNhapTinhThue) }} <span class="unit">VND</span></p>
+              </div>
+            </div>
+            <div class="summary-card danger">
+              <div class="card-icon">💸</div>
+              <div class="card-content">
+                <p class="label">Thuế TNCN phải nộp</p>
+                <p class="value">{{ formatCurrency(thuePhaiNop) }} <span class="unit">VND</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="net-salary-card mt-4">
+            <div class="net-label">THU NHẬP THỰC NHẬN (NET)</div>
+            <div class="net-value">{{ formatCurrency(luongNet) }}</div>
+            <div class="net-unit">VND / Tháng</div>
+            <button mat-raised-button color="accent" class="copy-btn" (click)="copyGrossToNetTab()">
+              📋 Copy sang tab NET → GROSS
+            </button>
+          </div>
+        </div>
+
+        <div class="tax-details-container mt-8">
+          <div class="tax-header-row hide-on-mobile">
+            <div class="col-bac">Bậc</div>
+            <div class="col-range">Thu nhập tháng</div>
+            <div class="col-rate">Thuế suất</div>
+            <div class="col-tax">Tiền thuế</div>
+          </div>
+          <div class="tax-body">
+            <div *ngFor="let detail of thueChiTiet; let i = index"
+                 class="tax-item-row"
+                 [class.active-level]="detail.tax > 0"
+                 [class.inactive-level]="detail.tax <= 0">
+              <div class="col-bac">
+                <span class="mobile-label">Bậc:</span>
+                <span class="badge-bac">{{ i + 1 }}</span>
+              </div>
+              <div class="col-range">
+                <span class="mobile-label">Thu nhập:</span>
+                {{ detail.range }}
+              </div>
+              <div class="col-rate">
+                <span class="mobile-label">Thuế suất:</span>
+                <span class="text-rate">{{ detail.rate }}%</span>
+              </div>
+              <div class="col-tax">
+                <span class="mobile-label">Tiền thuế:</span>
+                <span class="text-tax">{{ formatCurrency(detail.tax) }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="summary-card danger">
-        <div class="card-icon">💸</div>
-        <div class="card-content">
-          <p class="label">Thuế TNCN phải nộp</p>
-          <p class="value">{{ formatCurrency(thuePhaiNop) }} <span class="unit">VND</span></p>
+    </mat-tab>
+
+    <!-- Tab 2: Tính từ NET → GROSS -->
+    <mat-tab label="🎯 NET → GROSS">
+      <div class="tab-content">
+        <div class="tab-header">
+          <h3>Tính lương Gross từ lương thực nhận</h3>
+          <p>Nhập lương NET mong muốn để tính lương Gross cần trả</p>
+        </div>
+
+        <form [formGroup]="netToGrossForm" class="space-y-4 finance-block">
+          <div class="finance-row">
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Lương thực nhận mong muốn (NET)</mat-label>
+                <input matInput type="text" formControlName="netSalary" currencyInput placeholder="Nhập lương NET mong muốn" />
+                <span matSuffix class="pr-2">VND</span>
+              </mat-form-field>
+            </div>
+            <label class="finance-label">Lương NET:</label>
+            <div class="finance-value text-green-600">{{ formatCurrency(netToGrossForm.get('netSalary')?.value) }}</div>
+          </div>
+
+          <div class="finance-row">
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Số người phụ thuộc</mat-label>
+                <input matInput type="number" formControlName="dependents" min="0" />
+              </mat-form-field>
+            </div>
+            <label class="finance-label">Giảm trừ PT:</label>
+            <div class="finance-value text-orange-600">- {{ formatCurrency((netToGrossForm.get('dependents')?.value || 0) * (taxParams?.dependentDeduction || 4400000)) }}</div>
+          </div>
+
+          <div class="finance-row">
+            <div class="finance-control">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Lương đóng BH (nếu khác Gross)</mat-label>
+                <input matInput type="text" formControlName="insuranceSalary" currencyInput placeholder="Để trống nếu bằng Gross" />
+              </mat-form-field>
+            </div>
+            <label class="finance-label">BHXH (10.5%):</label>
+            <div class="finance-value text-red-500">- {{ formatCurrency(bhxhFromNet) }}</div>
+          </div>
+        </form>
+
+        <div class="result-container mt-8">
+          <div class="summary-grid">
+            <div class="summary-card info">
+              <div class="card-icon">💸</div>
+              <div class="card-content">
+                <p class="label">Thuế TNCN phải nộp</p>
+                <p class="value">{{ formatCurrency(thueFromNet) }} <span class="unit">VND</span></p>
+              </div>
+            </div>
+            <div class="summary-card warning">
+              <div class="card-icon">🏥</div>
+              <div class="card-content">
+                <p class="label">Bảo hiểm xã hội</p>
+                <p class="value">{{ formatCurrency(bhxhFromNet) }} <span class="unit">VND</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="gross-salary-card mt-4">
+            <div class="gross-label">LƯƠNG GROSS CẦN TRẢ</div>
+            <div class="gross-value">{{ formatCurrency(grossFromNet) }}</div>
+            <div class="gross-unit">VND / Tháng</div>
+            <button mat-raised-button color="primary" class="copy-btn" (click)="copyNetToGrossTab()">
+              📋 Copy sang tab GROSS → NET
+            </button>
+          </div>
+        </div>
+
+        <div class="tax-details-container mt-8" *ngIf="netToGrossDetails.length > 0">
+          <div class="tax-header-row hide-on-mobile">
+            <div class="col-bac">Bậc</div>
+            <div class="col-range">Thu nhập tháng</div>
+            <div class="col-rate">Thuế suất</div>
+            <div class="col-tax">Tiền thuế</div>
+          </div>
+          <div class="tax-body">
+            <div *ngFor="let detail of netToGrossDetails; let i = index"
+                 class="tax-item-row"
+                 [class.active-level]="detail.tax > 0"
+                 [class.inactive-level]="detail.tax <= 0">
+              <div class="col-bac">
+                <span class="mobile-label">Bậc:</span>
+                <span class="badge-bac">{{ i + 1 }}</span>
+              </div>
+              <div class="col-range">
+                <span class="mobile-label">Thu nhập:</span>
+                {{ detail.range }}
+              </div>
+              <div class="col-rate">
+                <span class="mobile-label">Thuế suất:</span>
+                <span class="text-rate">{{ detail.rate }}%</span>
+              </div>
+              <div class="col-tax">
+                <span class="mobile-label">Tiền thuế:</span>
+                <span class="text-tax">{{ formatCurrency(detail.tax) }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </mat-tab>
+  </mat-tab-group>
 
-    <div class="net-salary-card mt-4">
-      <div class="net-label">THU NHẬP THỰC NHẬN (NET)</div>
-      <div class="net-value">{{ formatCurrency(luongNet) }}</div>
-      <div class="net-unit">VND / Tháng</div>
+  <!-- Thông tin tham số CSV -->
+  <div class="csv-params-info mt-6" *ngIf="taxParams && paramsLastUpdate">
+    <div class="params-card">
+      <h4>📊 Tham số thuế từ CSV</h4>
+      <div class="params-grid">
+        <div class="param-item">
+          <span class="param-label">Giảm trừ bản thân:</span>
+          <span class="param-value">{{ formatCurrency(taxParams.personalDeduction) }} VND/tháng</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Giảm trừ người phụ thuộc:</span>
+          <span class="param-value">{{ formatCurrency(taxParams.dependentDeduction) }} VND/tháng</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Số bậc thuế:</span>
+          <span class="param-value">{{ taxParams.tiers.length }} bậc</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Cập nhật lần cuối:</span>
+          <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+      <p class="params-note">
+        💡 Tham số được tải từ file <code>thuetncn.csv</code> và có thể cập nhật hàng tháng
+      </p>
     </div>
   </div>
 
-  <div class="tax-details-container mt-8">
-    <div class="tax-header-row hide-on-mobile">
-      <div class="col-bac">Bậc</div>
-      <div class="col-range">Thu nhập tháng</div>
-      <div class="col-rate">Thuế suất</div>
-      <div class="col-tax">Tiền thuế</div>
-    </div>
-    <div class="tax-body">
-      <div *ngFor="let detail of thueChiTiet; let i = index"
-           class="tax-item-row"
-           [class.active-level]="detail.tax > 0"
-           [class.inactive-level]="detail.tax <= 0">
-        <div class="col-bac">
-          <span class="mobile-label">Bậc:</span>
-          <span class="badge-bac">{{ i + 1 }}</span>
-        </div>
-        <div class="col-range">
-          <span class="mobile-label">Thu nhập:</span>
-          {{ detail.range }}
-        </div>
-        <div class="col-rate">
-          <span class="mobile-label">Thuế suất:</span>
-          <span class="text-rate">{{ detail.rate }}%</span>
-        </div>
-        <div class="col-tax">
-          <span class="mobile-label">Tiền thuế:</span>
-          <span class="text-tax">{{ formatCurrency(detail.tax) }}</span>
-        </div>
-      </div>
+  <!-- Thông tin cập nhật 2026 -->
+  <div class="update-info mt-8">
+    <div class="info-card">
+      <h4>🆕 Cập nhật quy định 2026</h4>
+      <ul>
+        <li>✅ Giảm trừ bản thân: <strong>{{ formatCurrency(taxParams?.personalDeduction || 11000000) }} VND/tháng</strong></li>
+        <li>✅ Giảm trừ người phụ thuộc: <strong>{{ formatCurrency(taxParams?.dependentDeduction || 4400000) }} VND/người</strong></li>
+        <li>✅ Mức lương tối đa đóng BHXH: <strong>46.8 triệu VND/tháng</strong></li>
+        <li>✅ Bậc thuế: <strong>{{ formatTaxTiers() }}</strong></li>
+        <li>✅ Tính năng mới: <strong>Tính ngược từ NET → GROSS</strong></li>
+      </ul>
     </div>
   </div>
 </div>

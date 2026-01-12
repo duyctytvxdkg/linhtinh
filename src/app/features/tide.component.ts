@@ -30,18 +30,16 @@ export class TideComponent implements OnInit, OnDestroy {
   tideStatus = 'Đang lên';
   isLoading = false;
   errorMessage = '';
-  tideTableHtml: SafeHtml = ''; // Sử dụng SafeHtml để tránh sanitization warning
-  monthlyTableHtml: SafeHtml = ''; // Thêm bảng tháng riêng biệt
+  tideTableHtml: SafeHtml = '';
+  monthlyTableHtml: SafeHtml = '';
   
   // Location management
-  currentLocation: 'coralBank' | 'cuaTieu' = 'coralBank'; // Default to HCM
+  currentLocation: 'coralBank' | 'cuaTieu' = 'coralBank';
   locations = environment.tideLocations;
   
   private chartInstance: Chart | null = null;
 
-  // Dữ liệu mặc định (dựa trên cau-ca.com)
   tideEvents: TideData[] = [];
-
   chartData: number[] = [];
   chartLabels: string[] = [];
 
@@ -49,39 +47,31 @@ export class TideComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('🚀 Tide component initialized');
-    // Tự động load dữ liệu khi vào trang (default: Coral Bank)
     this.loadDataForCurrentLocation();
-    
-    // Log thông tin về proxy configuration
     console.log('🔧 Proxy should be configured for /api/tide/* -> https://cau-ca.com');
   }
 
-  // Phương thức để chuyển đổi location
   switchLocation(locationKey: 'coralBank' | 'cuaTieu') {
     if (this.currentLocation !== locationKey) {
       console.log(`🔄 Switching location from ${this.currentLocation} to ${locationKey}`);
       this.currentLocation = locationKey;
       
-      // Clear previous data
       this.tideTableHtml = '';
       this.monthlyTableHtml = '';
       this.tideEvents = [];
       this.chartData = [];
       this.chartLabels = [];
       
-      // Load data for new location
       this.loadDataForCurrentLocation();
     }
   }
 
-  // Phương thức để load dữ liệu cho location hiện tại
   private loadDataForCurrentLocation() {
     const location = this.locations[this.currentLocation];
     console.log(`📍 Loading data for ${location.name} (${location.lat}, ${location.lng})`);
     this.loadRealData();
   }
 
-  // Phương thức để load dữ liệu mô phỏng (fallback)
   private loadSimulatedData(): void {
     console.log('🔄 Loading simulated tide data...');
     
@@ -103,9 +93,8 @@ export class TideComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Phương thức để load dữ liệu thực từ các API chuẩn
   private loadRealData() {
-    console.log('�  Loading real tide data from standard APIs...');
+    console.log('📡 Loading real tide data from standard APIs...');
     this.isLoading = true;
     this.errorMessage = '';
     
@@ -132,7 +121,6 @@ export class TideComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('❌ Failed to fetch real API data:', error);
         
-        // Thông báo rõ ràng về vấn đề API
         if (error.message && error.message.includes('demo')) {
           this.errorMessage = '⚠️ Cần API key WorldTides để lấy dữ liệu thực. Sử dụng dữ liệu mô phỏng chính xác cho TP.HCM.';
         } else if (error.status === 429) {
@@ -146,11 +134,9 @@ export class TideComponent implements OnInit, OnDestroy {
       }
     });
     
-    // Load dữ liệu tháng song song
     this.loadMonthlyDataInBackground();
   }
 
-  // Phương thức để load dữ liệu tháng trong background
   private loadMonthlyDataInBackground() {
     console.log(`📅 Loading monthly tide data in background for ${this.locations[this.currentLocation].name}...`);
     
@@ -160,7 +146,6 @@ export class TideComponent implements OnInit, OnDestroy {
         
         try {
           if (data.monthlyData && data.monthlyData.length > 0) {
-            // Chỉ lưu HTML của bảng tháng
             if (data.tableHtml) {
               this.monthlyTableHtml = this.sanitizer.bypassSecurityTrustHtml(data.tableHtml);
               console.log('✅ Dữ liệu thủy triều tháng được tải thành công (background)');
@@ -172,17 +157,210 @@ export class TideComponent implements OnInit, OnDestroy {
       },
       error: (error: any) => {
         console.error('❌ Failed to fetch monthly data (background):', error);
-        // Không hiển thị lỗi cho user vì đây là background loading
       }
     });
   }
 
-  // Phương thức để refresh dữ liệu
   refreshData() {
     console.log('🔄 Refreshing tide data...');
-    this.loadRealData(); // Mặc định thử load dữ liệu thực trước và load monthly data
+    this.loadRealData();
   }
 
+  // Phương thức để xử lý click event trên bảng tháng
+  onMonthlyTableClick(event: Event) {
+    const target = event.target as HTMLElement;
+    
+    let dayCell: HTMLElement | null = null;
+    
+    if (target.tagName === 'TD') {
+      const row = target.parentElement as HTMLTableRowElement;
+      if (row && row.cells.length > 0) {
+        dayCell = row.cells[0];
+      }
+    } else if (target.tagName === 'TR') {
+      const row = target as HTMLTableRowElement;
+      if (row.cells.length > 0) {
+        dayCell = row.cells[0];
+      }
+    } else {
+      const td = target.closest('td');
+      if (td) {
+        const row = td.parentElement as HTMLTableRowElement;
+        if (row && row.cells.length > 0) {
+          dayCell = row.cells[0];
+        }
+      }
+    }
+    
+    if (dayCell && dayCell.textContent) {
+      const dayText = dayCell.textContent.trim();
+      const dayMatch = dayText.match(/^(\d+)/);
+      
+      if (dayMatch) {
+        const day = parseInt(dayMatch[1]);
+        
+        if (day >= 1 && day <= 31) {
+          console.log(`📅 Extracted day ${day} from cell text: "${dayText}"`);
+          this.onDayClickInMonthlyTable(day);
+        } else {
+          console.warn(`⚠️ Invalid day extracted: ${day} from "${dayText}"`);
+        }
+      } else {
+        console.warn(`⚠️ Could not extract day from cell text: "${dayText}"`);
+      }
+    }
+  }
+
+  // Phương thức để xử lý click vào ngày trong bảng tháng
+  onDayClickInMonthlyTable(day: number) {
+    console.log(`📅 Clicked on day ${day} in monthly table`);
+    
+    const selectedDate = new Date(this.today.getFullYear(), this.today.getMonth(), day);
+    this.today = selectedDate;
+    this.loadDataForSelectedDay(selectedDate);
+  }
+
+  // Phương thức để load dữ liệu cho ngày được chọn
+  private loadDataForSelectedDay(selectedDate: Date) {
+    console.log(`🔄 Loading tide data for selected day: ${selectedDate.toLocaleDateString('vi-VN')}`);
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    this.tideService.getTideDataFromWorldTides(this.currentLocation).subscribe({
+      next: (data: any) => {
+        console.log('📥 Received data for selected day:', data);
+        
+        try {
+          if (data.extremes && data.extremes.length > 0) {
+            const filteredExtremes = data.extremes.filter((extreme: any) => {
+              const extremeDate = new Date(extreme.timestamp);
+              return extremeDate.toDateString() === selectedDate.toDateString();
+            });
+            
+            const filteredData = {
+              ...data,
+              extremes: filteredExtremes
+            };
+            
+            this.processTideApiData(filteredData);
+            this.errorMessage = `✅ Dữ liệu thủy triều cho ngày ${selectedDate.toLocaleDateString('vi-VN')} được tải thành công`;
+          } else {
+            this.loadSimulatedDataForDay(selectedDate);
+          }
+        } catch (error) {
+          console.warn('❌ Failed to process selected day data, using simulated data');
+          this.loadSimulatedDataForDay(selectedDate);
+        }
+        
+        this.isLoading = false;
+        setTimeout(() => this.initChart(), 100);
+      },
+      error: (error) => {
+        console.error('❌ Failed to fetch data for selected day:', error);
+        this.loadSimulatedDataForDay(selectedDate);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  // Phương thức để tạo dữ liệu mô phỏng cho ngày cụ thể
+  private loadSimulatedDataForDay(selectedDate: Date) {
+    console.log(`🔄 Loading simulated data for ${selectedDate.toLocaleDateString('vi-VN')}`);
+    
+    try {
+      const simulatedExtremes = this.generateSimulatedDataForSpecificDay(selectedDate);
+      const simulatedHeights: TideHeight[] = [];
+      const simulatedTableHtml = this.generateTableForSpecificDay(simulatedExtremes, selectedDate);
+      
+      this.processTideApiData({
+        extremes: simulatedExtremes,
+        heights: simulatedHeights,
+        tableHtml: simulatedTableHtml
+      });
+      
+      this.errorMessage = `🔄 Sử dụng dữ liệu mô phỏng cho ngày ${selectedDate.toLocaleDateString('vi-VN')}`;
+      setTimeout(() => this.initChart(), 100);
+      
+    } catch (error) {
+      console.error('❌ Error loading simulated data for selected day:', error);
+      this.errorMessage = `❌ Lỗi tải dữ liệu cho ngày ${selectedDate.toLocaleDateString('vi-VN')}`;
+    }
+  }
+
+  // Phương thức để tạo dữ liệu mô phỏng cho ngày cụ thể
+  private generateSimulatedDataForSpecificDay(date: Date): TideExtreme[] {
+    const extremes: TideExtreme[] = [];
+    
+    const dayOfMonth = date.getDate();
+    const moonPhase = Math.sin((dayOfMonth / 30) * 2 * Math.PI);
+    const timeOffset = (dayOfMonth - 1) * 50;
+    
+    const baseHigh = 4.2 + moonPhase * 0.4;
+    const baseLow = 0.6 - moonPhase * 0.3;
+    
+    const defaultSchedule = [
+      { baseHour: 2, baseMinute: 5, height: baseHigh, type: 'high' },
+      { baseHour: 8, baseMinute: 15, height: baseLow, type: 'low' },
+      { baseHour: 14, baseMinute: 25, height: baseHigh - 0.2, type: 'high' },
+      { baseHour: 20, baseMinute: 35, height: baseLow + 0.4, type: 'low' }
+    ];
+    
+    for (const schedule of defaultSchedule) {
+      const totalMinutes = schedule.baseHour * 60 + schedule.baseMinute + timeOffset;
+      const finalHour = Math.floor(totalMinutes / 60) % 24;
+      const finalMinute = totalMinutes % 60;
+      
+      const time = new Date(date);
+      time.setHours(finalHour, finalMinute, 0, 0);
+      
+      extremes.push({
+        timestamp: time.toISOString(),
+        height: Math.round(schedule.height * 10) / 10,
+        type: schedule.type as 'high' | 'low'
+      });
+    }
+    
+    return extremes;
+  }
+
+  // Phương thức để tạo bảng HTML cho ngày cụ thể
+  private generateTableForSpecificDay(extremes: TideExtreme[], date: Date): string {
+    const location = this.locations[this.currentLocation];
+    
+    let tableHtml = `
+      <table class="tide-table" id="tabla_mareas">
+        <thead>
+          <tr style="background: #4a90e2; color: white;">
+            <th colspan="5">THỦY TRIỀU - ${location.name} - ${date.toLocaleDateString('vi-VN')}</th>
+          </tr>
+          <tr style="background: #4a90e2; color: white;">
+            <th>NGÀY</th>
+            <th>THỜI GIAN</th>
+            <th>MỰC NƯỚC (m)</th>
+            <th>LOẠI TRIỀU</th>
+            <th>TRẠNG THÁI</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    
+    for (const extreme of extremes) {
+      const extremeDate = new Date(extreme.timestamp);
+      
+      tableHtml += `
+        <tr style="background-color: #e3f2fd !important; font-weight: 600 !important;">
+          <td>${extremeDate.getDate()}/${extremeDate.getMonth() + 1}</td>
+          <td>${extremeDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</td>
+          <td style="color: ${extreme.type === 'high' ? '#28a745' : '#dc3545'}; font-weight: 600;">${extreme.height.toFixed(1)}m</td>
+          <td>${extreme.type === 'high' ? '🔼 Nước lớn' : '🔽 Nước ròng'}</td>
+          <td>📍 Ngày được chọn</td>
+        </tr>
+      `;
+    }
+
+    tableHtml += `</tbody></table>`;
+    return tableHtml;
+  }
   private processTideApiData(data: { extremes?: TideExtreme[], heights?: TideHeight[], tableHtml?: string }) {
     if (data.extremes && data.extremes.length > 0) {
       this.processExtremesData(data.extremes);
@@ -193,19 +371,16 @@ export class TideComponent implements OnInit, OnDestroy {
       this.updateCurrentWaterLevel(data.heights);
     }
     
-    // Lưu HTML của bảng nếu có (với sanitization)
     if (data.tableHtml) {
       this.tideTableHtml = this.sanitizer.bypassSecurityTrustHtml(data.tableHtml);
     }
     
-    // Update chart after processing data
     this.updateChart();
     
     console.log(`📊 Processed tide data: ${data.extremes?.length || 0} extremes, ${data.heights?.length || 0} heights, table: ${!!data.tableHtml}`);
   }
 
   private generateHeightsFromExtremes(extremes: any[]): TideHeight[] {
-    // Tạo dữ liệu heights từ extremes để vẽ biểu đồ
     const heights: TideHeight[] = [];
     
     if (extremes.length < 2) return heights;
@@ -214,14 +389,12 @@ export class TideComponent implements OnInit, OnDestroy {
       new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
     
-    // Tạo dữ liệu cho cả ngày (00:00 - 24:00)
     const now = new Date();
     const startTime = new Date(now);
-    startTime.setHours(0, 0, 0, 0); // 00:00 hôm nay
+    startTime.setHours(0, 0, 0, 0);
     
     const intervalMinutes = 15;
     
-    // Tạo dữ liệu cho 24 giờ
     for (let minute = 0; minute <= 24 * 60; minute += intervalMinutes) {
       const currentTime = new Date(startTime.getTime() + minute * 60 * 1000);
       const height = this.interpolateHeightAtTime(currentTime, sortedExtremes);
@@ -269,12 +442,11 @@ export class TideComponent implements OnInit, OnDestroy {
   }
 
   private processExtremesData(extremes: TideExtreme[]) {
-    // Lọc và sắp xếp theo thời gian, lấy tất cả điểm trong ngày hiện tại
     const now = new Date();
     const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0); // Bắt đầu ngày
+    startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999); // Kết thúc ngày
+    endOfDay.setHours(23, 59, 59, 999);
     
     const filteredExtremes = extremes
       .filter(extreme => {
@@ -298,11 +470,9 @@ export class TideComponent implements OnInit, OnDestroy {
 
   private updateChart() {
     if (this.chartInstance) {
-      // Update data
       this.chartInstance.data.labels = this.chartLabels;
       this.chartInstance.data.datasets[0].data = this.chartData;
       
-      // Recalculate Y-axis range
       const maxValue = Math.max(...this.chartData);
       const minValue = Math.min(...this.chartData);
       const range = maxValue - minValue;
@@ -311,14 +481,11 @@ export class TideComponent implements OnInit, OnDestroy {
       const yAxisMax = Math.ceil((maxValue + padding) * 10) / 10;
       const yAxisMin = Math.max(0, Math.floor((minValue - padding) * 10) / 10);
       
-      // Update Y-axis
       this.chartInstance.options.scales!['y']!.min = yAxisMin;
       this.chartInstance.options.scales!['y']!.max = yAxisMax;
       
-      // Refresh chart
       this.chartInstance.update();
     } else {
-      // Create new chart if doesn't exist
       setTimeout(() => this.initChart(), 100);
     }
   }
@@ -329,24 +496,20 @@ export class TideComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Sắp xếp dữ liệu theo thời gian
     const sortedHeights = heights.sort((a, b) => 
       new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
 
-    // Tạo labels và data cho 24h của ngày hiện tại (mỗi 2h một điểm)
     const chartPoints: number[] = [];
     const labels: string[] = [];
     
     const now = new Date();
     const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0); // Bắt đầu từ 00:00 của ngày hiện tại
+    startOfDay.setHours(0, 0, 0, 0);
     
-    // Tạo 13 điểm từ 00:00 đến 24:00 (mỗi 2h)
     for (let hour = 0; hour <= 24; hour += 2) {
       const targetTime = new Date(startOfDay.getTime() + hour * 60 * 60 * 1000);
       
-      // Tìm điểm dữ liệu gần nhất với thời gian mục tiêu
       const closestHeight = this.findClosestHeight(sortedHeights, targetTime);
       chartPoints.push(closestHeight);
       
@@ -358,7 +521,6 @@ export class TideComponent implements OnInit, OnDestroy {
     this.chartLabels = labels;
     
     console.log(`📊 Generated chart data for full 24h: ${this.chartData.length} points, range: ${Math.min(...this.chartData).toFixed(1)}m - ${Math.max(...this.chartData).toFixed(1)}m`);
-    console.log('📊 Chart covers full day from 00:00 to 24:00');
   }
 
   private findClosestHeight(heights: TideHeight[], targetTime: Date): number {
@@ -381,8 +543,7 @@ export class TideComponent implements OnInit, OnDestroy {
     const currentHeight = this.findClosestHeight(heights, now);
     this.currentWaterLevel = currentHeight;
     
-    // Xác định trạng thái triều (lên/xuống)
-    const futureTime = new Date(now.getTime() + 30 * 60 * 1000); // 30 phút sau
+    const futureTime = new Date(now.getTime() + 30 * 60 * 1000);
     const futureHeight = this.findClosestHeight(heights, futureTime);
     
     this.tideStatus = futureHeight > currentHeight ? 'Đang lên' : 'Đang xuống';
@@ -391,25 +552,21 @@ export class TideComponent implements OnInit, OnDestroy {
   initChart() {
     if (!this.tideChartCanvas) return;
     
-    // Destroy existing chart if exists
     if (this.chartInstance) {
       this.chartInstance.destroy();
     }
     
     const ctx = this.tideChartCanvas.nativeElement.getContext('2d');
 
-    // Tạo gradient cho sóng nước
     const gradient = ctx.createLinearGradient(0, 0, 0, 300);
     gradient.addColorStop(0, 'rgba(0, 123, 255, 0.5)');
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-    // Tính toán min/max từ dữ liệu thực tế
     const maxValue = Math.max(...this.chartData);
     const minValue = Math.min(...this.chartData);
     const range = maxValue - minValue;
-    const padding = range * 0.1; // 10% padding
+    const padding = range * 0.1;
     
-    // Đảm bảo không có giá trị âm trên chart
     const yAxisMax = Math.ceil((maxValue + padding) * 10) / 10;
     const yAxisMin = Math.max(0, Math.floor((minValue - padding) * 10) / 10);
 
@@ -430,7 +587,7 @@ export class TideComponent implements OnInit, OnDestroy {
           borderColor: '#007bff',
           backgroundColor: gradient,
           fill: true,
-          tension: 0.4, // Tạo độ cong cho sóng
+          tension: 0.4,
           pointBackgroundColor: '#fff',
           pointBorderColor: '#007bff',
           pointRadius: 4,
@@ -457,7 +614,7 @@ export class TideComponent implements OnInit, OnDestroy {
             max: yAxisMax,
             ticks: { 
               callback: (value) => value + 'm',
-              stepSize: 0.5 // Bước nhảy 0.5m
+              stepSize: 0.5
             },
             grid: {
               color: 'rgba(0, 123, 255, 0.1)'
@@ -487,22 +644,15 @@ export class TideComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Phương thức để xóa cache và reload dữ liệu (for debugging)
   clearCacheAndReload() {
     const location = this.locations[this.currentLocation];
     console.log(`🗑️ Clearing cache for ${location.name} and reloading...`);
     
-    // Clear cache for current location
     this.tideService.clearMonthlyCache(this.currentLocation);
-    
-    // Clear current data
     this.monthlyTableHtml = '';
-    
-    // Reload monthly data
     this.loadMonthlyDataInBackground();
   }
 
-  // Phương thức để kiểm tra thông tin cache (for debugging)
   checkCacheInfo() {
     const cacheInfo = this.tideService.getCacheInfo(this.currentLocation);
     const allCacheInfo = this.tideService.getAllCacheInfo();
@@ -513,17 +663,14 @@ export class TideComponent implements OnInit, OnDestroy {
     return { current: cacheInfo, all: allCacheInfo };
   }
 
-  // Phương thức để xóa tất cả cache (for debugging)
   clearAllCaches() {
     console.log('🗑️ Clearing all location caches...');
     this.tideService.clearAllLocationCaches();
     
-    // Clear current UI data
     this.monthlyTableHtml = '';
     this.tideTableHtml = '';
     this.tideEvents = [];
     
-    // Reload data for current location
     this.loadDataForCurrentLocation();
   }
 }

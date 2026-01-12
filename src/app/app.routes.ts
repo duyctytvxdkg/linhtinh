@@ -5,6 +5,10 @@ import { LoanComponent } from './features/loan.component';
 import { LunarCalendarComponent } from './features/lunar-calendar.component';
 import { TideComponent } from './features/tide.component';
 import { ThueTncnComponent } from './features/thue-tncn.component';
+import { ExchangeRateComponent } from './features/exchange-rate.component';
+import { RealEstateTaxComponent } from './features/real-estate-tax.component';
+import { ShippingCalculatorComponent } from './features/shipping-calculator.component';
+import { UtilityCalculatorComponent } from './features/utility-calculator.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +35,22 @@ export const routes: Routes = [
   {
     path: 'tide',
     component: TideComponent,
+  },
+  {
+    path: 'tygia',
+    component: ExchangeRateComponent,
+  },
+  {
+    path: 'thuebds',
+    component: RealEstateTaxComponent,
+  },
+  {
+    path: 'ship',
+    component: ShippingCalculatorComponent,
+  },
+  {
+    path: 'diennuoc',
+    component: UtilityCalculatorComponent,
   },
   {
     path: '**',

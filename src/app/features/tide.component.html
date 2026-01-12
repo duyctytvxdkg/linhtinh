@@ -70,7 +70,8 @@
   <!-- Bảng thủy triều tháng từ WorldTides API hoặc cache -->
   <div class="tide-table-container mt-8" *ngIf="monthlyTableHtml">
     <h3 class="text-lg font-semibold mb-4 text-blue-700">Bảng thủy triều tháng {{ today | date:'MM/yyyy' }} - {{ locations[currentLocation].name }}</h3>
-    <div class="table-wrapper" [innerHTML]="monthlyTableHtml"></div>
+    <p class="text-sm text-gray-600 mb-3">💡 <strong>Tip:</strong> Click vào ngày bất kỳ để xem chi tiết thủy triều và biểu đồ cho ngày đó</p>
+    <div class="table-wrapper" [innerHTML]="monthlyTableHtml" (click)="onMonthlyTableClick($event)"></div>
   </div>
 
   <div class="warning-box mt-6">

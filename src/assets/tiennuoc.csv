@@ -1,0 +1,9 @@
+tier,minM3,maxM3,pricePerM3,description,category
+1,0,10,5973,Bậc 1 (0-10 m³),household
+2,11,20,7052,Bậc 2 (11-20 m³),household
+3,21,30,8669,Bậc 3 (21-30 m³),household
+4,31,999999,15929,Bậc 4 (trên 30 m³),household
+1,0,20,9955,Bậc 1 (0-20 m³),business
+2,21,50,12947,Bậc 2 (21-50 m³),business
+3,51,999999,15929,Bậc 3 (trên 50 m³),business
+1,0,999999,22068,Giá cố định,production

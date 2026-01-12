@@ -1,0 +1,20 @@
+parameter,value,description
+employeeRate,0.08,Tỷ lệ đóng BHXH của người lao động (8%)
+employerRate,0.175,Tỷ lệ đóng BHXH của người sử dụng lao động (17.5%)
+unemploymentEmployeeRate,0.01,Tỷ lệ đóng BHTN của người lao động (1%)
+unemploymentEmployerRate,0.01,Tỷ lệ đóng BHTN của người sử dụng lao động (1%)
+healthInsuranceRate,0.015,Tỷ lệ đóng BHYT của người lao động (1.5%)
+healthInsuranceEmployerRate,0.03,Tỷ lệ đóng BHYT của người sử dụng lao động (3%)
+accidentInsuranceRate,0.005,Tỷ lệ đóng BHTN của người sử dụng lao động (0.5%)
+minSalary,1800000,Mức lương tối thiểu vùng (VND)
+maxSalary,46800000,Mức lương tối đa đóng BHXH (VND)
+retirementAgeM,62,Tuổi nghỉ hưu nam
+retirementAgeF,60,Tuổi nghỉ hưu nữ
+minContributionYears,20,Số năm đóng tối thiểu để hưởng lương hưu
+replacementRate,0.45,Tỷ lệ thay thế lương hưu cơ bản (45%)
+yearlyIncreaseRate,0.02,Tỷ lệ tăng hàng năm sau 15 năm đóng (2%/năm)
+unemploymentMinMonths,12,Số tháng đóng BHTN tối thiểu để được hưởng
+unemploymentMaxMonths,12,Số tháng hưởng BHTN tối đa
+unemploymentRate,0.60,Tỷ lệ hưởng BHTN (60% lương bình quân)
+unemploymentMinBenefit,1800000,Mức trợ cấp BHTN tối thiểu (bằng lương tối thiểu vùng)
+unemploymentMaxBenefit,9000000,Mức trợ cấp BHTN tối đa (5 lần lương tối thiểu vùng)

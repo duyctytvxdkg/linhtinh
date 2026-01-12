@@ -1,0 +1,379 @@
+<div class="content-box-minor">
+  <div class="header-section">
+    <h2 class="text-2xl font-bold text-blue-700 mb-2">
+      ⚡ TÍNH TIỀN ĐIỆN NƯỚC
+    </h2>
+    <p class="text-gray-600 mb-4">
+      Tính toán hóa đơn tiền điện và nước theo bậc thang, ước tính chi phí hàng tháng
+    </p>
+    
+    <!-- Update info -->
+    <div class="update-info-grid">
+      <div class="update-item">
+        <span class="update-label">⚡ Điện:</span>
+        <span class="update-text">{{ getLastUpdateText(electricityLastUpdate) }}</span>
+        <span class="update-date" *ngIf="electricityLastUpdate">
+          ({{ electricityLastUpdate | date:'dd/MM/yyyy' }})
+        </span>
+      </div>
+      <div class="update-item">
+        <span class="update-label">💧 Nước:</span>
+        <span class="update-text">{{ getLastUpdateText(waterLastUpdate) }}</span>
+        <span class="update-date" *ngIf="waterLastUpdate">
+          ({{ waterLastUpdate | date:'dd/MM/yyyy' }})
+        </span>
+      </div>
+      <button mat-icon-button (click)="refreshData()" class="refresh-btn" title="Làm mới dữ liệu">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <mat-tab-group class="utility-tabs" animationDuration="300ms">
+    
+    <!-- Tab 1: Tiền điện -->
+    <mat-tab label="⚡ Tiền điện">
+      <div class="tab-content">
+        <div class="form-section">
+          <h3 class="section-title">📊 Nhập số điện tiêu thụ</h3>
+          
+          <form [formGroup]="electricityForm" class="utility-form">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="usage-input">
+                <mat-label>Số kWh sử dụng</mat-label>
+                <input matInput type="number" formControlName="kwhUsed" min="0" step="1" />
+                <span matSuffix>kWh</span>
+                <mat-hint>Xem trên hóa đơn điện hoặc đồng hồ điện</mat-hint>
+              </mat-form-field>
+            </div>
+          </form>
+
+          <!-- Quick presets -->
+          <div class="preset-section">
+            <h4>⚡ Mức sử dụng thông thường:</h4>
+            <div class="preset-grid">
+              <div *ngFor="let level of commonUsageLevels.electricity" 
+                   class="preset-card" 
+                   (click)="setElectricityPreset(level.kwh)">
+                <div class="preset-header">
+                  <span class="preset-label">{{ level.label }}</span>
+                  <span class="preset-value">{{ level.kwh }} kWh</span>
+                </div>
+                <p class="preset-description">{{ level.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="result-section" *ngIf="electricityResult.totalAmount > 0">
+          <div class="summary-card electricity-summary">
+            <div class="summary-header">
+              <h3>⚡ Hóa đơn tiền điện</h3>
+              <div class="total-amount">{{ formatCurrency(electricityResult.totalAmount) }} VND</div>
+            </div>
+            
+            <div class="summary-details">
+              <div class="detail-item">
+                <span class="label">Tổng kWh:</span>
+                <span class="value">{{ formatNumber(getTotalElectricityUsage()) }} kWh</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Tiền điện (chưa VAT):</span>
+                <span class="value">{{ formatCurrency(getElectricitySubtotal()) }} VND</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Thuế GTGT (8%):</span>
+                <span class="value">{{ formatCurrency(getElectricityVAT()) }} VND</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Giá trung bình:</span>
+                <span class="value">{{ formatNumber(getAverageElectricityPrice()) }} VND/kWh</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breakdown -->
+          <div class="breakdown-section">
+            <h4>📊 Chi tiết theo bậc thang:</h4>
+            <div class="tier-breakdown">
+              <div *ngFor="let item of electricityResult.breakdown" 
+                   class="tier-item"
+                   [class.vat-item]="item.tier === 0"
+                   [style.border-left-color]="item.tier === 0 ? '#ef4444' : getTierColor(item.tier)">
+                <div class="tier-header">
+                  <span class="tier-name">{{ item.description }}</span>
+                  <span class="tier-amount">{{ formatCurrency(item.amount) }} VND</span>
+                </div>
+                <div class="tier-details" *ngIf="item.tier > 0">
+                  <span class="usage">{{ formatNumber(item.usage) }} kWh</span>
+                  <span class="price">× {{ formatNumber(item.price) }} VND/kWh</span>
+                </div>
+                <div class="tier-details" *ngIf="item.tier === 0">
+                  <span class="vat-note">Thuế giá trị gia tăng</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comparison -->
+          <div class="comparison-section">
+            <div class="comparison-card">
+              <h4>📈 So sánh với mức trung bình</h4>
+              <div class="comparison-content">
+                <div class="comparison-item" 
+                     [class]="getMonthlyComparison(electricityResult.totalAmount, 'electricity').status">
+                  <div class="comparison-label">Hóa đơn của bạn</div>
+                  <div class="comparison-value">{{ formatCurrency(electricityResult.totalAmount) }} VND</div>
+                  <div class="comparison-status">
+                    <span *ngIf="getMonthlyComparison(electricityResult.totalAmount, 'electricity').status === 'high'" class="status-high">
+                      Cao hơn {{ formatNumber(Math.abs(getMonthlyComparison(electricityResult.totalAmount, 'electricity').percentage)) }}%
+                    </span>
+                    <span *ngIf="getMonthlyComparison(electricityResult.totalAmount, 'electricity').status === 'low'" class="status-low">
+                      Thấp hơn {{ formatNumber(Math.abs(getMonthlyComparison(electricityResult.totalAmount, 'electricity').percentage)) }}%
+                    </span>
+                    <span *ngIf="getMonthlyComparison(electricityResult.totalAmount, 'electricity').status === 'normal'" class="status-normal">
+                      Ở mức bình thường
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 2: Tiền nước -->
+    <mat-tab label="💧 Tiền nước">
+      <div class="tab-content">
+        <div class="form-section">
+          <h3 class="section-title">📊 Nhập thông tin sử dụng nước</h3>
+          
+          <form [formGroup]="waterForm" class="utility-form">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="usage-input">
+                <mat-label>Số m³ sử dụng</mat-label>
+                <input matInput type="number" formControlName="m3Used" min="0" step="1" />
+                <span matSuffix>m³</span>
+                <mat-hint>Xem trên hóa đơn nước hoặc đồng hồ nước</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="category-select">
+                <mat-label>Loại khách hàng</mat-label>
+                <mat-select formControlName="category">
+                  <mat-option *ngFor="let cat of waterCategories" [value]="cat.code">
+                    {{ cat.icon }} {{ cat.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Ảnh hưởng đến bậc thang giá</mat-hint>
+              </mat-form-field>
+            </div>
+          </form>
+
+          <!-- Quick presets -->
+          <div class="preset-section">
+            <h4>💧 Mức sử dụng thông thường (Sinh hoạt):</h4>
+            <div class="preset-grid">
+              <div *ngFor="let level of commonUsageLevels.water" 
+                   class="preset-card" 
+                   (click)="setWaterPreset(level.m3)">
+                <div class="preset-header">
+                  <span class="preset-label">{{ level.label }}</span>
+                  <span class="preset-value">{{ level.m3 }} m³</span>
+                </div>
+                <p class="preset-description">{{ level.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="result-section" *ngIf="waterResult.totalAmount > 0">
+          <div class="summary-card water-summary">
+            <div class="summary-header">
+              <h3>💧 Hóa đơn tiền nước</h3>
+              <div class="total-amount">{{ formatCurrency(waterResult.totalAmount) }} VND</div>
+            </div>
+            
+            <div class="summary-details">
+              <div class="detail-item">
+                <span class="label">Tổng m³:</span>
+                <span class="value">{{ formatNumber(getTotalWaterUsage()) }} m³</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Giá trung bình:</span>
+                <span class="value">{{ formatNumber(getAverageWaterPrice()) }} VND/m³</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Loại KH:</span>
+                <span class="value">{{ getCurrentWaterCategoryName() }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breakdown -->
+          <div class="breakdown-section">
+            <h4>📊 Chi tiết theo bậc thang:</h4>
+            <div class="tier-breakdown">
+              <div *ngFor="let item of waterResult.breakdown" 
+                   class="tier-item"
+                   [style.border-left-color]="getTierColor(item.tier)">
+                <div class="tier-header">
+                  <span class="tier-name">{{ item.description }}</span>
+                  <span class="tier-amount">{{ formatCurrency(item.amount) }} VND</span>
+                </div>
+                <div class="tier-details">
+                  <span class="usage">{{ formatNumber(item.usage) }} m³</span>
+                  <span class="price">× {{ formatNumber(item.price) }} VND/m³</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comparison -->
+          <div class="comparison-section">
+            <div class="comparison-card">
+              <h4>📈 So sánh với mức trung bình</h4>
+              <div class="comparison-content">
+                <div class="comparison-item" 
+                     [class]="getMonthlyComparison(waterResult.totalAmount, 'water').status">
+                  <div class="comparison-label">Hóa đơn của bạn</div>
+                  <div class="comparison-value">{{ formatCurrency(waterResult.totalAmount) }} VND</div>
+                  <div class="comparison-status">
+                    <span *ngIf="getMonthlyComparison(waterResult.totalAmount, 'water').status === 'high'" class="status-high">
+                      Cao hơn {{ formatNumber(Math.abs(getMonthlyComparison(waterResult.totalAmount, 'water').percentage)) }}%
+                    </span>
+                    <span *ngIf="getMonthlyComparison(waterResult.totalAmount, 'water').status === 'low'" class="status-low">
+                      Thấp hơn {{ formatNumber(Math.abs(getMonthlyComparison(waterResult.totalAmount, 'water').percentage)) }}%
+                    </span>
+                    <span *ngIf="getMonthlyComparison(waterResult.totalAmount, 'water').status === 'normal'" class="status-normal">
+                      Ở mức bình thường
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 3: Bảng giá -->
+    <mat-tab label="📋 Bảng giá">
+      <div class="tab-content">
+        <div class="price-tables">
+          <!-- Electricity price table -->
+          <div class="price-table-section">
+            <h3 class="section-title">⚡ Bảng giá điện sinh hoạt</h3>
+            <div class="price-table">
+              <div class="table-header">
+                <div class="col-tier">Bậc</div>
+                <div class="col-range">Khoảng (kWh)</div>
+                <div class="col-price">Giá (VND/kWh)</div>
+              </div>
+              <div *ngFor="let tier of electricityTiers" class="table-row">
+                <div class="col-tier">
+                  <span class="tier-badge" [style.background-color]="getTierColor(tier.tier)">
+                    {{ tier.tier }}
+                  </span>
+                </div>
+                <div class="col-range">
+                  {{ tier.minKwh }}-{{ tier.maxKwh === 999999 ? '∞' : tier.maxKwh }}
+                </div>
+                <div class="col-price">{{ formatNumber(tier.pricePerKwh) }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Water price table -->
+          <div class="price-table-section">
+            <h3 class="section-title">💧 Bảng giá nước</h3>
+            
+            <div *ngFor="let category of waterCategories" class="category-section">
+              <h4 class="category-title">{{ category.icon }} {{ category.name }}</h4>
+              <div class="price-table">
+                <div class="table-header">
+                  <div class="col-tier">Bậc</div>
+                  <div class="col-range">Khoảng (m³)</div>
+                  <div class="col-price">Giá (VND/m³)</div>
+                </div>
+                <div *ngFor="let tier of getWaterTiersByCategory(category.code)" class="table-row">
+                  <div class="col-tier">
+                    <span class="tier-badge" [style.background-color]="getTierColor(tier.tier)">
+                      {{ tier.tier }}
+                    </span>
+                  </div>
+                  <div class="col-range">
+                    {{ tier.minM3 }}-{{ tier.maxM3 === 999999 ? '∞' : tier.maxM3 }}
+                  </div>
+                  <div class="col-price">{{ formatNumber(tier.pricePerM3) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+
+  <!-- Information -->
+  <div class="info-section">
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>📚 Thông tin về tính tiền điện nước</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <h4>⚡ Tiền điện sinh hoạt</h4>
+            <ul>
+              <li>• Áp dụng bậc thang 6 mức giá</li>
+              <li>• Giá tăng dần theo mức tiêu thụ</li>
+              <li>• <strong>Đã bao gồm VAT 8%</strong></li>
+              <li>• Khuyến khích tiết kiệm điện</li>
+              <li>• Cập nhật theo quy định EVN</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>💧 Tiền nước sinh hoạt</h4>
+            <ul>
+              <li>• Bậc thang khác nhau theo loại KH</li>
+              <li>• Sinh hoạt: 4 bậc (0-10-20-30-∞)</li>
+              <li>• Kinh doanh: 3 bậc (0-20-50-∞)</li>
+              <li>• Sản xuất: Giá cố định</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>💡 Mẹo tiết kiệm</h4>
+            <ul>
+              <li>• Sử dụng đèn LED thay bóng sợi đốt</li>
+              <li>• Điều hòa 26°C, tắt khi không cần</li>
+              <li>• Sửa chữa rò rỉ nước ngay lập tức</li>
+              <li>• Tắm vòi sen thay vì tắm bồn</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="data-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <strong>Lưu ý về dữ liệu:</strong>
+            <p>Giá điện nước được cập nhật từ file CSV dựa trên bảng giá chính thức. Hóa đơn thực tế bao gồm:</p>
+            <ul>
+              <li>• <strong>Tiền điện: Đã bao gồm VAT 8%</strong></li>
+              <li>• Tiền nước: Chưa bao gồm VAT 5%</li>
+              <li>• Phí dịch vụ môi trường (nước)</li>
+              <li>• Phí bảo trì hạ tầng</li>
+              <li>• <strong>Điện cập nhật: {{ getLastUpdateText(electricityLastUpdate) }}</strong></li>
+              <li>• <strong>Nước cập nhật: {{ getLastUpdateText(waterLastUpdate) }}</strong></li>
+            </ul>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

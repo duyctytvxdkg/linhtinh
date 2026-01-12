@@ -1,0 +1,188 @@
+<div class="content-box-minor">
+  <div class="header-section">
+    <h2 class="text-2xl font-bold text-blue-700 mb-2">
+      💱 TỶ GIÁ NGOẠI TỆ REALTIME
+    </h2>
+    <div class="update-info">
+      <div class="status-indicator">
+        <span class="status-dot" [class.real-data]="isUsingRealData" [class.simulated-data]="!isUsingRealData"></span>
+        <span class="status-text">{{ isUsingRealData ? 'API Thật' : 'Mô phỏng' }}</span>
+      </div>
+      <span class="last-update">Cập nhật: {{ getTimeSinceUpdate() }}</span>
+      <button mat-icon-button (click)="refreshRates()" [disabled]="isLoading" class="refresh-btn">
+        <mat-icon [class.spinning]="isLoading">refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-section">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Đang tải tỷ giá...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="errorMessage" class="error-message">
+    <mat-icon>warning</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Currency Converter -->
+  <div class="converter-section">
+    <h3 class="section-title">🔄 Chuyển đổi tiền tệ</h3>
+    
+    <form [formGroup]="exchangeForm" class="converter-form">
+      <div class="converter-row">
+        <div class="amount-input">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Số tiền</mat-label>
+            <input matInput type="text" formControlName="amount" currencyInput placeholder="Nhập số tiền" />
+          </mat-form-field>
+        </div>
+        
+        <div class="currency-select">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Từ</mat-label>
+            <mat-select formControlName="fromCurrency">
+              <mat-option value="VND">🇻🇳 VND - Việt Nam Đồng</mat-option>
+              <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                {{ currency.flag }} {{ currency.code }} - {{ currency.nameVi }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="swap-button">
+          <button mat-icon-button (click)="swapCurrencies()" class="swap-btn">
+            <mat-icon>swap_horiz</mat-icon>
+          </button>
+        </div>
+
+        <div class="currency-select">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Sang</mat-label>
+            <mat-select formControlName="toCurrency">
+              <mat-option value="VND">🇻🇳 VND - Việt Nam Đồng</mat-option>
+              <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                {{ currency.flag }} {{ currency.code }} - {{ currency.nameVi }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+
+    <!-- Conversion Result -->
+    <div class="conversion-result">
+      <div class="result-card">
+        <div class="from-amount">
+          <span class="amount">{{ formatCurrency(conversionResult.amount, 2) }}</span>
+          <span class="currency">{{ conversionResult.from }}</span>
+        </div>
+        <div class="equals">=</div>
+        <div class="to-amount">
+          <span class="amount">{{ formatCurrency(conversionResult.result, conversionResult.to === 'VND' ? 0 : 4) }}</span>
+          <span class="currency">{{ conversionResult.to }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exchange Rates Table -->
+  <div class="rates-section">
+    <h3 class="section-title">📊 Bảng tỷ giá hôm nay</h3>
+    
+    <div class="rates-grid">
+      <div *ngFor="let currency of currencies" class="rate-card" [class]="getChangeClass(currency.change)">
+        <div class="currency-info">
+          <div class="currency-header">
+            <span class="flag">{{ currency.flag }}</span>
+            <div class="currency-details">
+              <div class="currency-code">{{ currency.code }}</div>
+              <div class="currency-name">{{ currency.nameVi }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="rate-info">
+          <div class="current-rate">
+            {{ formatCurrency(currency.rate, currency.code === 'JPY' || currency.code === 'KRW' ? 2 : 0) }}
+            <span class="vnd-label">VND</span>
+          </div>
+          
+          <div class="rate-change">
+            <span class="change-amount">{{ formatChange(currency.change) }}</span>
+            <span class="change-percent">({{ formatChangePercent(currency.changePercent) }})</span>
+          </div>
+          
+          <div class="last-update">
+            {{ currency.lastUpdate | date:'HH:mm:ss' }}
+          </div>
+        </div>
+
+        <div class="trend-indicator">
+          <mat-icon *ngIf="currency.change > 0" class="trend-up">trending_up</mat-icon>
+          <mat-icon *ngIf="currency.change < 0" class="trend-down">trending_down</mat-icon>
+          <mat-icon *ngIf="currency.change === 0" class="trend-flat">trending_flat</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Convert Buttons -->
+  <div class="quick-convert-section">
+    <h3 class="section-title">⚡ Chuyển đổi nhanh</h3>
+    
+    <div class="quick-buttons">
+      <button mat-raised-button 
+              *ngFor="let amount of [100, 500, 1000, 5000]"
+              (click)="exchangeForm.patchValue({amount: amount, fromCurrency: 'USD', toCurrency: 'VND'})"
+              class="quick-btn">
+        ${{ amount }} USD → VND
+      </button>
+    </div>
+    
+    <div class="quick-buttons">
+      <button mat-raised-button 
+              *ngFor="let amount of [100, 500, 1000, 2000]"
+              (click)="exchangeForm.patchValue({amount: amount, fromCurrency: 'AUD', toCurrency: 'VND'})"
+              class="quick-btn aud-btn">
+        ${{ amount }} AUD → VND
+      </button>
+    </div>
+    
+    <div class="quick-buttons">
+      <button mat-raised-button 
+              *ngFor="let amount of [100, 500, 1000, 2000]"
+              (click)="exchangeForm.patchValue({amount: amount, fromCurrency: 'CAD', toCurrency: 'VND'})"
+              class="quick-btn cad-btn">
+        ${{ amount }} CAD → VND
+      </button>
+    </div>
+    
+    <div class="quick-buttons">
+      <button mat-raised-button 
+              *ngFor="let amount of [1000000, 5000000, 10000000, 50000000]"
+              (click)="exchangeForm.patchValue({amount: amount, fromCurrency: 'VND', toCurrency: 'USD'})"
+              class="quick-btn">
+        {{ formatCurrency(amount / 1000000) }}M VND → $
+      </button>
+    </div>
+  </div>
+
+  <!-- Market Info -->
+  <div class="market-info">
+    <div class="info-card">
+      <h4>📈 Thông tin thị trường</h4>
+      <ul>
+        <li>✅ Tỷ giá cập nhật mỗi 60 giây</li>
+        <li>✅ Dữ liệu từ API quốc tế (ExchangeRate-API, ExchangeRates-API)</li>
+        <li>✅ Hệ thống fallback đa tầng</li>
+        <li>✅ Hỗ trợ 10 loại tiền tệ phổ biến</li>
+        <li>⚠️ Chỉ mang tính chất tham khảo</li>
+        <li>💡 Tỷ giá thực tế có thể khác tại ngân hàng</li>
+        <li *ngIf="!isUsingRealData">🔄 Đang sử dụng dữ liệu mô phỏng do API không khả dụng</li>
+      </ul>
+    </div>
+  </div>
+</div>

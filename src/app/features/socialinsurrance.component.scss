@@ -1,8 +1,16 @@
 /* Container chính */
 .content-box-minor {
   width: 100%;
-  max-width: 1000px; /* Giới hạn để không quá rộng trên màn hình lớn */
+  max-width: 100vw; /* Giới hạn theo viewport width */
   margin: 0 auto;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Ẩn scroll ngang */
+  padding: 0 15px; /* Thêm padding để không sát mép */
+  
+  * {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
 }
 
 /* 1. XỬ LÝ BẢNG NHẬP LIỆU (MAT-TABLE) */
@@ -152,5 +160,620 @@ button[mat-icon-button].color-warn {
   h2.text-2xl {
     font-size: 1.25rem;
     line-height: 1.4;
+  }
+}
+// CSV Parameters Info Section
+.csv-params-info {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.params-card {
+  h4 {
+    color: #475569;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.param-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  
+  .param-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .param-value {
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-weight: 600;
+  }
+}
+
+.params-note {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+  padding: 10px 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  
+  code {
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #1e293b;
+  }
+}
+
+@media (max-width: 768px) {
+  .params-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .param-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+// Fix Material form field display issues
+::ng-deep .finance-block {
+  .mat-mdc-form-field {
+    width: 100%;
+    
+    .mat-mdc-form-field-wrapper {
+      width: 100%;
+      padding-bottom: 0;
+    }
+    
+    .mat-mdc-form-field-flex {
+      width: 100%;
+    }
+    
+    .mat-mdc-form-field-infix {
+      width: 100%;
+      min-height: 56px;
+      padding: 16px 0 8px 0;
+    }
+    
+    .mat-mdc-text-field-wrapper {
+      width: 100%;
+    }
+    
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none; // Hide subscript to save space
+    }
+  }
+  
+  .mat-mdc-select {
+    width: 100%;
+  }
+}
+
+// Tab styling for BHXH
+.bhxh-tabs {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: calc(100vw - 30px); /* Giới hạn theo viewport trừ padding */
+  
+  ::ng-deep .mat-mdc-tab-group {
+    width: 100%;
+    
+    .mat-mdc-tab-header {
+      border-bottom: 4px solid #000;
+      background: #000000;
+      border-radius: 12px 12px 0 0;
+      padding: 12px 15px 0;
+      box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.1);
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .mat-mdc-tab {
+      min-width: 220px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      margin: 0 10px;
+      border-radius: 12px 12px 0 0;
+      background: #dc2626;
+      transition: all 0.3s ease;
+      position: relative;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
+      
+      .mdc-tab__text-label {
+        color: #ffffff;
+        font-weight: 900;
+        padding: 18px 28px;
+        transition: all 0.3s ease;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        font-size: 1rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      
+      &:hover:not(.mdc-tab--active) {
+        background: #f59e0b;
+        transform: translateY(-4px) scale(1.05);
+        border-color: #ffffff;
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.7);
+        
+        .mdc-tab__text-label {
+          color: #000000;
+          text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+          transform: scale(1.1);
+        }
+      }
+      
+      &.mdc-tab--active {
+        background: #16a34a;
+        box-shadow: 0 8px 30px rgba(22, 163, 74, 0.8);
+        transform: translateY(-6px) scale(1.1);
+        z-index: 10;
+        border-color: #ffffff;
+        
+        .mdc-tab__text-label {
+          color: #ffffff;
+          font-weight: 900;
+          text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+          transform: scale(1.15);
+        }
+        
+        &::before {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          right: 0;
+          height: 6px;
+          background: #ffffff;
+          border-radius: 3px;
+          box-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        &::after {
+          content: '★ ACTIVE ★';
+          position: absolute;
+          top: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #ffffff;
+          color: #16a34a;
+          font-size: 10px;
+          font-weight: 900;
+          padding: 2px 8px;
+          border-radius: 10px;
+          text-shadow: none;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+      }
+    }
+    
+    .mat-mdc-tab-body-wrapper {
+      padding: 0;
+      background: white;
+      border-radius: 0 0 12px 12px;
+      border: 3px solid #000000;
+      border-top: none;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    
+    .mat-mdc-tab-body {
+      width: 100%;
+    }
+    
+    .mat-mdc-tab-body-content {
+      width: 100%;
+      overflow: visible;
+    }
+    
+    .mdc-tab-indicator {
+      display: none;
+    }
+  }
+}
+
+.tab-content {
+  min-height: 600px;
+  padding: 20px;
+  background: white;
+  border-radius: 0 0 12px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.tab-header {
+  text-align: center;
+  margin-bottom: 30px;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+  }
+  
+  p {
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+}
+
+// Finance form styling
+.finance-block {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.finance-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+  
+  .finance-control {
+    width: 100%;
+    
+    mat-form-field {
+      width: 100%;
+      
+      .mat-mdc-form-field-wrapper {
+        width: 100%;
+      }
+      
+      .mat-mdc-text-field-wrapper {
+        width: 100%;
+      }
+    }
+  }
+  
+  .finance-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .finance-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+    text-align: center;
+    margin-top: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Result container
+.result-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 100%;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+
+  .card-icon {
+    font-size: 24px;
+    margin-right: 12px;
+  }
+
+  .label {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .value {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+
+    .unit { font-size: 12px; font-weight: normal; }
+  }
+
+  .small-text {
+    font-size: 11px;
+    color: #94a3b8;
+    margin: 2px 0 0 0;
+  }
+
+  &.info { border-left: 4px solid #3b82f6; }
+  &.danger { 
+    border-left: 4px solid #ef4444; 
+    .value { color: #ef4444; }
+  }
+  &.warning { 
+    border-left: 4px solid #f59e0b; 
+    .value { color: #f59e0b; }
+  }
+}
+
+// Unemployment benefit card
+.unemployment-benefit-card {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: white;
+  padding: 25px 20px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+
+  .benefit-label {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+
+  .benefit-value {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .benefit-unit {
+    font-size: 14px;
+    margin-top: 8px;
+    opacity: 0.8;
+  }
+
+  .total-benefit-info {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    
+    .total-label {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+    
+    .total-value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+  }
+}
+
+// Unemployment details
+.unemployment-details {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  
+  h4 {
+    color: #475569;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  
+  .detail-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .detail-value {
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-weight: 600;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .finance-row {
+    margin-bottom: 20px;
+    
+    .finance-label {
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    
+    .finance-value {
+      font-size: 1rem;
+      padding: 10px 14px;
+      margin-top: 10px;
+    }
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .benefit-value {
+    font-size: 32px !important;
+  }
+  
+  .bhxh-tabs ::ng-deep .mat-mdc-tab-group {
+    .mat-mdc-tab-header {
+      padding: 8px;
+      background: #000000;
+      border-bottom: 3px solid #000;
+    }
+    
+    .mat-mdc-tab {
+      min-width: 140px;
+      font-size: 0.85rem;
+      margin: 0 3px;
+      background: #dc2626;
+      border: 2px solid #ffffff;
+      box-shadow: 0 3px 10px rgba(220, 38, 38, 0.5);
+      
+      .mdc-tab__text-label {
+        padding: 12px 16px;
+        font-size: 0.8rem;
+        font-weight: 900;
+        letter-spacing: 0.5px;
+        color: #ffffff;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        text-transform: uppercase;
+      }
+      
+      &:hover:not(.mdc-tab--active) {
+        background: #f59e0b;
+        border-color: #ffffff;
+        transform: translateY(-2px);
+        
+        .mdc-tab__text-label {
+          color: #000000;
+          text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+      }
+      
+      &.mdc-tab--active {
+        background: #16a34a;
+        border-color: #ffffff;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(22, 163, 74, 0.7);
+        
+        .mdc-tab__text-label {
+          color: #ffffff;
+          font-weight: 900;
+          text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+        }
+        
+        &::after {
+          content: '★';
+          position: absolute;
+          top: -5px;
+          right: 5px;
+          background: #ffffff;
+          color: #16a34a;
+          font-size: 8px;
+          font-weight: 900;
+          padding: 1px 4px;
+          border-radius: 8px;
+          text-shadow: none;
+        }
+      }
+    }
+    
+    .mat-mdc-tab-body-wrapper {
+      border: 2px solid #000000;
+      border-top: none;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    
+    .mat-mdc-tab-body {
+      width: 100%;
+    }
+    
+    .mat-mdc-tab-body-content {
+      width: 100%;
+      overflow: visible;
+    }
+  }
+  
+  .tab-header {
+    h3 {
+      font-size: 1.1rem;
+    }
+    
+    p {
+      font-size: 0.85rem;
+    }
+  }
+  
+  .finance-block {
+    padding: 15px;
   }
 }
