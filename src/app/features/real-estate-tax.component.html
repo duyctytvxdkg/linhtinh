@@ -215,10 +215,14 @@
               <div class="tax-info">
                 <h4>ℹ️ Thông tin thuế suất:</h4>
                 <ul>
-                  <li>• < 2 năm: 20% lợi nhuận</li>
-                  <li>• 2-5 năm: 15% lợi nhuận</li>
-                  <li>• ≥ 5 năm: 10% lợi nhuận</li>
-                  <li>• Nhà ở duy nhất ≥ 2 năm: Miễn thuế</li>
+                  <li *ngIf="taxParams">• < {{ taxParams.exemptionThreshold1 }} năm: {{ (taxParams.transferTaxRate1 * 100) }}% lợi nhuận</li>
+                  <li *ngIf="taxParams">• {{ taxParams.exemptionThreshold1 }}-{{ taxParams.exemptionThreshold2 }} năm: {{ (taxParams.transferTaxRate2 * 100) }}% lợi nhuận</li>
+                  <li *ngIf="taxParams">• ≥ {{ taxParams.exemptionThreshold2 }} năm: {{ (taxParams.transferTaxRate3 * 100) }}% lợi nhuận</li>
+                  <li *ngIf="taxParams">• Nhà ở duy nhất ≥ {{ taxParams.exemptionThreshold1 }} năm: Miễn thuế</li>
+                  <li *ngIf="!taxParams">• < 2 năm: 20% lợi nhuận</li>
+                  <li *ngIf="!taxParams">• 2-5 năm: 15% lợi nhuận</li>
+                  <li *ngIf="!taxParams">• ≥ 5 năm: 10% lợi nhuận</li>
+                  <li *ngIf="!taxParams">• Nhà ở duy nhất ≥ 2 năm: Miễn thuế</li>
                 </ul>
               </div>
             </mat-card-content>
@@ -303,10 +307,14 @@
                 <h4>ℹ️ Thông tin lệ phí:</h4>
                 <ul>
                   <li>• Lệ phí trước bạ: 0.5% giá trị BDS</li>
-                  <li>• Giảm 50% cho lần đầu mua nhà ở</li>
-                  <li>• Phí thẩm định hồ sơ: 100,000 VND</li>
-                  <li>• Phí cấp giấy chứng nhận: 500,000 VND</li>
-                  <li>• Phí công chứng: 0.1% giá trị</li>
+                  <li *ngIf="taxParams">• Giảm {{ (taxParams.firstTimeBuyerDiscount * 100) }}% cho lần đầu mua nhà ở</li>
+                  <li *ngIf="!taxParams">• Giảm 50% cho lần đầu mua nhà ở</li>
+                  <li *ngIf="taxParams">• Phí thẩm định hồ sơ: {{ formatCurrency(taxParams.documentFee) }} VND</li>
+                  <li *ngIf="!taxParams">• Phí thẩm định hồ sơ: 100,000 VND</li>
+                  <li *ngIf="taxParams">• Phí cấp giấy chứng nhận: {{ formatCurrency(taxParams.certificateFee) }} VND</li>
+                  <li *ngIf="!taxParams">• Phí cấp giấy chứng nhận: 500,000 VND</li>
+                  <li *ngIf="taxParams">• Phí công chứng: {{ (taxParams.notaryFeeRate * 100) }}% giá trị</li>
+                  <li *ngIf="!taxParams">• Phí công chứng: 0.1% giá trị</li>
                 </ul>
               </div>
             </mat-card-content>
@@ -316,6 +324,50 @@
     </mat-tab>
 
   </mat-tab-group>
+
+  <!-- Thông tin tham số CSV -->
+  <div class="csv-params-info mt-6" *ngIf="taxParams && paramsLastUpdate">
+    <div class="params-card">
+      <h4>📊 Tham số thuế BDS từ CSV</h4>
+      <div class="params-grid">
+        <div class="param-item">
+          <span class="param-label">Phí thẩm định hồ sơ:</span>
+          <span class="param-value">{{ formatCurrency(taxParams.documentFee) }} VND</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Phí cấp giấy chứng nhận:</span>
+          <span class="param-value">{{ formatCurrency(taxParams.certificateFee) }} VND</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Tỷ lệ phí công chứng:</span>
+          <span class="param-value">{{ (taxParams.notaryFeeRate * 100) }}%</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Giảm giá lần đầu mua nhà:</span>
+          <span class="param-value">{{ (taxParams.firstTimeBuyerDiscount * 100) }}%</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Thuế chuyển nhượng < 2 năm:</span>
+          <span class="param-value">{{ (taxParams.transferTaxRate1 * 100) }}%</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Thuế chuyển nhượng 2-5 năm:</span>
+          <span class="param-value">{{ (taxParams.transferTaxRate2 * 100) }}%</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Thuế chuyển nhượng >= 5 năm:</span>
+          <span class="param-value">{{ (taxParams.transferTaxRate3 * 100) }}%</span>
+        </div>
+        <div class="param-item">
+          <span class="param-label">Cập nhật lần cuối:</span>
+          <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+      <p class="params-note">
+        💡 Tham số được tải từ file <code>real-estate-tax.csv</code> và có thể cập nhật khi có thay đổi quy định
+      </p>
+    </div>
+  </div>
 
   <!-- General Information -->
   <div class="info-section">

@@ -8,8 +8,8 @@ import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes),   // ✅ CỰC KỲ QUAN TRỌNG
-    provideAnimations()  ,    // ✅ cho Angular Material
-    provideHttpClient()  ,    // ✅ cho HttpClient
+    provideRouter(routes),
+    provideAnimations(),
+    provideHttpClient()
   ]
 });

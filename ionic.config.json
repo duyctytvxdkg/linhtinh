@@ -1,0 +1,7 @@
+{
+  "name": "Kho Tools Tiện Ích",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

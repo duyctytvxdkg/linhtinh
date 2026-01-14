@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { CurrencyInputDirective } from './currency-input.directive';
+import { RealEstateTaxParamsService, RealEstateTaxParams } from './real-estate-tax-params.service';
+import { Subscription } from 'rxjs';
 
 interface TaxResult {
   taxAmount: number;
@@ -45,7 +47,7 @@ interface PropertyType {
   templateUrl: './real-estate-tax.component.html',
   styleUrls: ['./real-estate-tax.component.scss']
 })
-export class RealEstateTaxComponent implements OnInit {
+export class RealEstateTaxComponent implements OnInit, OnDestroy {
   landUseTaxForm!: FormGroup;
   transferTaxForm!: FormGroup;
   registrationFeeForm!: FormGroup;
@@ -54,7 +56,12 @@ export class RealEstateTaxComponent implements OnInit {
   transferTaxResult: TaxResult = { taxAmount: 0, totalAmount: 0, details: {}, breakdown: [] };
   registrationFeeResult: TaxResult = { taxAmount: 0, totalAmount: 0, details: {}, breakdown: [] };
 
-  // Loại bất động sản và thuế suất
+  // Tham số từ CSV
+  taxParams: RealEstateTaxParams | null = null;
+  paramsLastUpdate: Date | null = null;
+  private subscriptions: Subscription[] = [];
+
+  // Loại bất động sản (sẽ được thay thế bằng tham số từ CSV)
   propertyTypes: PropertyType[] = [
     { code: 'residential', name: 'Nhà ở', landUseTaxRate: 0.03, transferTaxRate: 2.0, registrationFeeRate: 0.5 },
     { code: 'commercial', name: 'Thương mại', landUseTaxRate: 0.07, transferTaxRate: 2.0, registrationFeeRate: 0.5 },
@@ -64,7 +71,7 @@ export class RealEstateTaxComponent implements OnInit {
     { code: 'warehouse', name: 'Kho bãi', landUseTaxRate: 0.04, transferTaxRate: 2.0, registrationFeeRate: 0.5 }
   ];
 
-  // Khu vực và hệ số điều chỉnh
+  // Khu vực và hệ số điều chỉnh (sẽ được thay thế bằng tham số từ CSV)
   locationTypes = [
     { code: 'urban_1', name: 'Đô thị loại 1 (HN, HCM)', coefficient: 1.5 },
     { code: 'urban_2', name: 'Đô thị loại 2', coefficient: 1.3 },
@@ -73,19 +80,125 @@ export class RealEstateTaxComponent implements OnInit {
     { code: 'remote', name: 'Vùng sâu vùng xa', coefficient: 0.8 }
   ];
 
-  // Mục đích sử dụng đất
+  // Mục đích sử dụng đất (sẽ được thay thế bằng tham số từ CSV)
   landUsePurposes = [
     { code: 'residential', name: 'Đất ở', exemptionArea: 200 }, // m2 miễn thuế
     { code: 'commercial', name: 'Đất thương mại', exemptionArea: 0 },
     { code: 'industrial', name: 'Đất công nghiệp', exemptionArea: 0 },
     { code: 'agricultural', name: 'Đất nông nghiệp', exemptionArea: 1000 },
-    { code: 'office', name: 'Đất văn phòng', exemptionArea: 0 }
+    { code: 'office', name: 'Đất văn phòng', exemptionArea: 0 },
+    { code: 'warehouse', name: 'Đất kho bãi', exemptionArea: 0 }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private taxParamsService: RealEstateTaxParamsService
+  ) {}
 
   ngOnInit() {
+    this.loadTaxParams();
     this.initForms();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private loadTaxParams(): void {
+    const paramsSub = this.taxParamsService.getParams().subscribe(params => {
+      this.taxParams = params;
+      if (params) {
+        // Cập nhật arrays với tham số từ CSV
+        this.updatePropertyTypes();
+        this.updateLocationTypes();
+        this.updateLandUsePurposes();
+        
+        // Tính lại khi có tham số mới
+        this.calculateLandUseTax();
+        this.calculateTransferTax();
+        this.calculateRegistrationFee();
+      }
+    });
+
+    const updateSub = this.taxParamsService.getLastUpdate().subscribe(date => {
+      this.paramsLastUpdate = date;
+    });
+
+    this.subscriptions.push(paramsSub, updateSub);
+  }
+
+  private updatePropertyTypes(): void {
+    if (!this.taxParams) return;
+    
+    this.propertyTypes = [
+      { 
+        code: 'residential', 
+        name: 'Nhà ở', 
+        landUseTaxRate: this.taxParams.propertyTypes.residential.landUseTaxRate,
+        transferTaxRate: this.taxParams.propertyTypes.residential.transferTaxRate,
+        registrationFeeRate: this.taxParams.propertyTypes.residential.registrationFeeRate
+      },
+      { 
+        code: 'commercial', 
+        name: 'Thương mại', 
+        landUseTaxRate: this.taxParams.propertyTypes.commercial.landUseTaxRate,
+        transferTaxRate: this.taxParams.propertyTypes.commercial.transferTaxRate,
+        registrationFeeRate: this.taxParams.propertyTypes.commercial.registrationFeeRate
+      },
+      { 
+        code: 'industrial', 
+        name: 'Công nghiệp', 
+        landUseTaxRate: this.taxParams.propertyTypes.industrial.landUseTaxRate,
+        transferTaxRate: this.taxParams.propertyTypes.industrial.transferTaxRate,
+        registrationFeeRate: this.taxParams.propertyTypes.industrial.registrationFeeRate
+      },
+      { 
+        code: 'agricultural', 
+        name: 'Nông nghiệp', 
+        landUseTaxRate: this.taxParams.propertyTypes.agricultural.landUseTaxRate,
+        transferTaxRate: this.taxParams.propertyTypes.agricultural.transferTaxRate,
+        registrationFeeRate: this.taxParams.propertyTypes.agricultural.registrationFeeRate
+      },
+      { 
+        code: 'office', 
+        name: 'Văn phòng', 
+        landUseTaxRate: this.taxParams.propertyTypes.office.landUseTaxRate,
+        transferTaxRate: this.taxParams.propertyTypes.office.transferTaxRate,
+        registrationFeeRate: this.taxParams.propertyTypes.office.registrationFeeRate
+      },
+      { 
+        code: 'warehouse', 
+        name: 'Kho bãi', 
+        landUseTaxRate: this.taxParams.propertyTypes.warehouse.landUseTaxRate,
+        transferTaxRate: this.taxParams.propertyTypes.warehouse.transferTaxRate,
+        registrationFeeRate: this.taxParams.propertyTypes.warehouse.registrationFeeRate
+      }
+    ];
+  }
+
+  private updateLocationTypes(): void {
+    if (!this.taxParams) return;
+    
+    this.locationTypes = [
+      { code: 'urban_1', name: 'Đô thị loại 1 (HN, HCM)', coefficient: this.taxParams.locationCoefficients.urban_1 },
+      { code: 'urban_2', name: 'Đô thị loại 2', coefficient: this.taxParams.locationCoefficients.urban_2 },
+      { code: 'urban_3', name: 'Đô thị loại 3', coefficient: this.taxParams.locationCoefficients.urban_3 },
+      { code: 'rural', name: 'Nông thôn', coefficient: this.taxParams.locationCoefficients.rural },
+      { code: 'remote', name: 'Vùng sâu vùng xa', coefficient: this.taxParams.locationCoefficients.remote }
+    ];
+  }
+
+  private updateLandUsePurposes(): void {
+    if (!this.taxParams) return;
+    
+    this.landUsePurposes = [
+      { code: 'residential', name: 'Đất ở', exemptionArea: this.taxParams.propertyTypes.residential.exemptionArea },
+      { code: 'commercial', name: 'Đất thương mại', exemptionArea: this.taxParams.propertyTypes.commercial.exemptionArea },
+      { code: 'industrial', name: 'Đất công nghiệp', exemptionArea: this.taxParams.propertyTypes.industrial.exemptionArea },
+      { code: 'agricultural', name: 'Đất nông nghiệp', exemptionArea: this.taxParams.propertyTypes.agricultural.exemptionArea },
+      { code: 'office', name: 'Đất văn phòng', exemptionArea: this.taxParams.propertyTypes.office.exemptionArea },
+      { code: 'warehouse', name: 'Đất kho bãi', exemptionArea: this.taxParams.propertyTypes.warehouse.exemptionArea }
+    ];
   }
 
   private initForms() {
@@ -195,6 +308,8 @@ export class RealEstateTaxComponent implements OnInit {
   }
 
   calculateTransferTax() {
+    if (!this.taxParams) return;
+    
     const formValue = this.transferTaxForm.getRawValue();
     const salePrice = this.parseNumber(formValue.salePrice);
     const originalPrice = this.parseNumber(formValue.originalPrice);
@@ -210,18 +325,18 @@ export class RealEstateTaxComponent implements OnInit {
     // Lợi nhuận từ chuyển nhượng
     const capitalGain = salePrice - originalPrice - improvementCosts - sellingCosts;
     
-    // Thuế suất dựa trên thời gian nắm giữ
-    let taxRate = 0.20; // 20% mặc định
+    // Thuế suất dựa trên thời gian nắm giữ (sử dụng tham số từ CSV)
+    let taxRate = this.taxParams.transferTaxRate1; // 20% mặc định
     
-    if (ownershipYears >= 5) {
-      taxRate = 0.10; // 10% nếu nắm giữ >= 5 năm
-    } else if (ownershipYears >= 2) {
-      taxRate = 0.15; // 15% nếu nắm giữ >= 2 năm
+    if (ownershipYears >= this.taxParams.exemptionThreshold2) {
+      taxRate = this.taxParams.transferTaxRate3; // 10% nếu nắm giữ >= 5 năm
+    } else if (ownershipYears >= this.taxParams.exemptionThreshold1) {
+      taxRate = this.taxParams.transferTaxRate2; // 15% nếu nắm giữ >= 2 năm
     }
 
     // Miễn thuế nếu là nhà ở duy nhất và nắm giữ >= 2 năm
     const isResidential = formValue.propertyType === 'residential';
-    const isExempt = isResidential && ownershipYears >= 2 && capitalGain <= 0;
+    const isExempt = isResidential && ownershipYears >= this.taxParams.exemptionThreshold1 && capitalGain <= 0;
 
     const taxAmount = isExempt ? 0 : Math.max(0, capitalGain * taxRate);
     const netProceeds = salePrice - taxAmount - sellingCosts;
@@ -247,13 +362,15 @@ export class RealEstateTaxComponent implements OnInit {
         `Lợi nhuận: ${this.formatCurrency(capitalGain)} VND`,
         `Thời gian nắm giữ: ${ownershipYears} năm`,
         `Thuế suất: ${(taxRate * 100).toFixed(1)}%`,
-        isExempt ? `✅ Được miễn thuế (nhà ở >= 2 năm)` : `Thuế phải nộp: ${this.formatCurrency(taxAmount)} VND`,
+        isExempt ? `✅ Được miễn thuế (nhà ở >= ${this.taxParams.exemptionThreshold1} năm)` : `Thuế phải nộp: ${this.formatCurrency(taxAmount)} VND`,
         `Số tiền thực nhận: ${this.formatCurrency(netProceeds)} VND`
       ]
     };
   }
 
   calculateRegistrationFee() {
+    if (!this.taxParams) return;
+    
     const formValue = this.registrationFeeForm.getRawValue();
     const propertyValue = this.parseNumber(formValue.propertyValue);
     const propertyType = this.propertyTypes.find(p => p.code === formValue.propertyType);
@@ -268,21 +385,24 @@ export class RealEstateTaxComponent implements OnInit {
     // Lệ phí trước bạ cơ bản
     let baseFeeRate = propertyType.registrationFeeRate / 100;
     
-    // Giảm 50% cho lần đầu mua nhà ở
+    // Giảm 50% cho lần đầu mua nhà ở (sử dụng tham số từ CSV)
     if (propertyType.code === 'residential' && isFirstTime && transactionType === 'purchase') {
-      baseFeeRate = baseFeeRate * 0.5;
+      baseFeeRate = baseFeeRate * this.taxParams.firstTimeBuyerDiscount;
     }
 
     // Lệ phí trước bạ
     const registrationFee = propertyValue * baseFeeRate;
     
-    // Các khoản phí khác
-    const documentFee = 100000; // Phí thẩm định hồ sơ
-    const certificateFee = 500000; // Phí cấp giấy chứng nhận
-    const notaryFee = propertyValue * 0.001; // 0.1% công chứng
+    // Các khoản phí khác (sử dụng tham số từ CSV)
+    const documentFee = this.taxParams.documentFee; // Phí thẩm định hồ sơ
+    const certificateFee = this.taxParams.certificateFee; // Phí cấp giấy chứng nhận
+    const notaryFee = propertyValue * this.taxParams.notaryFeeRate; // Phí công chứng
     
     const totalFees = registrationFee + documentFee + certificateFee + notaryFee;
     const totalAmount = propertyValue + totalFees;
+
+    const discountPercent = (isFirstTime && propertyType.code === 'residential') ? 
+      (1 - this.taxParams.firstTimeBuyerDiscount) * 100 : 0;
 
     this.registrationFeeResult = {
       taxAmount: totalFees,
@@ -295,12 +415,12 @@ export class RealEstateTaxComponent implements OnInit {
         certificateFee: certificateFee,
         notaryFee: notaryFee,
         isFirstTime: isFirstTime,
-        discount: isFirstTime && propertyType.code === 'residential' ? 50 : 0
+        discount: discountPercent
       },
       breakdown: [
         `Giá trị BDS: ${this.formatCurrency(propertyValue)} VND`,
         `Thuế suất lệ phí: ${(baseFeeRate * 100).toFixed(2)}%`,
-        isFirstTime && propertyType.code === 'residential' ? `✅ Giảm 50% cho lần đầu mua nhà ở` : '',
+        isFirstTime && propertyType.code === 'residential' ? `✅ Giảm ${discountPercent}% cho lần đầu mua nhà ở` : '',
         `Lệ phí trước bạ: ${this.formatCurrency(registrationFee)} VND`,
         `Phí thẩm định hồ sơ: ${this.formatCurrency(documentFee)} VND`,
         `Phí cấp giấy CN: ${this.formatCurrency(certificateFee)} VND`,

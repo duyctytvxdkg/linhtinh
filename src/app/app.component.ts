@@ -28,7 +28,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private hashListener!: () => void;
 
-  constructor() {}
+  constructor() {
+    console.log('🚀 Ionic App Initialized');
+  }
 
   // Chọn menu
   setPath(route: string) {

@@ -542,3 +542,83 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
 }
+// CSV Parameters Info Section
+.csv-params-info {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.params-card {
+  h4 {
+    color: #475569;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.param-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  
+  .param-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .param-value {
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-weight: 600;
+  }
+}
+
+.params-note {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+  padding: 10px 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  
+  code {
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #1e293b;
+  }
+}
+
+@media (max-width: 768px) {
+  .params-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .param-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
