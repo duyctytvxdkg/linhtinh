@@ -1,18 +1,27 @@
-// Mobile layout compatibility
+// Mobile layout compatibility - Fixed scroll approach
 .mobile-content {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  padding: 0 0 120px 0; /* Increase bottom padding */
-  /* Safe area support */
-  padding-bottom: max(120px, calc(120px + env(safe-area-inset-bottom))) !important;
+  padding: 0;
   margin: 0;
+  position: relative;
+}
+
+/* Create actual scroll space */
+.mobile-content::after {
+  content: '';
+  display: block;
+  height: 200px;
+  height: max(200px, calc(200px + env(safe-area-inset-bottom)));
+  width: 100%;
+  background: transparent;
 }
 
 .content-box-minor {
   background: transparent;
-  padding: 20px 20px 60px 20px; /* Add extra bottom padding */
-  margin: 0;
-  min-height: calc(100vh - 200px); /* Account for larger padding */
+  padding: 20px;
+  margin: 0 0 40px 0;
+  min-height: calc(100vh - 100px);
 }
 
 .header-section {

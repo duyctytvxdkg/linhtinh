@@ -43,20 +43,30 @@ app-root {
   height: 100dvh; /* Dynamic viewport height for mobile */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  /* Disable elastic scrolling on iOS */
+  overscroll-behavior-y: none;
+  -webkit-overscroll-behavior-y: none;
   background: white;
-  padding-bottom: 120px; /* Base padding */
-  /* Safe area support for notched phones */
-  padding-bottom: max(120px, calc(120px + env(safe-area-inset-bottom)));
-  /* Additional padding for iOS Safari */
-  padding-bottom: max(140px, calc(140px + env(safe-area-inset-bottom)));
+  position: relative;
+}
+
+/* Create scroll space using pseudo-element */
+.mobile-content::after {
+  content: '';
+  display: block;
+  height: 200px; /* Large scroll space */
+  /* Safe area support */
+  height: max(200px, calc(200px + env(safe-area-inset-bottom)));
+  width: 1px;
+  flex-shrink: 0;
 }
 
 /* Content box cho các trang con */
 .content-box-minor {
   padding: 20px;
-  min-height: calc(100vh - 200px); /* Account for larger bottom padding */
-  padding-bottom: 40px; /* Additional padding for content */
+  min-height: calc(100vh - 100px);
   background: white;
+  margin-bottom: 40px; /* Space before scroll area */
 }
 
 /* Responsive breakpoints */
