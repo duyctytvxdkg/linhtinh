@@ -1,3 +1,16 @@
+// Mobile layout compatibility - Fixed scroll approach
+.mobile-content {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.content-box-minor {
+  background: transparent !important;
+  padding: 20px !important;
+  padding-bottom: 60px !important; /* Final minimal size */
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
 /* Bloc lịch tờ */
 .calendar-wrapper {
   display: flex;
@@ -22,7 +35,8 @@
 
 /* Bảng lịch tháng */
 .calendar-month-wrapper {
-  margin-top: 30px;
+  margin-top: 30px !important;
+  margin-bottom: 60px !important; /* Reasonable bottom margin */
 }
 
 .month-navigation {
@@ -176,16 +190,5 @@
 
 
 
-// Mobile scroll fix - Pseudo-element approach
-.mobile-content::after {
-  content: '';
-  display: block;
-  height: 200px;
-  height: max(200px, calc(200px + env(safe-area-inset-bottom)));
-  width: 100%;
-  background: transparent;
-}
-
-.content-box-minor {
-  margin-bottom: 40px !important;
-}
+// Mobile scroll fix - Use padding instead of pseudo-element to prevent over-scroll
+// Removed duplicate styles - handled above

@@ -148,31 +148,31 @@
   </div>
 
   <!-- CHART + EXPORT -->
-<div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-<div class="lg:col-span-2 ocb-card p-4"  *ngIf="chartVisible">
-  <div class="text-sm font-semibold mb-3 text-gray-700">
-    Biểu đồ dòng tiền thanh toán
+<div class="chart-export-section">
+  <div class="chart-container" *ngIf="chartVisible">
+    <div class="chart-header">
+      <h4>📊 Biểu đồ dòng tiền thanh toán</h4>
+    </div>
+    <div class="chart-wrapper">
+      <canvas #paymentChart></canvas>
+    </div>
   </div>
-
-  <!-- 👇 div này QUAN TRỌNG -->
-  <div class="relative h-[320px]">
-    <canvas #paymentChart class="w-full h-full"></canvas>
-  </div>
-</div>
-
 
   <!-- Action -->
-  <div class="flex flex-col justify-end gap-3">
+  <div class="export-actions">
     <button
       mat-raised-button
       color="primary"
       (click)="exportExcel()"
+      class="export-btn"
     >
-      Xuất Excel
+      📄 Xuất Excel
     </button>
   </div>
+</div>
 
-  </div>
+<!-- Invisible spacer to ensure scroll space (final minimal size) -->
+<div style="height: 40px; width: 100%; background: transparent; flex-shrink: 0;"></div>
+
 </div>
 </div>

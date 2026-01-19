@@ -50,32 +50,21 @@ app-root {
   position: relative;
 }
 
-/* Create scroll space using pseudo-element */
-.mobile-content::after {
-  content: '';
-  display: block;
-  height: 200px; /* Large scroll space */
-  /* Safe area support */
-  height: max(200px, calc(200px + env(safe-area-inset-bottom)));
-  width: 1px;
-  flex-shrink: 0;
-}
-
 /* Content box cho các trang con */
 .content-box-minor {
   padding: 20px;
+  padding-bottom: 120px; /* Bottom scroll space without over-scroll */
   min-height: calc(100vh - 100px);
   background: white;
-  margin-bottom: 40px; /* Space before scroll area */
 }
 
 /* Responsive breakpoints */
 @media (max-width: 768px) {
   .content-box-minor {
     padding: 15px;
+    padding-bottom: 120px; /* Maintain bottom space on mobile */
   }
 }
-
 
 /* ===============================
    CUSTOM BO GÓC MAT INPUT (OUTLINE)
@@ -86,15 +75,16 @@ app-root {
   border-radius: 64px;
 }
 
-
-.content-box-minor {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 12px;
+/* Table scroll - only apply flex behavior when inside specific containers */
+.content-box-minor .table-scroll {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 16px;
+  padding-bottom: 16px;
 }
 
-.table-scroll {
+/* Table scroll - only apply flex behavior when inside specific containers */
+.content-box-minor .table-scroll {
   flex: 1;
   overflow-y: auto;
   margin-top: 16px;

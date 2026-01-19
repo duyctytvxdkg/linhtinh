@@ -1,5 +1,13 @@
+// Mobile layout compatibility - Fixed scroll approach (OPTIMIZED FORMULA)
+.mobile-content {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
 .content-box-minor {
-  background: #f0f7ff;
+  background: #f0f7ff !important;
+  padding: 20px !important;
+  padding-bottom: 60px !important; /* Final minimal size */
+  margin: 0 !important;
 }
 
 .header-tide {
@@ -416,16 +424,4 @@
 
 
 
-// Mobile scroll fix - Pseudo-element approach
-.mobile-content::after {
-  content: '';
-  display: block;
-  height: 200px;
-  height: max(200px, calc(200px + env(safe-area-inset-bottom)));
-  width: 100%;
-  background: transparent;
-}
 
-.content-box-minor {
-  margin-bottom: 40px !important;
-}

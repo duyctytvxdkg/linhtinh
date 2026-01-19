@@ -7,21 +7,16 @@
   position: relative;
 }
 
-/* Create actual scroll space */
-.mobile-content::after {
-  content: '';
-  display: block;
-  height: 200px;
-  height: max(200px, calc(200px + env(safe-area-inset-bottom)));
-  width: 100%;
-  background: transparent;
+// Mobile layout compatibility - Fixed scroll approach
+.mobile-content {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
 }
 
 .content-box-minor {
   background: transparent;
   padding: 20px;
-  margin: 0 0 40px 0;
-  min-height: calc(100vh - 100px);
+  padding-bottom: 200px; /* Increased bottom space to ensure all content is visible */
+  margin: 0;
 }
 
 .header-section {
@@ -780,7 +775,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
 }
-// Info Button
+// Info Button - FIXED positioning outside scroll container
 .info-button-container {
   position: fixed;
   bottom: 30px;
@@ -789,7 +784,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  z-index: 100;
+  z-index: 1000; /* Higher z-index to stay above scroll content */
 }
 
 .info-fab {

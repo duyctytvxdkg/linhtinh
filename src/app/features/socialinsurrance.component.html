@@ -286,14 +286,6 @@
     </mat-tab>
   </mat-tab-group>
 
-  <!-- Info Button -->
-  <div class="info-button-container">
-    <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
-      <mat-icon>info</mat-icon>
-    </button>
-    <span class="info-label">Thông tin chi tiết</span>
-  </div>
-
   <!-- Info Modal -->
   <app-info-modal 
     [isOpen]="isInfoModalOpen" 
@@ -377,4 +369,12 @@
   </app-info-modal>
 
   </div>
+</div>
+
+<!-- Info Button - MOVED OUTSIDE scroll container -->
+<div class="info-button-container">
+  <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
+    <mat-icon>info</mat-icon>
+  </button>
+  <span class="info-label">Thông tin chi tiết</span>
 </div>
