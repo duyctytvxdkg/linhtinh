@@ -317,62 +317,68 @@
 
   </mat-tab-group>
 
-  <!-- Information -->
-  <div class="info-section">
-    <mat-card class="info-card">
-      <mat-card-header>
-        <mat-card-title>📚 Thông tin về tính tiền điện nước</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="info-grid">
-          <div class="info-item">
-            <h4>⚡ Tiền điện sinh hoạt</h4>
-            <ul>
-              <li>• Áp dụng bậc thang 6 mức giá</li>
-              <li>• Giá tăng dần theo mức tiêu thụ</li>
-              <li>• <strong>Đã bao gồm VAT 8%</strong></li>
-              <li>• Khuyến khích tiết kiệm điện</li>
-              <li>• Cập nhật theo quy định EVN</li>
-            </ul>
-          </div>
-          
-          <div class="info-item">
-            <h4>💧 Tiền nước sinh hoạt</h4>
-            <ul>
-              <li>• Bậc thang khác nhau theo loại KH</li>
-              <li>• Sinh hoạt: 4 bậc (0-10-20-30-∞)</li>
-              <li>• Kinh doanh: 3 bậc (0-20-50-∞)</li>
-              <li>• Sản xuất: Giá cố định</li>
-            </ul>
-          </div>
-          
-          <div class="info-item">
-            <h4>💡 Mẹo tiết kiệm</h4>
-            <ul>
-              <li>• Sử dụng đèn LED thay bóng sợi đốt</li>
-              <li>• Điều hòa 26°C, tắt khi không cần</li>
-              <li>• Sửa chữa rò rỉ nước ngay lập tức</li>
-              <li>• Tắm vòi sen thay vì tắm bồn</li>
-            </ul>
-          </div>
-        </div>
-        
-        <div class="data-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <strong>Lưu ý về dữ liệu:</strong>
-            <p>Giá điện nước được cập nhật từ file CSV dựa trên bảng giá chính thức. Hóa đơn thực tế bao gồm:</p>
-            <ul>
-              <li>• <strong>Tiền điện: Đã bao gồm VAT 8%</strong></li>
-              <li>• Tiền nước: Chưa bao gồm VAT 5%</li>
-              <li>• Phí dịch vụ môi trường (nước)</li>
-              <li>• Phí bảo trì hạ tầng</li>
-              <li>• <strong>Điện cập nhật: {{ getLastUpdateText(electricityLastUpdate) }}</strong></li>
-              <li>• <strong>Nước cập nhật: {{ getLastUpdateText(waterLastUpdate) }}</strong></li>
-            </ul>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+  <!-- Info Button -->
+  <div class="info-button-container">
+    <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
+      <mat-icon>info</mat-icon>
+    </button>
+    <span class="info-label">Thông tin chi tiết</span>
   </div>
+
+  <!-- Info Modal -->
+  <app-info-modal 
+    [isOpen]="isInfoModalOpen" 
+    [title]="'📚 Thông tin về tính tiền điện nước'"
+    (close)="closeInfoModal()">
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <h4>⚡ Tiền điện sinh hoạt</h4>
+        <ul>
+          <li>• Áp dụng bậc thang 6 mức giá</li>
+          <li>• Giá tăng dần theo mức tiêu thụ</li>
+          <li>• <strong>Đã bao gồm VAT 8%</strong></li>
+          <li>• Khuyến khích tiết kiệm điện</li>
+          <li>• Cập nhật theo quy định EVN</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>💧 Tiền nước sinh hoạt</h4>
+        <ul>
+          <li>• Bậc thang khác nhau theo loại KH</li>
+          <li>• Sinh hoạt: 4 bậc (0-10-20-30-∞)</li>
+          <li>• Kinh doanh: 3 bậc (0-20-50-∞)</li>
+          <li>• Sản xuất: Giá cố định</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>💡 Mẹo tiết kiệm</h4>
+        <ul>
+          <li>• Sử dụng đèn LED thay bóng sợi đốt</li>
+          <li>• Điều hòa 26°C, tắt khi không cần</li>
+          <li>• Sửa chữa rò rỉ nước ngay lập tức</li>
+          <li>• Tắm vòi sen thay vì tắm bồn</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="data-note">
+      <mat-icon>info</mat-icon>
+      <div>
+        <strong>Lưu ý về dữ liệu:</strong>
+        <p>Giá điện nước được cập nhật từ file CSV dựa trên bảng giá chính thức. Hóa đơn thực tế bao gồm:</p>
+        <ul>
+          <li>• <strong>Tiền điện: Đã bao gồm VAT 8%</strong></li>
+          <li>• Tiền nước: Chưa bao gồm VAT 5%</li>
+          <li>• Phí dịch vụ môi trường (nước)</li>
+          <li>• Phí bảo trì hạ tầng</li>
+          <li>• <strong>Điện cập nhật: {{ getLastUpdateText(electricityLastUpdate) }}</strong></li>
+          <li>• <strong>Nước cập nhật: {{ getLastUpdateText(waterLastUpdate) }}</strong></li>
+        </ul>
+      </div>
+    </div>
+    
+  </app-info-modal>
 </div>

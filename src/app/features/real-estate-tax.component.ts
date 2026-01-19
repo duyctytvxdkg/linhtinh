@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MobileHeaderComponent } from '../shared/mobile-header.component';
+import { InfoModalComponent } from '../shared/info-modal.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -43,9 +44,9 @@ interface PropertyType {
     MatIconModule,
     MatCardModule,
     MatDividerModule,
-    CurrencyInputDirective
-  ,
-    MobileHeaderComponent
+    CurrencyInputDirective,
+    MobileHeaderComponent,
+    InfoModalComponent
   ],
   templateUrl: './real-estate-tax.component.html',
   styleUrls: ['./real-estate-tax.component.scss']
@@ -62,6 +63,10 @@ export class RealEstateTaxComponent implements OnInit, OnDestroy {
   // Tham số từ CSV
   taxParams: RealEstateTaxParams | null = null;
   paramsLastUpdate: Date | null = null;
+  
+  // Modal states
+  isInfoModalOpen = false;
+  
   private subscriptions: Subscription[] = [];
 
   // Loại bất động sản (sẽ được thay thế bằng tham số từ CSV)
@@ -105,6 +110,15 @@ export class RealEstateTaxComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  // Modal methods
+  openInfoModal() {
+    this.isInfoModalOpen = true;
+  }
+
+  closeInfoModal() {
+    this.isInfoModalOpen = false;
   }
 
   private loadTaxParams(): void {

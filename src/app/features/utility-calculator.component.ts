@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MobileHeaderComponent } from '../shared/mobile-header.component';
+import { InfoModalComponent } from '../shared/info-modal.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -37,9 +38,9 @@ interface BillResult {
     MatTabsModule,
     MatIconModule,
     MatCardModule,
-    MatDividerModule
-  ,
-    MobileHeaderComponent
+    MatDividerModule,
+    MobileHeaderComponent,
+    InfoModalComponent
   ],
   templateUrl: './utility-calculator.component.html',
   styleUrls: ['./utility-calculator.component.scss']
@@ -55,6 +56,9 @@ export class UtilityCalculatorComponent implements OnInit, OnDestroy {
   waterTiers: WaterTier[] = [];
   electricityLastUpdate: Date | null = null;
   waterLastUpdate: Date | null = null;
+  
+  // Modal states
+  isInfoModalOpen = false;
   
   private subscriptions: Subscription[] = [];
 
@@ -96,6 +100,15 @@ export class UtilityCalculatorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  // Modal methods
+  openInfoModal() {
+    this.isInfoModalOpen = true;
+  }
+
+  closeInfoModal() {
+    this.isInfoModalOpen = false;
   }
 
   private initForms() {
