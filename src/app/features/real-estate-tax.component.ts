@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -43,6 +44,8 @@ interface PropertyType {
     MatCardModule,
     MatDividerModule,
     CurrencyInputDirective
+  ,
+    MobileHeaderComponent
   ],
   templateUrl: './real-estate-tax.component.html',
   styleUrls: ['./real-estate-tax.component.scss']

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Chart, registerables } from 'chart.js';
@@ -18,7 +19,9 @@ interface TideData {
 @Component({
   selector: 'app-tide',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule,
+    MobileHeaderComponent
+  ],
   templateUrl: './tide.component.html',
   styleUrls: ['./tide.component.scss']
 })

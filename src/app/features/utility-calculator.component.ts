@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -37,6 +38,8 @@ interface BillResult {
     MatIconModule,
     MatCardModule,
     MatDividerModule
+  ,
+    MobileHeaderComponent
   ],
   templateUrl: './utility-calculator.component.html',
   styleUrls: ['./utility-calculator.component.scss']

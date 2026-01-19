@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Lunar } from 'lunar-javascript';
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MobileHeaderComponent],
   templateUrl: './lunar-calendar.component.html',
   styleUrls: ['./lunar-calendar.component.scss'],
 })

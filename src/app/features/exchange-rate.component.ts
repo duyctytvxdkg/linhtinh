@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -46,6 +47,8 @@ interface CurrencyPair {
     MatProgressSpinnerModule,
     HttpClientModule,
     CurrencyInputDirective
+  ,
+    MobileHeaderComponent
   ],
   templateUrl: './exchange-rate.component.html',
   styleUrls: ['./exchange-rate.component.scss']

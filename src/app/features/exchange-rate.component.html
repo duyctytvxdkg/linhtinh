@@ -1,8 +1,11 @@
-<div class="content-box-minor">
+<app-mobile-header 
+  title="💱 Tỷ giá" 
+  subtitle="Tỷ giá ngoại tệ realtime">
+</app-mobile-header>
+
+<div class="mobile-content">
+  <div class="content-box-minor">
   <div class="header-section">
-    <h2 class="text-2xl font-bold text-blue-700 mb-2">
-      💱 TỶ GIÁ NGOẠI TỆ REALTIME
-    </h2>
     <div class="update-info">
       <div class="status-indicator">
         <span class="status-dot" [class.real-data]="isUsingRealData" [class.simulated-data]="!isUsingRealData"></span>
@@ -186,3 +189,4 @@
     </div>
   </div>
 </div>
+  </div>

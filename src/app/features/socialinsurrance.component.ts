@@ -13,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 import { CurrencyInputDirective } from './currency-input.directive';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTable } from '@angular/material/table';
@@ -74,6 +75,7 @@ const ADJUSTMENT_FACTORS: Record<number, number> = {
     MatTabsModule,
     MatSelectModule,
     MatButtonModule,
+    MobileHeaderComponent,
   ],
 })
 export class SocialInsurranceComponent implements AfterViewInit, OnInit, OnDestroy {

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -54,6 +55,8 @@ interface WeightTier {
     MatDividerModule,
     MatCheckboxModule,
     CurrencyInputDirective
+  ,
+    MobileHeaderComponent
   ],
   templateUrl: './shipping-calculator.component.html',
   styleUrls: ['./shipping-calculator.component.scss']

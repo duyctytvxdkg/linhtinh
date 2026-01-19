@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,6 +27,8 @@ import { Subscription } from 'rxjs';
     MatRadioModule,
     MatButtonModule,
     MatTabsModule
+  ,
+    MobileHeaderComponent
   ],
 })
 export class ThueTncnComponent implements OnInit, OnDestroy {
