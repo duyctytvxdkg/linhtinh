@@ -2,15 +2,17 @@
 .mobile-content {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  padding: 0 0 80px 0; /* Add bottom padding for scroll */
+  padding: 0 0 120px 0; /* Increase bottom padding */
+  /* Safe area support */
+  padding-bottom: max(120px, calc(120px + env(safe-area-inset-bottom))) !important;
   margin: 0;
 }
 
 .content-box-minor {
   background: transparent;
-  padding: 20px;
+  padding: 20px 20px 60px 20px; /* Add extra bottom padding */
   margin: 0;
-  min-height: calc(100vh - 160px); /* Account for header + bottom padding */
+  min-height: calc(100vh - 200px); /* Account for larger padding */
 }
 
 .header-section {

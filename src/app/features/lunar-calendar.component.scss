@@ -173,3 +173,12 @@
     font-size: 14px;
   }
 }
+
+// Mobile scroll fix
+.mobile-content {
+  padding-bottom: max(120px, calc(120px + env(safe-area-inset-bottom))) !important;
+}
+
+.content-box-minor {
+  padding-bottom: 60px !important;
+}

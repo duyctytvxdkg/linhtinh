@@ -686,3 +686,11 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
+// Mobile scroll fix
+.mobile-content {
+  padding-bottom: max(120px, calc(120px + env(safe-area-inset-bottom))) !important;
+}
+
+.content-box-minor {
+  padding-bottom: 60px !important;
+}

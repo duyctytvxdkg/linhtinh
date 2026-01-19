@@ -40,17 +40,22 @@ app-root {
 /* Mobile content wrapper */
 .mobile-content {
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background: white;
-  padding-bottom: 80px; /* Add bottom padding for scroll */
+  padding-bottom: 120px; /* Base padding */
+  /* Safe area support for notched phones */
+  padding-bottom: max(120px, calc(120px + env(safe-area-inset-bottom)));
+  /* Additional padding for iOS Safari */
+  padding-bottom: max(140px, calc(140px + env(safe-area-inset-bottom)));
 }
 
 /* Content box cho các trang con */
 .content-box-minor {
   padding: 20px;
-  min-height: calc(100vh - 160px); /* Account for header + bottom padding */
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 200px); /* Account for larger bottom padding */
+  padding-bottom: 40px; /* Additional padding for content */
   background: white;
 }
 
