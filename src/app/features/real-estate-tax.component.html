@@ -367,59 +367,65 @@
     </div>
   </div>
 
-  <!-- General Information -->
-  <div class="info-section">
-    <mat-card class="info-card">
-      <mat-card-header>
-        <mat-card-title>📚 Thông tin chung về thuế BDS</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="info-grid">
-          <div class="info-item">
-            <h4>🌱 Thuế sử dụng đất</h4>
-            <ul>
-              <li>• Thuế hàng năm dựa trên giá đất</li>
-              <li>• Có diện tích miễn thuế</li>
-              <li>• Thuế suất khác nhau theo loại đất</li>
-              <li>• Hệ số điều chỉnh theo khu vực</li>
-            </ul>
-          </div>
-          
-          <div class="info-item">
-            <h4>💸 Thuế chuyển nhượng</h4>
-            <ul>
-              <li>• Thuế trên lợi nhuận từ bán BDS</li>
-              <li>• Thuế suất giảm theo thời gian nắm giữ</li>
-              <li>• Miễn thuế nhà ở duy nhất ≥ 2 năm</li>
-              <li>• Trừ chi phí cải tạo và bán</li>
-            </ul>
-          </div>
-          
-          <div class="info-item">
-            <h4>📋 Lệ phí trước bạ</h4>
-            <ul>
-              <li>• Phí đăng ký quyền sở hữu</li>
-              <li>• 0.5% giá trị bất động sản</li>
-              <li>• Giảm 50% lần đầu mua nhà ở</li>
-              <li>• Cộng các phí thủ tục khác</li>
-            </ul>
-          </div>
-        </div>
-        
-        <div class="disclaimer">
-          <mat-icon>warning</mat-icon>
-          <div>
-            <strong>Lưu ý quan trọng:</strong>
-            <p>Kết quả tính toán chỉ mang tính chất tham khảo. Thuế và phí thực tế có thể khác do:</p>
-            <ul>
-              <li>• Quy định pháp luật thay đổi</li>
-              <li>• Chính sách ưu đãi đặc biệt</li>
-              <li>• Tình huống cụ thể của từng trường hợp</li>
-              <li>• Cần tham khảo cơ quan thuế để có thông tin chính xác</li>
-            </ul>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+  <!-- Info Button -->
+  <div class="info-button-container">
+    <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
+      <mat-icon>info</mat-icon>
+    </button>
+    <span class="info-label">Thông tin chi tiết</span>
   </div>
+
+  <!-- Info Modal -->
+  <app-info-modal 
+    [isOpen]="isInfoModalOpen" 
+    [title]="'📚 Thông tin chung về thuế BDS'"
+    (close)="closeInfoModal()">
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <h4>🌱 Thuế sử dụng đất</h4>
+        <ul>
+          <li>• Thuế hàng năm dựa trên giá đất</li>
+          <li>• Có diện tích miễn thuế</li>
+          <li>• Thuế suất khác nhau theo loại đất</li>
+          <li>• Hệ số điều chỉnh theo khu vực</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>💸 Thuế chuyển nhượng</h4>
+        <ul>
+          <li>• Thuế trên lợi nhuận từ bán BDS</li>
+          <li>• Thuế suất giảm theo thời gian nắm giữ</li>
+          <li>• Miễn thuế nhà ở duy nhất ≥ 2 năm</li>
+          <li>• Trừ chi phí cải tạo và bán</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>📋 Lệ phí trước bạ</h4>
+        <ul>
+          <li>• Phí đăng ký quyền sở hữu</li>
+          <li>• 0.5% giá trị bất động sản</li>
+          <li>• Giảm 50% lần đầu mua nhà ở</li>
+          <li>• Cộng các phí thủ tục khác</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="disclaimer">
+      <mat-icon>warning</mat-icon>
+      <div>
+        <strong>Lưu ý quan trọng:</strong>
+        <p>Kết quả tính toán chỉ mang tính chất tham khảo. Thuế và phí thực tế có thể khác do:</p>
+        <ul>
+          <li>• Quy định pháp luật thay đổi</li>
+          <li>• Chính sách ưu đãi đặc biệt</li>
+          <li>• Tình huống cụ thể của từng trường hợp</li>
+          <li>• Cần tham khảo cơ quan thuế để có thông tin chính xác</li>
+        </ul>
+      </div>
+    </div>
+    
+  </app-info-modal>
 </div>
