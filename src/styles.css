@@ -43,11 +43,13 @@ app-root {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background: white;
+  padding-bottom: 80px; /* Add bottom padding for scroll */
 }
 
 /* Content box cho các trang con */
 .content-box-minor {
   padding: 20px;
+  min-height: calc(100vh - 160px); /* Account for header + bottom padding */
   min-height: calc(100vh - 80px);
   background: white;
 }

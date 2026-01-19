@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { MobileHeaderComponent } from '../shared/mobile-header.component';
+import { InfoModalComponent } from '../shared/info-modal.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +9,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import { CurrencyInputDirective } from './currency-input.directive';
 import { TaxParamsService, TaxParams } from './tax-params.service';
 import { Subscription } from 'rxjs';
@@ -26,9 +28,10 @@ import { Subscription } from 'rxjs';
     CurrencyInputDirective,
     MatRadioModule,
     MatButtonModule,
-    MatTabsModule
-  ,
-    MobileHeaderComponent
+    MatTabsModule,
+    MatIconModule,
+    MobileHeaderComponent,
+    InfoModalComponent,
   ],
 })
 export class ThueTncnComponent implements OnInit, OnDestroy {
@@ -38,6 +41,10 @@ export class ThueTncnComponent implements OnInit, OnDestroy {
   // Tham số từ CSV
   taxParams: TaxParams | null = null;
   paramsLastUpdate: Date | null = null;
+  
+  // Modal states
+  isInfoModalOpen = false;
+  
   private subscriptions: Subscription[] = [];
 
   // Hằng số định mức 2026 (sẽ được thay thế bằng CSV)
@@ -96,6 +103,15 @@ export class ThueTncnComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  // Modal methods
+  openInfoModal() {
+    this.isInfoModalOpen = true;
+  }
+
+  closeInfoModal() {
+    this.isInfoModalOpen = false;
   }
 
   private loadTaxParams(): void {

@@ -220,46 +220,100 @@
     </mat-tab>
   </mat-tab-group>
 
-  <!-- Thông tin tham số CSV -->
-  <div class="csv-params-info mt-6" *ngIf="taxParams && paramsLastUpdate">
-    <div class="params-card">
-      <h4>📊 Tham số thuế từ CSV</h4>
-      <div class="params-grid">
-        <div class="param-item">
-          <span class="param-label">Giảm trừ bản thân:</span>
-          <span class="param-value">{{ formatCurrency(taxParams.personalDeduction) }} VND/tháng</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Giảm trừ người phụ thuộc:</span>
-          <span class="param-value">{{ formatCurrency(taxParams.dependentDeduction) }} VND/tháng</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Số bậc thuế:</span>
-          <span class="param-value">{{ taxParams.tiers.length }} bậc</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Cập nhật lần cuối:</span>
-          <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
-        </div>
-      </div>
-      <p class="params-note">
-        💡 Tham số được tải từ file <code>thuetncn.csv</code> và có thể cập nhật hàng tháng
-      </p>
-    </div>
+  <!-- Info Button -->
+  <div class="info-button-container">
+    <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
+      <mat-icon>info</mat-icon>
+    </button>
+    <span class="info-label">Thông tin chi tiết</span>
   </div>
 
-  <!-- Thông tin cập nhật 2026 -->
-  <div class="update-info mt-8">
-    <div class="info-card">
-      <h4>🆕 Cập nhật quy định 2026</h4>
-      <ul>
-        <li>✅ Giảm trừ bản thân: <strong>{{ formatCurrency(taxParams?.personalDeduction || 11000000) }} VND/tháng</strong></li>
-        <li>✅ Giảm trừ người phụ thuộc: <strong>{{ formatCurrency(taxParams?.dependentDeduction || 4400000) }} VND/người</strong></li>
-        <li>✅ Mức lương tối đa đóng BHXH: <strong>46.8 triệu VND/tháng</strong></li>
-        <li>✅ Bậc thuế: <strong>{{ formatTaxTiers() }}</strong></li>
-        <li>✅ Tính năng mới: <strong>Tính ngược từ NET → GROSS</strong></li>
-      </ul>
+  <!-- Info Modal -->
+  <app-info-modal 
+    [isOpen]="isInfoModalOpen" 
+    [title]="'📚 Thông tin về Thuế TNCN 2026'"
+    (close)="closeInfoModal()">
+    
+    <!-- CSV Parameters Section -->
+    <div class="csv-params-section" *ngIf="taxParams && paramsLastUpdate">
+      <div class="params-card">
+        <h4>📊 Tham số thuế từ CSV</h4>
+        <div class="params-grid">
+          <div class="param-item">
+            <span class="param-label">Giảm trừ bản thân:</span>
+            <span class="param-value">{{ formatCurrency(taxParams.personalDeduction) }} VND/tháng</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Giảm trừ người phụ thuộc:</span>
+            <span class="param-value">{{ formatCurrency(taxParams.dependentDeduction) }} VND/tháng</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Số bậc thuế:</span>
+            <span class="param-value">{{ taxParams.tiers.length }} bậc</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Bậc thuế cao nhất:</span>
+            <span class="param-value">{{ taxParams.tiers && taxParams.tiers.length > 0 ? (taxParams.tiers[taxParams.tiers.length-1].rate * 100) : 35 }}%</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Cập nhật lần cuối:</span>
+            <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+        <p class="params-note">
+          💡 Tham số được tải từ file <code>thuetncn.csv</code> và có thể cập nhật hàng tháng
+        </p>
+      </div>
     </div>
-  </div>
+    
+    <!-- Thông tin cập nhật 2026 -->
+    <div class="update-info-section">
+      <div class="info-card">
+        <h4>🆕 Cập nhật quy định 2026</h4>
+        <ul>
+          <li>✅ Giảm trừ bản thân: <strong>{{ formatCurrency(taxParams?.personalDeduction || 11000000) }} VND/tháng</strong></li>
+          <li>✅ Giảm trừ người phụ thuộc: <strong>{{ formatCurrency(taxParams?.dependentDeduction || 4400000) }} VND/người</strong></li>
+          <li>✅ Mức lương tối đa đóng BHXH: <strong>46.8 triệu VND/tháng</strong></li>
+          <li>✅ Bậc thuế: <strong>{{ formatTaxTiers() }}</strong></li>
+          <li>✅ Tính năng mới: <strong>Tính ngược từ NET → GROSS</strong></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <h4>💰 Thuế thu nhập cá nhân</h4>
+        <ul>
+          <li>• Áp dụng bậc thang lũy tiến từ 5% đến 35%</li>
+          <li>• Giảm trừ gia cảnh: {{ formatCurrency(taxParams?.personalDeduction || 11000000) }} VND/tháng</li>
+          <li>• Người phụ thuộc: {{ formatCurrency(taxParams?.dependentDeduction || 4400000) }} VND/người</li>
+          <li>• Tính theo thu nhập chịu thuế sau giảm trừ</li>
+          <li>• Có thể tính ngược từ lương NET sang GROSS</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>🧮 Cách tính thuế</h4>
+        <ul>
+          <li>• <strong>GROSS → NET:</strong> Lương gốc trừ BHXH, giảm trừ, rồi tính thuế</li>
+          <li>• <strong>NET → GROSS:</strong> Từ lương thực nhận tính ngược ra lương gốc</li>
+          <li>• BHXH = 8% lương (tối đa 46.8 triệu)</li>
+          <li>• Thu nhập chịu thuế = Lương - BHXH - Giảm trừ</li>
+          <li>• Thuế = Áp dụng bậc thang lũy tiến</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>📋 Lưu ý quan trọng</h4>
+        <ul>
+          <li>• Quy định có thể thay đổi theo luật mới</li>
+          <li>• Kết quả chỉ mang tính chất tham khảo</li>
+          <li>• Một số khoản thu nhập có thể được miễn thuế</li>
+          <li>• Nên tham khảo cơ quan thuế để có thông tin chính xác</li>
+        </ul>
+      </div>
+    </div>
+    
+  </app-info-modal>
 </div>
-  </div>
+  </div>

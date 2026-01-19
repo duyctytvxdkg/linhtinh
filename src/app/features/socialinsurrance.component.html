@@ -286,37 +286,95 @@
     </mat-tab>
   </mat-tab-group>
 
-  <!-- Thông tin tham số CSV -->
-  <div class="csv-params-info mt-6" *ngIf="bhxhParams && paramsLastUpdate">
-    <div class="params-card">
-      <h4>📊 Tham số BHXH từ CSV</h4>
-      <div class="params-grid">
-        <div class="param-item">
-          <span class="param-label">Số năm đóng tối thiểu:</span>
-          <span class="param-value">{{ bhxhParams.minContributionYears }} năm</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Tỷ lệ thay thế cơ bản:</span>
-          <span class="param-value">{{ (bhxhParams.replacementRate * 100) }}%</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Tỷ lệ tăng hàng năm:</span>
-          <span class="param-value">{{ (bhxhParams.yearlyIncreaseRate * 100) }}%/năm</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Tuổi nghỉ hưu Nam/Nữ:</span>
-          <span class="param-value">{{ bhxhParams.retirementAgeM }}/{{ bhxhParams.retirementAgeF }} tuổi</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Cập nhật lần cuối:</span>
-          <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
-        </div>
-      </div>
-      <p class="params-note">
-        💡 Tham số được tải từ file <code>bhxh.csv</code> và có thể cập nhật hàng tháng
-      </p>
-    </div>
+  <!-- Info Button -->
+  <div class="info-button-container">
+    <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
+      <mat-icon>info</mat-icon>
+    </button>
+    <span class="info-label">Thông tin chi tiết</span>
   </div>
+
+  <!-- Info Modal -->
+  <app-info-modal 
+    [isOpen]="isInfoModalOpen" 
+    [title]="'📚 Thông tin về BHXH và Lương hưu'"
+    (close)="closeInfoModal()">
+    
+    <!-- CSV Parameters Section -->
+    <div class="csv-params-section" *ngIf="bhxhParams && paramsLastUpdate">
+      <div class="params-card">
+        <h4>📊 Tham số BHXH từ CSV</h4>
+        <div class="params-grid">
+          <div class="param-item">
+            <span class="param-label">Số năm đóng tối thiểu:</span>
+            <span class="param-value">{{ bhxhParams.minContributionYears }} năm</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Tỷ lệ thay thế cơ bản:</span>
+            <span class="param-value">{{ (bhxhParams.replacementRate * 100) }}%</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Tỷ lệ tăng hàng năm:</span>
+            <span class="param-value">{{ (bhxhParams.yearlyIncreaseRate * 100) }}%/năm</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Tuổi nghỉ hưu Nam/Nữ:</span>
+            <span class="param-value">{{ bhxhParams.retirementAgeM }}/{{ bhxhParams.retirementAgeF }} tuổi</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Lương tối thiểu:</span>
+            <span class="param-value">{{ bhxhParams.minSalary | number }} VND</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Lương BHXH tối đa:</span>
+            <span class="param-value">{{ bhxhParams.maxSalary | number }} VND</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Cập nhật lần cuối:</span>
+            <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+        <p class="params-note">
+          💡 Tham số được tải từ file <code>bhxh.csv</code> và có thể cập nhật hàng tháng
+        </p>
+      </div>
+    </div>
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <h4>🧓 Lương hưu BHXH</h4>
+        <ul>
+          <li>• Tính theo công thức: Lương bình quân × Tỷ lệ thay thế × Số năm đóng</li>
+          <li>• Tỷ lệ thay thế cơ bản: {{ bhxhParams ? (bhxhParams.replacementRate * 100) : '45' }}%</li>
+          <li>• Tăng {{ bhxhParams ? (bhxhParams.yearlyIncreaseRate * 100) : '2' }}% mỗi năm đóng thêm</li>
+          <li>• Tối thiểu {{ bhxhParams ? bhxhParams.minContributionYears : '20' }} năm đóng BHXH</li>
+          <li>• Tuổi nghỉ hưu: Nam {{ bhxhParams ? bhxhParams.retirementAgeM : '62' }}, Nữ {{ bhxhParams ? bhxhParams.retirementAgeF : '60' }} tuổi</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>💰 Bảo hiểm thất nghiệp</h4>
+        <ul>
+          <li>• Mức hưởng: 60% lương bình quân 6 tháng gần nhất</li>
+          <li>• Thời gian hưởng: 3-12 tháng tùy thời gian đóng</li>
+          <li>• Điều kiện: Đóng đủ 12 tháng trong 24 tháng</li>
+          <li>• Mức tối đa: 5 lần lương tối thiểu vùng</li>
+          <li>• Hồ sơ: Quyết định sa thải + Sổ BHXH</li>
+        </ul>
+      </div>
+      
+      <div class="info-item">
+        <h4>📋 Lưu ý quan trọng</h4>
+        <ul>
+          <li>• Kết quả chỉ mang tính chất tham khảo</li>
+          <li>• Lương hưu thực tế có thể khác do điều chỉnh chính sách</li>
+          <li>• Hệ số điều chỉnh theo năm có thể thay đổi</li>
+          <li>• Nên tham khảo BHXH để có thông tin chính xác</li>
+        </ul>
+      </div>
+    </div>
+    
+  </app-info-modal>
 
   </div>
 </div>

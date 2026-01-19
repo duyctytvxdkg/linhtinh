@@ -14,8 +14,10 @@ import { CurrencyInputDirective } from './currency-input.directive';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MobileHeaderComponent } from '../shared/mobile-header.component';
+import { InfoModalComponent } from '../shared/info-modal.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTable } from '@angular/material/table';
 import { AfterViewInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
@@ -75,12 +77,18 @@ const ADJUSTMENT_FACTORS: Record<number, number> = {
     MatTabsModule,
     MatSelectModule,
     MatButtonModule,
+    MatIconModule,
     MobileHeaderComponent,
+    InfoModalComponent,
   ],
 })
 export class SocialInsurranceComponent implements AfterViewInit, OnInit, OnDestroy {
   bhxhParams: BhxhParams | null = null;
   paramsLastUpdate: Date | null = null;
+  
+  // Modal states
+  isInfoModalOpen = false;
+  
   private subscriptions: Subscription[] = [];
 
   dataSource: AbstractControl[] = [];
@@ -131,6 +139,15 @@ export class SocialInsurranceComponent implements AfterViewInit, OnInit, OnDestr
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  // Modal methods
+  openInfoModal() {
+    this.isInfoModalOpen = true;
+  }
+
+  closeInfoModal() {
+    this.isInfoModalOpen = false;
   }
 
   private loadBhxhParams(): void {
