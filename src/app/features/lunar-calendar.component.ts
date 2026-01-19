@@ -184,30 +184,97 @@ export class LunarCalendarComponent implements OnInit {
     console.log('✅ Cập nhật dữ liệu cho ngày:', date.toLocaleDateString('vi-VN'));
   }
   parseLunarDate(lunarStr: string) {
+    console.log('🔍 Parsing lunar string:', lunarStr);
+    console.log('🔍 Lunar string char codes:', [...lunarStr].map(c => `${c}(${c.charCodeAt(0)})`));
+    
     const afterYear = lunarStr.split('年')[1];
     if (afterYear) {
+      console.log('🔍 After year split:', afterYear);
       const parts = afterYear.split('月');
       const monthPart = parts[0];
       const dayPart = parts[1];
+      console.log('📅 Month part:', monthPart, 'Day part:', dayPart);
+      console.log('📅 Day part chars:', [...dayPart].map(c => `${c}(${c.charCodeAt(0)})`));
+      
       this.lunarMonthNumber = this.decodeLunarValue(monthPart);
       this.lunarDayNumber = this.decodeLunarValue(dayPart);
+      console.log('🔢 Final decoded - Month:', this.lunarMonthNumber, 'Day:', this.lunarDayNumber);
     }
   }
 
   decodeLunarValue(text: string): number {
+    console.log('🔍 decodeLunarValue input:', text, 'length:', text.length, 'char codes:', [...text].map(c => c.charCodeAt(0)));
+    
     const map: { [key: string]: number } = {
       '正': 1, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
       '六': 6, '七': 7, '八': 8, '九': 9, '十': 10, '冬': 10,
       '廿': 20, '卅': 30
     };
 
-    if (text.length === 1) return map[text] || 0;
+    // Handle exact matches for 20 and 30
+    if (text === '二十') {
+      console.log('📝 Exact match 二十: 20');
+      return 20;
+    }
+    if (text === '三十') {
+      console.log('📝 Exact match 三十: 30');
+      return 30;
+    }
 
-    if (text.startsWith('初')) return map[text[1]] || 0;
-    if (text.startsWith('十')) return 10 + (map[text[1]] || 0);
-    if (text.startsWith('廿')) return 20 + (map[text[1]] || 0);
-    if (text.startsWith('卅')) return 30 + (map[text[1]] || 0);
+    // Handle single character cases
+    if (text.length === 1) {
+      const result = map[text] || 0;
+      console.log('📝 Single char result:', result, 'for char:', text);
+      return result;
+    }
 
+    // Handle compound cases
+    if (text.startsWith('初')) {
+      const result = map[text[1]] || 0;
+      console.log('📝 初 result:', result, 'for:', text);
+      return result;
+    }
+    if (text.startsWith('十') && text.length > 1) {
+      const result = 10 + (map[text[1]] || 0);
+      console.log('📝 十 result:', result, 'for:', text);
+      return result;
+    }
+    if (text.startsWith('廿') && text.length > 1) {
+      const result = 20 + (map[text[1]] || 0);
+      console.log('📝 廿 result:', result, 'for:', text);
+      return result;
+    }
+    if (text.startsWith('卅') && text.length > 1) {
+      const result = 30 + (map[text[1]] || 0);
+      console.log('📝 卅 result:', result, 'for:', text);
+      return result;
+    }
+
+    // Handle 二十X pattern (21-29)
+    if (text.startsWith('二十') && text.length > 2) {
+      const result = 20 + (map[text[2]] || 0);
+      console.log('📝 二十X result:', result, 'for:', text);
+      return result;
+    }
+
+    // Handle 三十X pattern (31+, though rare in lunar calendar)
+    if (text.startsWith('三十') && text.length > 2) {
+      const result = 30 + (map[text[2]] || 0);
+      console.log('📝 三十X result:', result, 'for:', text);
+      return result;
+    }
+
+    // Special case for exact matches (fallback)
+    if (text === '廿') {
+      console.log('📝 Exact 廿 match: 20');
+      return 20;
+    }
+    if (text === '卅') {
+      console.log('📝 Exact 卅 match: 30');
+      return 30;
+    }
+
+    console.log('⚠️ No match found for:', text, 'returning 0');
     return 0;
   }
 
