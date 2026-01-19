@@ -140,6 +140,10 @@
 
 .tab-content {
   padding: 30px;
+  min-height: 60vh;
+  max-height: 80vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .section-title {
@@ -575,9 +579,12 @@
   }
 }
 
-// Info section
+// Info section - Scrollable and height limited
 .info-section {
   margin-top: 30px;
+  max-height: 400px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .info-card {
@@ -647,7 +654,11 @@
   background: #fef3c7;
   border: 1px solid #f59e0b;
   border-radius: 12px;
-  padding: 20px;
+  padding: 15px;
+  margin-top: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   
   mat-icon {
     color: #f59e0b;
@@ -692,6 +703,17 @@
 @media (max-width: 768px) {
   .tab-content {
     padding: 20px;
+    min-height: 50vh;
+    max-height: 75vh;
+  }
+  
+  .info-section {
+    max-height: 300px;
+  }
+  
+  .data-note {
+    max-height: 250px;
+    padding: 12px;
   }
   
   .form-section {
@@ -749,4 +771,33 @@
   transform: translateX(5px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
+}
+// Scroll indicators
+.info-section::before {
+  content: "📜 Cuộn để xem thêm thông tin";
+  display: block;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #64748b;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.data-note::before {
+  content: "ℹ️ Cuộn để đọc hết thông tin";
+  display: block;
+  font-size: 0.75rem;
+  color: #92400e;
+  text-align: center;
+  margin-bottom: 8px;
+  position: sticky;
+  top: 0;
+  background: #fef3c7;
+  padding: 4px;
+  border-radius: 4px;
 }
