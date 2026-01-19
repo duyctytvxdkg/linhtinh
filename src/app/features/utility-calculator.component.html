@@ -240,27 +240,6 @@
     <mat-tab label="📋 Bảng giá">
       <div class="tab-content">
         
-        <!-- Update info -->
-        <div class="update-info-grid">
-          <div class="update-item">
-            <span class="update-label">⚡ Điện:</span>
-            <span class="update-text">{{ getLastUpdateText(electricityLastUpdate) }}</span>
-            <span class="update-date" *ngIf="electricityLastUpdate">
-              ({{ electricityLastUpdate | date:'dd/MM/yyyy' }})
-            </span>
-          </div>
-          <div class="update-item">
-            <span class="update-label">💧 Nước:</span>
-            <span class="update-text">{{ getLastUpdateText(waterLastUpdate) }}</span>
-            <span class="update-date" *ngIf="waterLastUpdate">
-              ({{ waterLastUpdate | date:'dd/MM/yyyy' }})
-            </span>
-          </div>
-          <button mat-icon-button (click)="refreshData()" class="refresh-btn" title="Làm mới dữ liệu">
-            <mat-icon>refresh</mat-icon>
-          </button>
-        </div>
-        
         <div class="price-tables">
           <!-- Electricity price table -->
           <div class="price-table-section">
@@ -330,6 +309,29 @@
     [isOpen]="isInfoModalOpen" 
     [title]="'📚 Thông tin về tính tiền điện nước'"
     (close)="closeInfoModal()">
+    
+    <!-- Update Info Section -->
+    <div class="update-info-section">
+      <div class="update-info-grid">
+        <div class="update-item">
+          <span class="update-label">⚡ Điện:</span>
+          <span class="update-text">{{ getLastUpdateText(electricityLastUpdate) }}</span>
+          <span class="update-date" *ngIf="electricityLastUpdate">
+            ({{ electricityLastUpdate | date:'dd/MM/yyyy' }})
+          </span>
+        </div>
+        <div class="update-item">
+          <span class="update-label">💧 Nước:</span>
+          <span class="update-text">{{ getLastUpdateText(waterLastUpdate) }}</span>
+          <span class="update-date" *ngIf="waterLastUpdate">
+            ({{ waterLastUpdate | date:'dd/MM/yyyy' }})
+          </span>
+        </div>
+        <button mat-icon-button (click)="refreshData()" class="refresh-btn" title="Làm mới dữ liệu">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
     
     <div class="info-grid">
       <div class="info-item">

@@ -323,50 +323,6 @@
 
   </mat-tab-group>
 
-  <!-- Thông tin tham số CSV -->
-  <div class="csv-params-info mt-6" *ngIf="taxParams && paramsLastUpdate">
-    <div class="params-card">
-      <h4>📊 Tham số thuế BDS từ CSV</h4>
-      <div class="params-grid">
-        <div class="param-item">
-          <span class="param-label">Phí thẩm định hồ sơ:</span>
-          <span class="param-value">{{ formatCurrency(taxParams.documentFee) }} VND</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Phí cấp giấy chứng nhận:</span>
-          <span class="param-value">{{ formatCurrency(taxParams.certificateFee) }} VND</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Tỷ lệ phí công chứng:</span>
-          <span class="param-value">{{ (taxParams.notaryFeeRate * 100) }}%</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Giảm giá lần đầu mua nhà:</span>
-          <span class="param-value">{{ (taxParams.firstTimeBuyerDiscount * 100) }}%</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Thuế chuyển nhượng < 2 năm:</span>
-          <span class="param-value">{{ (taxParams.transferTaxRate1 * 100) }}%</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Thuế chuyển nhượng 2-5 năm:</span>
-          <span class="param-value">{{ (taxParams.transferTaxRate2 * 100) }}%</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Thuế chuyển nhượng >= 5 năm:</span>
-          <span class="param-value">{{ (taxParams.transferTaxRate3 * 100) }}%</span>
-        </div>
-        <div class="param-item">
-          <span class="param-label">Cập nhật lần cuối:</span>
-          <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
-        </div>
-      </div>
-      <p class="params-note">
-        💡 Tham số được tải từ file <code>real-estate-tax.csv</code> và có thể cập nhật khi có thay đổi quy định
-      </p>
-    </div>
-  </div>
-
   <!-- Info Button -->
   <div class="info-button-container">
     <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
@@ -380,6 +336,50 @@
     [isOpen]="isInfoModalOpen" 
     [title]="'📚 Thông tin chung về thuế BDS'"
     (close)="closeInfoModal()">
+    
+    <!-- CSV Parameters Section -->
+    <div class="csv-params-section" *ngIf="taxParams && paramsLastUpdate">
+      <div class="params-card">
+        <h4>📊 Tham số thuế BDS từ CSV</h4>
+        <div class="params-grid">
+          <div class="param-item">
+            <span class="param-label">Phí thẩm định hồ sơ:</span>
+            <span class="param-value">{{ formatCurrency(taxParams.documentFee) }} VND</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Phí cấp giấy chứng nhận:</span>
+            <span class="param-value">{{ formatCurrency(taxParams.certificateFee) }} VND</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Tỷ lệ phí công chứng:</span>
+            <span class="param-value">{{ (taxParams.notaryFeeRate * 100) }}%</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Giảm giá lần đầu mua nhà:</span>
+            <span class="param-value">{{ (taxParams.firstTimeBuyerDiscount * 100) }}%</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Thuế chuyển nhượng < {{ taxParams.exemptionThreshold1 }} năm:</span>
+            <span class="param-value">{{ (taxParams.transferTaxRate1 * 100) }}%</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Thuế chuyển nhượng {{ taxParams.exemptionThreshold1 }}-{{ taxParams.exemptionThreshold2 }} năm:</span>
+            <span class="param-value">{{ (taxParams.transferTaxRate2 * 100) }}%</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Thuế chuyển nhượng >= {{ taxParams.exemptionThreshold2 }} năm:</span>
+            <span class="param-value">{{ (taxParams.transferTaxRate3 * 100) }}%</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Cập nhật lần cuối:</span>
+            <span class="param-value">{{ paramsLastUpdate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+        <p class="params-note">
+          💡 Tham số được tải từ file <code>real-estate-tax.csv</code> và có thể cập nhật khi có thay đổi quy định
+        </p>
+      </div>
+    </div>
     
     <div class="info-grid">
       <div class="info-item">
