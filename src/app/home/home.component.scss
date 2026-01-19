@@ -1,133 +1,135 @@
-.home-container {
-  padding: 40px 20px;
-  text-align: center;
-  min-height: 80vh;
+/* Mobile Home Design */
+.mobile-home {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgb(117, 81, 194), rgb(255, 255, 255));
 }
 
-.hero-section {
-  padding-bottom: 20px;
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 6px 16px;
-    border-radius: 20px;
-    color: white;
-    font-size: 0.9rem;
+/* Mobile Header */
+.mobile-header {
+  padding: 60px 20px 30px 20px;
+  text-align: center;
+  color: white;
+  
+  .app-title {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 10px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .app-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0;
     font-weight: 500;
-    backdrop-filter: blur(5px);
-
-    .dot {
-      height: 8px;
-      width: 8px;
-      background-color: #4ade80;
-      border-radius: 50%;
-      margin-right: 8px;
-      animation: blink 1.5s infinite;
-    }
   }
 }
 
-/* Lưới Tools */
+/* Tools Container */
+.tools-container {
+  flex: 1;
+  padding: 0 15px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile Tools Grid */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-  max-width: 1100px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding-bottom: 20px;
+  max-width: 500px;
   margin: 0 auto;
 }
 
+/* Mobile Tool Cards */
 .tool-card {
   background: white;
-  padding: 30px;
-  border-radius: 20px;
-  text-align: left;
+  border-radius: 16px;
+  padding: 20px 15px;
+  text-align: center;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  color: inherit;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
-
-  &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    background: #fdfaff;
-
-    .btn-go {
-      color: #7c3aed;
-      padding-left: 5px;
-    }
+  align-items: center;
+  min-height: 140px;
+  
+  &:hover, &:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
-
-  .icon-box {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    
-    &.bg-blue-100 { background-color: #dbeafe; }
-    &.bg-yellow-100 { background-color: #fef3c7; }
-    &.bg-green-100 { background-color: #dcfce7; }
-    &.bg-red-100 { background-color: #fee2e2; }
-    &.bg-cyan-100 { background-color: #cffafe; }
-    &.bg-emerald-100 { background-color: #d1fae5; }
-    &.bg-orange-100 { background-color: #fed7aa; }
-    &.bg-purple-100 { background-color: #e9d5ff; }
-    &.bg-indigo-100 { background-color: #e0e7ff; }
-    &.bg-gray-100 { background-color: #f3f4f6; }
+  
+  .tool-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    line-height: 1;
   }
-
-  h3 {
-    color: #1e293b;
+  
+  .tool-title {
+    font-size: 0.9rem;
     font-weight: 700;
-    font-size: 1.25rem;
-    margin-bottom: 10px;
+    color: #1e293b;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
   }
-
-  p {
+  
+  .tool-desc {
+    font-size: 0.75rem;
     color: #64748b;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    flex-grow: 1;
-    margin-bottom: 20px;
+    margin: 0;
+    line-height: 1.3;
+    text-align: center;
   }
+}
 
-  .btn-go {
-    font-weight: 600;
-    color: #94a3b8;
-    transition: all 0.2s;
+/* Mobile Footer */
+.mobile-footer {
+  padding: 15px 20px 30px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  
+  p {
+    margin: 0 0 5px 0;
+    font-size: 0.8rem;
   }
-
-  &.coming-soon {
-    cursor: default;
+  
+  .contact {
+    font-size: 0.75rem;
     opacity: 0.7;
-    border-style: dashed;
-    border-width: 2px;
-    &:hover { transform: none; }
   }
 }
 
-.home-footer {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.85rem;
+/* Responsive adjustments */
+@media (max-width: 360px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+  }
+  
+  .tool-card {
+    min-height: 120px;
+    padding: 15px 10px;
+  }
 }
 
-/* Hiệu ứng nhấp nháy cho status */
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+@media (min-width: 600px) {
+  .tools-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 600px;
+  }
 }
 
-/* Mobile Fix */
-@media (max-width: 640px) {
-  .hero-section h1 { font-size: 2rem; }
-  .tools-grid { grid-template-columns: 1fr; }
+/* Safe area for notched phones */
+.mobile-header {
+  padding-top: max(60px, env(safe-area-inset-top) + 20px);
+}
+
+.mobile-footer {
+  padding-bottom: max(30px, env(safe-area-inset-bottom) + 15px);
 }

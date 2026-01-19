@@ -11,96 +11,52 @@
 @tailwind utilities;
 
 /* ===============================
-   3️⃣ GLOBAL LAYOUT & CUSTOM CSS
+   3️⃣ MOBILE APP GLOBAL STYLES
    =============================== */
 
-/* Toàn bộ nền gradient */
+/* Reset và base styles cho mobile */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  background: linear-gradient(180deg, rgb(117, 81, 194), rgb(255, 255, 255));
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: #f8fafc;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+app-root {
   height: 100vh;
   width: 100vw;
-}
-
-/* Đảm bảo Angular không bị căn giữa */
-app-root {
-  height: 100%;
-  width: 100%;
   display: block;
-}
-
-/* Layout chính */
-.layout {
-  display: flex;
-  height: 100vh;
-  width: 100%;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 240px;
-  padding: 20px;
-  color: white;
-  backdrop-filter: blur(8px);
-  border-right: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
-}
-
-.title {
-  margin: 0 0 20px 0;
-  font-size: 22px;
-  font-weight: bold;
-  color: white;
-}
-
-/* Menu */
-.menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.menu li {
-  margin-bottom: 12px;
-}
-
-.menu li a {
-  display: block;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  color: white;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.menu li a:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.menu li a.active {
-  background: rgba(255, 255, 255, 0.35);
-  color: white;
-}
-
-/* Vùng nội dung bên phải */
-.content {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
-}
-
-/* Box bên phải */
-.content-box {
-  padding: 25px;
-  border-radius: 12px;
-  min-height: 95%;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+}
+
+/* Mobile content wrapper */
+.mobile-content {
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: white;
+}
+
+/* Content box cho các trang con */
+.content-box-minor {
+  padding: 20px;
+  min-height: calc(100vh - 80px);
+  background: white;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .content-box-minor {
+    padding: 15px;
+  }
 }
 
 

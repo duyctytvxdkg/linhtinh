@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
+import { MobileHeaderComponent } from '../shared/mobile-header.component';
 
 import { Chart, registerables } from 'chart.js';
 import * as XLSX from 'xlsx';
@@ -49,6 +50,7 @@ function currencyFormat(value: number): string {
     MatTableModule,
     CurrencyInputDirective,
     MatRadioModule,
+    MobileHeaderComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './loan.component.html',

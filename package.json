@@ -18,7 +18,9 @@
     "cap:run:ios": "npx cap run ios",
     "mobile:build": "npm run ionic:build && npm run cap:sync",
     "mobile:android": "npm run mobile:build && npm run cap:open:android",
-    "mobile:ios": "npm run mobile:build && npm run cap:open:ios"
+    "mobile:ios": "npm run mobile:build && npm run cap:open:ios",
+    "build:pwa": "ng build --configuration production",
+    "pwa:serve": "npx http-server dist/linhtinhapp/browser -p 8080"
   },
   "private": true,
   "dependencies": {
@@ -32,6 +34,7 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@angular/service-worker": "^17.3.0",
     "@capacitor/android": "^8.0.0",
     "@capacitor/cli": "^8.0.0",
     "@capacitor/core": "^8.0.0",
