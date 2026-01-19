@@ -405,14 +405,13 @@ button[mat-icon-button].color-warn {
 }
 
 .tab-content {
-  min-height: 600px;
   padding: 20px;
   background: white;
   border-radius: 0 0 12px 12px;
   width: 100%;
   box-sizing: border-box;
   margin: 0;
-  overflow-x: hidden;
+  /* Remove min-height and overflow to prevent nested scrolling */
 }
 
 .tab-header {

@@ -151,9 +151,7 @@
 
 .tab-content {
   padding: 30px;
-  min-height: 70vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  /* Remove height restrictions to prevent nested scrolling */
 }
 
 .section-title {
@@ -713,7 +711,7 @@
 @media (max-width: 768px) {
   .tab-content {
     padding: 20px;
-    min-height: 65vh;
+    /* Remove height restrictions for mobile */
   }
   
   .info-button-container {

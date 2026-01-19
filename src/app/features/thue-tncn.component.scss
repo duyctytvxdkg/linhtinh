@@ -137,10 +137,10 @@
 }
 
 .tab-content {
-  min-height: 600px;
   padding: 20px;
   background: white;
   border-radius: 0 0 12px 12px;
+  /* Remove min-height to prevent nested scrolling */
 }
 
 .tab-header {
