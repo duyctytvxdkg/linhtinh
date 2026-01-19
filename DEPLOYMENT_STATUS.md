@@ -6,7 +6,12 @@
 - **Fixed**: Duplicate `<div class="content-box-minor">` elements in Real Estate Tax and Utility Calculator components
 - **Result**: Proper HTML structure, no layout conflicts
 
-### 2. Mobile Headers
+### 2. Mobile Layout Spacing Issues  
+- **Fixed**: Large gap between mobile header and content in Utility Calculator and Real Estate Tax components
+- **Solution**: Added mobile-specific CSS with proper padding and margin adjustments
+- **Result**: Content now flows directly under mobile header without unwanted spacing
+
+### 3. Mobile Headers
 - **Status**: All 9 components now have mobile headers with back buttons
 - **Components Updated**: 
   - ✅ Loan Calculator (tính lãi vay)
@@ -26,9 +31,10 @@
 - **Scrolling**: Proper touch scrolling enabled
 
 ### 4. Build Status
-- **Production Build**: ✅ Successful
-- **File Size**: 1.84 MB main bundle (429.78 kB compressed)
+- **Production Build**: ✅ Successful  
+- **File Size**: 1.84 MB main bundle (429.56 kB compressed)
 - **PWA**: Service worker and manifest included
+- **CSS**: Mobile layout optimizations applied
 - **CSV Files**: All parameter files included in assets
 
 ## 📱 Mobile Features
@@ -84,7 +90,7 @@
 ### Build Output
 ```
 Initial chunk files   | Names         | Raw size | Estimated transfer size
-main-GNDLYXPX.js      | main          |  1.84 MB |               429.78 kB
+main-KQZXMNW5.js      | main          |  1.84 MB |               429.56 kB
 styles-4XINYEUJ.css   | styles        | 89.82 kB |                 9.27 kB
 polyfills-IJ4IFKSC.js | polyfills     | 33.79 kB |                11.06 kB
 ```
