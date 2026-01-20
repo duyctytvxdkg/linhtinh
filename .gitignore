@@ -45,3 +45,8 @@ Thumbs.db
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+ 
+# Android keystore 
+*.jks 
+*.keystore 
+android/key.properties 

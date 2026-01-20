@@ -207,7 +207,7 @@ export class LunarCalendarComponent implements OnInit {
     
     const map: { [key: string]: number } = {
       '正': 1, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
-      '六': 6, '七': 7, '八': 8, '九': 9, '十': 10, '冬': 10,
+      '六': 6, '七': 7, '八': 8, '九': 9, '十': 10, '冬': 11, '腊': 12,
       '廿': 20, '卅': 30
     };
 
@@ -219,6 +219,16 @@ export class LunarCalendarComponent implements OnInit {
     if (text === '三十') {
       console.log('📝 Exact match 三十: 30');
       return 30;
+    }
+
+    // Handle exact matches for months
+    if (text === '腊') {
+      console.log('📝 Exact match 腊 (tháng 12): 12');
+      return 12;
+    }
+    if (text === '冬') {
+      console.log('📝 Exact match 冬 (tháng 11): 11');
+      return 11;
     }
 
     // Handle single character cases
