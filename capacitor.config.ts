@@ -7,6 +7,10 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'https'
   },
+  ios: {
+    scheme: 'Kho Tools Tiện Ích',
+    backgroundColor: '#6366f1'
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
