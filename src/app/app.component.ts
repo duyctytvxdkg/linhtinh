@@ -1,10 +1,13 @@
 import { LoanComponent } from './features/loan.component';
-import { Component, signal, computed, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, computed, OnInit, OnDestroy, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { LunarCalendarComponent } from './features/lunar-calendar.component';
 import { TideComponent } from './features/tide.component';
+import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -27,8 +30,11 @@ export class AppComponent implements OnInit, OnDestroy {
   currentYear = computed(() => new Date().getFullYear());
 
   private hashListener!: () => void;
+  private currentRoute = '/';
 
-  constructor() {
+  constructor(
+    private router: Router
+  ) {
     console.log('🚀 Ionic App Initialized');
   }
 
@@ -52,9 +58,48 @@ export class AppComponent implements OnInit, OnDestroy {
       this.path.set(window.location.hash.substring(1) || 'home');
     };
     window.addEventListener('hashchange', this.hashListener);
+
+    // Track current route for back button handling
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.currentRoute = event.url;
+      console.log('📍 Current route:', this.currentRoute);
+    });
+
+    // Initialize Android back button handling
+    this.initializeBackButtonHandling();
   }
 
   ngOnDestroy(): void {
     window.removeEventListener('hashchange', this.hashListener);
+  }
+
+  // Initialize Android hardware back button handling
+  private async initializeBackButtonHandling(): Promise<void> {
+    try {
+      // Only handle back button on mobile platforms (specifically Android)
+      if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+        console.log('🔙 Initializing Android back button handling');
+        
+        App.addListener('backButton', ({ canGoBack }) => {
+          console.log('🔙 Back button pressed, canGoBack:', canGoBack, 'currentRoute:', this.currentRoute);
+          
+          // If we're on the home page, exit the app
+          if (this.currentRoute === '/' || this.currentRoute === '') {
+            console.log('🏠 On home page, exiting app');
+            App.exitApp();
+          } else {
+            // Navigate back to home page
+            console.log('🏠 Navigating back to home');
+            this.router.navigate(['/']);
+          }
+        });
+      } else {
+        console.log('🌐 Running in browser or iOS, back button handling not needed');
+      }
+    } catch (error) {
+      console.error('❌ Error initializing back button handling:', error);
+    }
   }
 }

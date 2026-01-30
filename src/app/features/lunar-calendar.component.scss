@@ -97,26 +97,35 @@
 
 @media (max-width: 768px) {
   .month-navigation {
-    flex-direction: column;
-    gap: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    gap: 8px;
   }
   
   .month-navigation h2 {
-    order: -1;
-    margin-bottom: 10px;
+    font-size: 1.1rem;
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    min-width: 0; /* Allow text to shrink */
   }
   
   .nav-btn {
-    padding: 8px 12px;
-    font-size: 13px;
+    padding: 8px 10px;
+    font-size: 12px;
+    min-width: 44px; /* Minimum touch target */
+    flex-shrink: 0; /* Prevent buttons from shrinking */
   }
   
   .nav-text {
-    display: none;
+    display: none; /* Hide text, keep only arrows */
   }
   
   .nav-arrow {
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: bold;
   }
 }
 

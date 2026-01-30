@@ -56,7 +56,7 @@
     <div class="table-wrapper" [innerHTML]="tideTableHtml"></div>
   </div>
 
-  <div class="chart-container mt-8" *ngIf="tideTableHtml">
+  <div class="chart-container mt-8" *ngIf="tideTableHtml" #chartContainer>
     <h3 class="text-lg font-semibold mb-4 text-blue-700">Biểu đồ diễn biến mực nước</h3>
     <div class="canvas-wrapper">
       <canvas #tideChart></canvas>
@@ -113,6 +113,12 @@
         (click)="clearAllCaches()"
         style="background: #6f42c1; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
         🗑️ Xóa Tất Cả Cache
+      </button>
+      <button 
+        class="debug-btn" 
+        (click)="testScroll()"
+        style="background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+        🧪 Test Scroll
       </button>
     </div>
   </div>

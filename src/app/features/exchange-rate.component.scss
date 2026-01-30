@@ -10,6 +10,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: relative;
+  z-index: 10; /* Ensure header stays above other elements */
   
   h2 {
     margin: 0;
@@ -19,6 +21,15 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
     
     .status-indicator {
       display: flex;
@@ -60,6 +71,8 @@
     .refresh-btn {
       background: #3b82f6;
       color: white;
+      z-index: 20; /* Higher z-index for refresh button */
+      position: relative;
       
       &:hover {
         background: #2563eb;
@@ -103,18 +116,32 @@
 }
 
 .error-message {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   background: #fef3c7;
   border: 1px solid #f59e0b;
   border-radius: 8px;
-  padding: 12px;
+  padding: 12px 15px;
   margin: 20px 0;
   color: #92400e;
+  position: relative;
+  z-index: 15;
+  width: 100%;
+  box-sizing: border-box;
   
-  mat-icon {
-    color: #f59e0b;
+  .error-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 12px;
+    margin: 15px 0;
+    
+    .error-text {
+      font-size: 0.85rem;
+    }
   }
 }
 
@@ -143,18 +170,104 @@
 }
 
 .converter-row {
-  display: grid;
-  grid-template-columns: 2fr 2fr auto 2fr;
-  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   align-items: center;
+  width: 100%;
   
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 10px;
+  .amount-input {
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .currency-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* 3 columns: equal - button - equal */
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 700px;
+    
+    .currency-select {
+      display: flex;
+      justify-content: center; /* Center content trong mỗi column */
+      
+      ::ng-deep mat-form-field {
+        width: 100%;
+        max-width: 280px; /* Limit width */
+      }
+    }
     
     .swap-button {
-      order: 3;
-      justify-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Center button trong column giữa */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    align-items: center;
+    
+    .amount-input {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      
+      ::ng-deep mat-form-field {
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
+        
+        .mat-mdc-form-field-flex {
+          justify-content: center;
+        }
+        
+        .mat-mdc-form-field-infix {
+          text-align: center;
+        }
+      }
+    }
+    
+    .currency-row {
+      display: grid;
+      grid-template-columns: 1fr; /* 1 column trên mobile */
+      grid-template-rows: auto auto auto; /* 3 rows */
+      gap: 15px;
+      justify-items: center; /* Center tất cả items trong grid */
+      width: 100%;
+      
+      .currency-select {
+        width: 100%;
+        max-width: 350px;
+        display: flex;
+        justify-content: center;
+        
+        ::ng-deep mat-form-field {
+          width: 100%;
+          margin: 0 auto;
+          
+          .mat-mdc-form-field-flex {
+            justify-content: center;
+          }
+        }
+        
+        &:first-child {
+          grid-row: 1; /* Row 1: Từ */
+        }
+        
+        &:last-child {
+          grid-row: 3; /* Row 3: Sang */
+        }
+      }
+      
+      .swap-button {
+        grid-row: 2; /* Row 2: Button ở giữa */
+        justify-self: center;
+      }
     }
   }
 }
@@ -164,13 +277,34 @@
   color: white;
   width: 48px;
   height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   &:hover {
     background: #059669;
     transform: rotate(180deg);
   }
   
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+  
   transition: all 0.3s ease;
+  
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 44px;
+    
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
 .conversion-result {
@@ -464,6 +598,18 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+    padding-right: 60px; /* Add padding to avoid overlap with floating elements */
+    
+    .update-info {
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .refresh-btn {
+        align-self: flex-end;
+        margin-top: 5px;
+      }
+    }
   }
   
   .rates-grid {
@@ -477,6 +623,10 @@
   .quick-btn {
     flex: 1;
     min-width: 120px;
+  }
+  
+  .error-message {
+    margin-right: 50px; /* Avoid overlap with floating elements */
   }
 }
 

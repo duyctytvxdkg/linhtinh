@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 
 echo "🔐 Creating Android Keystore for Linh Tinh App"
 echo "=============================================="

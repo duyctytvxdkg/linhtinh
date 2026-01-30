@@ -213,14 +213,14 @@
               <div class="tax-info">
                 <h4>ℹ️ Thông tin thuế suất:</h4>
                 <ul>
-                  <li *ngIf="taxParams">• < {{ taxParams.exemptionThreshold1 }} năm: {{ (taxParams.transferTaxRate1 * 100) }}% lợi nhuận</li>
-                  <li *ngIf="taxParams">• {{ taxParams.exemptionThreshold1 }}-{{ taxParams.exemptionThreshold2 }} năm: {{ (taxParams.transferTaxRate2 * 100) }}% lợi nhuận</li>
-                  <li *ngIf="taxParams">• ≥ {{ taxParams.exemptionThreshold2 }} năm: {{ (taxParams.transferTaxRate3 * 100) }}% lợi nhuận</li>
-                  <li *ngIf="taxParams">• Nhà ở duy nhất ≥ {{ taxParams.exemptionThreshold1 }} năm: Miễn thuế</li>
-                  <li *ngIf="!taxParams">• < 2 năm: 20% lợi nhuận</li>
-                  <li *ngIf="!taxParams">• 2-5 năm: 15% lợi nhuận</li>
-                  <li *ngIf="!taxParams">• ≥ 5 năm: 10% lợi nhuận</li>
-                  <li *ngIf="!taxParams">• Nhà ở duy nhất ≥ 2 năm: Miễn thuế</li>
+                  <li *ngIf="taxParams">< {{ taxParams.exemptionThreshold1 }} năm: {{ (taxParams.transferTaxRate1 * 100) }}% lợi nhuận</li>
+                  <li *ngIf="taxParams">{{ taxParams.exemptionThreshold1 }}-{{ taxParams.exemptionThreshold2 }} năm: {{ (taxParams.transferTaxRate2 * 100) }}% lợi nhuận</li>
+                  <li *ngIf="taxParams">≥ {{ taxParams.exemptionThreshold2 }} năm: {{ (taxParams.transferTaxRate3 * 100) }}% lợi nhuận</li>
+                  <li *ngIf="taxParams">Nhà ở duy nhất ≥ {{ taxParams.exemptionThreshold1 }} năm: Miễn thuế</li>
+                  <li *ngIf="!taxParams">< 2 năm: 20% lợi nhuận</li>
+                  <li *ngIf="!taxParams">2-5 năm: 15% lợi nhuận</li>
+                  <li *ngIf="!taxParams">≥ 5 năm: 10% lợi nhuận</li>
+                  <li *ngIf="!taxParams">Nhà ở duy nhất ≥ 2 năm: Miễn thuế</li>
                 </ul>
               </div>
             </mat-card-content>
@@ -304,15 +304,15 @@
               <div class="fee-info">
                 <h4>ℹ️ Thông tin lệ phí:</h4>
                 <ul>
-                  <li>• Lệ phí trước bạ: 0.5% giá trị BDS</li>
-                  <li *ngIf="taxParams">• Giảm {{ (taxParams.firstTimeBuyerDiscount * 100) }}% cho lần đầu mua nhà ở</li>
-                  <li *ngIf="!taxParams">• Giảm 50% cho lần đầu mua nhà ở</li>
-                  <li *ngIf="taxParams">• Phí thẩm định hồ sơ: {{ formatCurrency(taxParams.documentFee) }} VND</li>
-                  <li *ngIf="!taxParams">• Phí thẩm định hồ sơ: 100,000 VND</li>
-                  <li *ngIf="taxParams">• Phí cấp giấy chứng nhận: {{ formatCurrency(taxParams.certificateFee) }} VND</li>
-                  <li *ngIf="!taxParams">• Phí cấp giấy chứng nhận: 500,000 VND</li>
-                  <li *ngIf="taxParams">• Phí công chứng: {{ (taxParams.notaryFeeRate * 100) }}% giá trị</li>
-                  <li *ngIf="!taxParams">• Phí công chứng: 0.1% giá trị</li>
+                  <li>Lệ phí trước bạ: 0.5% giá trị BDS</li>
+                  <li *ngIf="taxParams">Giảm {{ (taxParams.firstTimeBuyerDiscount * 100) }}% cho lần đầu mua nhà ở</li>
+                  <li *ngIf="!taxParams">Giảm 50% cho lần đầu mua nhà ở</li>
+                  <li *ngIf="taxParams">Phí thẩm định hồ sơ: {{ formatCurrency(taxParams.documentFee) }} VND</li>
+                  <li *ngIf="!taxParams">Phí thẩm định hồ sơ: 100,000 VND</li>
+                  <li *ngIf="taxParams">Phí cấp giấy chứng nhận: {{ formatCurrency(taxParams.certificateFee) }} VND</li>
+                  <li *ngIf="!taxParams">Phí cấp giấy chứng nhận: 500,000 VND</li>
+                  <li *ngIf="taxParams">Phí công chứng: {{ (taxParams.notaryFeeRate * 100) }}% giá trị</li>
+                  <li *ngIf="!taxParams">Phí công chứng: 0.1% giá trị</li>
                 </ul>
               </div>
             </mat-card-content>
@@ -377,30 +377,30 @@
       <div class="info-item">
         <h4>🌱 Thuế sử dụng đất</h4>
         <ul>
-          <li>• Thuế hàng năm dựa trên giá đất</li>
-          <li>• Có diện tích miễn thuế</li>
-          <li>• Thuế suất khác nhau theo loại đất</li>
-          <li>• Hệ số điều chỉnh theo khu vực</li>
+          <li>Thuế hàng năm dựa trên giá đất</li>
+          <li>Có diện tích miễn thuế</li>
+          <li>Thuế suất khác nhau theo loại đất</li>
+          <li>Hệ số điều chỉnh theo khu vực</li>
         </ul>
       </div>
       
       <div class="info-item">
         <h4>💸 Thuế chuyển nhượng</h4>
         <ul>
-          <li>• Thuế trên lợi nhuận từ bán BDS</li>
-          <li>• Thuế suất giảm theo thời gian nắm giữ</li>
-          <li>• Miễn thuế nhà ở duy nhất ≥ 2 năm</li>
-          <li>• Trừ chi phí cải tạo và bán</li>
+          <li>Thuế trên lợi nhuận từ bán BDS</li>
+          <li>Thuế suất giảm theo thời gian nắm giữ</li>
+          <li>Miễn thuế nhà ở duy nhất ≥ 2 năm</li>
+          <li>Trừ chi phí cải tạo và bán</li>
         </ul>
       </div>
       
       <div class="info-item">
         <h4>📋 Lệ phí trước bạ</h4>
         <ul>
-          <li>• Phí đăng ký quyền sở hữu</li>
-          <li>• 0.5% giá trị bất động sản</li>
-          <li>• Giảm 50% lần đầu mua nhà ở</li>
-          <li>• Cộng các phí thủ tục khác</li>
+          <li>Phí đăng ký quyền sở hữu</li>
+          <li>0.5% giá trị bất động sản</li>
+          <li>Giảm 50% lần đầu mua nhà ở</li>
+          <li>Cộng các phí thủ tục khác</li>
         </ul>
       </div>
     </div>
@@ -411,10 +411,10 @@
         <strong>Lưu ý quan trọng:</strong>
         <p>Kết quả tính toán chỉ mang tính chất tham khảo. Thuế và phí thực tế có thể khác do:</p>
         <ul>
-          <li>• Quy định pháp luật thay đổi</li>
-          <li>• Chính sách ưu đãi đặc biệt</li>
-          <li>• Tình huống cụ thể của từng trường hợp</li>
-          <li>• Cần tham khảo cơ quan thuế để có thông tin chính xác</li>
+          <li>Quy định pháp luật thay đổi</li>
+          <li>Chính sách ưu đãi đặc biệt</li>
+          <li>Tình huống cụ thể của từng trường hợp</li>
+          <li>Cần tham khảo cơ quan thuế để có thông tin chính xác</li>
         </ul>
       </div>
     </div>

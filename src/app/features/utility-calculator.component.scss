@@ -215,6 +215,22 @@
         color: #64748b;
         font-size: 0.8rem;
       }
+      
+      // Fix suffix padding - prevent text from sticking to right border
+      .mat-mdc-form-field-text-suffix {
+        padding-right: 12px;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      
+      // Also fix prefix if needed
+      .mat-mdc-form-field-text-prefix {
+        padding-left: 12px;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
     }
   }
 }

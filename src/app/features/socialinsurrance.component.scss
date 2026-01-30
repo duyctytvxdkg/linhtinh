@@ -6,8 +6,18 @@
 .content-box-minor {
   background: transparent;
   padding: 20px;
-  padding-bottom: 200px; /* Increased bottom space to ensure all content is visible */
+  padding-bottom: 60px; /* Final minimal size - optimized formula */
   margin: 0;
+}
+
+/* Invisible spacer to ensure scroll space (final minimal size) */
+.mobile-content::after {
+  content: '';
+  display: block;
+  height: 40px;
+  width: 100%;
+  background: transparent;
+  flex-shrink: 0;
 }
 
 /* Container chính */
@@ -839,3 +849,118 @@ button[mat-icon-button].color-warn {
 }
 // Mobile scroll fix - Use padding instead of pseudo-element to prevent over-scroll
 // Removed duplicate styles - handled above
+
+// Button group styling
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  
+  .calculate-btn {
+    background: #16a34a !important;
+    color: white !important;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    
+    &:hover {
+      background: #15803d !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4);
+    }
+  }
+  
+  .reset-btn {
+    border: 2px solid #64748b;
+    color: #64748b;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 8px;
+    
+    &:hover {
+      background: #64748b;
+      color: white;
+      transform: translateY(-1px);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    
+    .calculate-btn,
+    .reset-btn {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 1rem;
+    }
+  }
+}
+
+// Action buttons styling (Thêm dòng)
+.action-buttons {
+  margin: 20px 0;
+  
+  .add-row-btn {
+    background: #f8fafc;
+    border: 2px solid #3b82f6;
+    color: #3b82f6;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    
+    &:hover {
+      background: #3b82f6;
+      color: white;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// CSV buttons styling
+.csv-buttons {
+  display: flex;
+  gap: 12px;
+  margin: 15px 0 25px 0;
+  flex-wrap: wrap;
+  
+  .csv-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    
+    &:first-child {
+      border: 2px solid #7c3aed;
+      color: #7c3aed;
+      
+      &:hover {
+        background: #7c3aed;
+        color: white;
+      }
+    }
+    
+    &:last-child {
+      border: 2px solid #f59e0b;
+      color: #f59e0b;
+      
+      &:hover {
+        background: #f59e0b;
+        color: white;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+    
+    .csv-btn {
+      width: 100%;
+      padding: 12px 16px;
+    }
+  }
+}

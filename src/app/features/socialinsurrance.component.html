@@ -85,16 +85,19 @@
             </table>
           </div>
 
-          <button type="button" mat-stroked-button (click)="addRow()">
-            ➕ Thêm dòng
-          </button>
+          <div class="action-buttons">
+            <button type="button" mat-stroked-button (click)="addRow()" class="add-row-btn">
+              ➕ Thêm dòng
+            </button>
+          </div>
 
-          <div class="flex gap-3 mt-4">
+          <div class="csv-buttons">
             <button
               type="button"
               mat-stroked-button
               color="primary"
               (click)="exportCSV()"
+              class="csv-btn"
             >
               💾 Lưu ra CSV
             </button>
@@ -104,6 +107,7 @@
               mat-stroked-button
               color="accent"
               (click)="fileInput.click()"
+              class="csv-btn"
             >
               📂 Import CSV
             </button>
@@ -117,12 +121,13 @@
             />
           </div>
 
-          <div>
+          <div class="button-group">
             <button
               type="button"
               mat-raised-button
               color="primary"
               (click)="calculate()"
+              class="calculate-btn"
             >
               Tính lương hưu
             </button>
@@ -132,6 +137,7 @@
               mat-stroked-button
               color="primary"
               (click)="resetForm()"
+              class="reset-btn"
             >
               Reset form
             </button>
@@ -336,32 +342,32 @@
       <div class="info-item">
         <h4>🧓 Lương hưu BHXH</h4>
         <ul>
-          <li>• Tính theo công thức: Lương bình quân × Tỷ lệ thay thế × Số năm đóng</li>
-          <li>• Tỷ lệ thay thế cơ bản: {{ bhxhParams ? (bhxhParams.replacementRate * 100) : '45' }}%</li>
-          <li>• Tăng {{ bhxhParams ? (bhxhParams.yearlyIncreaseRate * 100) : '2' }}% mỗi năm đóng thêm</li>
-          <li>• Tối thiểu {{ bhxhParams ? bhxhParams.minContributionYears : '20' }} năm đóng BHXH</li>
-          <li>• Tuổi nghỉ hưu: Nam {{ bhxhParams ? bhxhParams.retirementAgeM : '62' }}, Nữ {{ bhxhParams ? bhxhParams.retirementAgeF : '60' }} tuổi</li>
+          <li>Tính theo công thức: Lương bình quân × Tỷ lệ thay thế × Số năm đóng</li>
+          <li>Tỷ lệ thay thế cơ bản: {{ bhxhParams ? (bhxhParams.replacementRate * 100) : '45' }}%</li>
+          <li>Tăng {{ bhxhParams ? (bhxhParams.yearlyIncreaseRate * 100) : '2' }}% mỗi năm đóng thêm</li>
+          <li>Tối thiểu {{ bhxhParams ? bhxhParams.minContributionYears : '20' }} năm đóng BHXH</li>
+          <li>Tuổi nghỉ hưu: Nam {{ bhxhParams ? bhxhParams.retirementAgeM : '62' }}, Nữ {{ bhxhParams ? bhxhParams.retirementAgeF : '60' }} tuổi</li>
         </ul>
       </div>
       
       <div class="info-item">
         <h4>💰 Bảo hiểm thất nghiệp</h4>
         <ul>
-          <li>• Mức hưởng: 60% lương bình quân 6 tháng gần nhất</li>
-          <li>• Thời gian hưởng: 3-12 tháng tùy thời gian đóng</li>
-          <li>• Điều kiện: Đóng đủ 12 tháng trong 24 tháng</li>
-          <li>• Mức tối đa: 5 lần lương tối thiểu vùng</li>
-          <li>• Hồ sơ: Quyết định sa thải + Sổ BHXH</li>
+          <li>Mức hưởng: 60% lương bình quân 6 tháng gần nhất</li>
+          <li>Thời gian hưởng: 3-12 tháng tùy thời gian đóng</li>
+          <li>Điều kiện: Đóng đủ 12 tháng trong 24 tháng</li>
+          <li>Mức tối đa: 5 lần lương tối thiểu vùng</li>
+          <li>Hồ sơ: Quyết định sa thải + Sổ BHXH</li>
         </ul>
       </div>
       
       <div class="info-item">
         <h4>📋 Lưu ý quan trọng</h4>
         <ul>
-          <li>• Kết quả chỉ mang tính chất tham khảo</li>
-          <li>• Lương hưu thực tế có thể khác do điều chỉnh chính sách</li>
-          <li>• Hệ số điều chỉnh theo năm có thể thay đổi</li>
-          <li>• Nên tham khảo BHXH để có thông tin chính xác</li>
+          <li>Kết quả chỉ mang tính chất tham khảo</li>
+          <li>Lương hưu thực tế có thể khác do điều chỉnh chính sách</li>
+          <li>Hệ số điều chỉnh theo năm có thể thay đổi</li>
+          <li>Nên tham khảo BHXH để có thông tin chính xác</li>
         </ul>
       </div>
     </div>

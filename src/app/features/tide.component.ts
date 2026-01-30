@@ -27,6 +27,7 @@ interface TideData {
 })
 export class TideComponent implements OnInit, OnDestroy {
   @ViewChild('tideChart') tideChartCanvas!: ElementRef;
+  @ViewChild('chartContainer') chartContainer!: ElementRef;
 
   today = new Date();
   currentWaterLevel = 1.2; // m
@@ -220,7 +221,74 @@ export class TideComponent implements OnInit, OnDestroy {
     
     const selectedDate = new Date(this.today.getFullYear(), this.today.getMonth(), day);
     this.today = selectedDate;
+    
+    // Immediate scroll attempt
+    this.scrollToTop();
+    
     this.loadDataForSelectedDay(selectedDate);
+    
+    // Auto-scroll with delay to ensure DOM updates
+    setTimeout(() => {
+      this.scrollToTop();
+    }, 300);
+    
+    // Additional scroll after longer delay
+    setTimeout(() => {
+      this.scrollToTop();
+    }, 800);
+  }
+
+  // Phương thức để scroll về đầu trang
+  private scrollToTop() {
+    try {
+      // Method 1: Try scrolling to chart container if available
+      if (this.chartContainer && this.chartContainer.nativeElement) {
+        this.chartContainer.nativeElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+        console.log('📜 Auto-scrolled to chart container');
+        return;
+      }
+      
+      // Method 2: Try scrolling to mobile-content
+      const mobileContent = document.querySelector('.mobile-content');
+      if (mobileContent) {
+        mobileContent.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+        console.log('📜 Auto-scrolled to mobile-content');
+        return;
+      }
+      
+      // Method 3: Try scrolling to mobile header
+      const mobileHeader = document.querySelector('app-mobile-header');
+      if (mobileHeader) {
+        mobileHeader.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+        console.log('📜 Auto-scrolled to mobile header');
+        return;
+      }
+      
+      // Method 4: Fallback to window scroll
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      console.log('📜 Auto-scrolled to top (window fallback)');
+      
+    } catch (error) {
+      // Final fallback for older browsers
+      try {
+        window.scrollTo(0, 0);
+        console.log('📜 Auto-scrolled to top (final fallback)');
+      } catch (e) {
+        console.error('❌ All scroll methods failed:', e);
+      }
+    }
   }
 
   // Phương thức để load dữ liệu cho ngày được chọn
@@ -240,12 +308,16 @@ export class TideComponent implements OnInit, OnDestroy {
               return extremeDate.toDateString() === selectedDate.toDateString();
             });
             
+            // Generate heights from extremes for the selected day
+            const generatedHeights = this.generateHeightsFromExtremesForDay(filteredExtremes, selectedDate);
+            
             const filteredData = {
               ...data,
-              extremes: filteredExtremes
+              extremes: filteredExtremes,
+              heights: generatedHeights
             };
             
-            this.processTideApiData(filteredData);
+            this.processTideApiData(filteredData, selectedDate);
             this.errorMessage = `✅ Dữ liệu thủy triều cho ngày ${selectedDate.toLocaleDateString('vi-VN')} được tải thành công`;
           } else {
             this.loadSimulatedDataForDay(selectedDate);
@@ -256,12 +328,18 @@ export class TideComponent implements OnInit, OnDestroy {
         }
         
         this.isLoading = false;
-        setTimeout(() => this.initChart(), 100);
+        setTimeout(() => {
+          this.initChart();
+          // Additional scroll after chart is initialized
+          setTimeout(() => this.scrollToTop(), 200);
+        }, 100);
       },
       error: (error) => {
         console.error('❌ Failed to fetch data for selected day:', error);
         this.loadSimulatedDataForDay(selectedDate);
         this.isLoading = false;
+        // Scroll even on error
+        setTimeout(() => this.scrollToTop(), 300);
       }
     });
   }
@@ -272,21 +350,27 @@ export class TideComponent implements OnInit, OnDestroy {
     
     try {
       const simulatedExtremes = this.generateSimulatedDataForSpecificDay(selectedDate);
-      const simulatedHeights: TideHeight[] = [];
+      const simulatedHeights = this.generateHeightsFromExtremesForDay(simulatedExtremes, selectedDate);
       const simulatedTableHtml = this.generateTableForSpecificDay(simulatedExtremes, selectedDate);
       
       this.processTideApiData({
         extremes: simulatedExtremes,
         heights: simulatedHeights,
         tableHtml: simulatedTableHtml
-      });
+      }, selectedDate);
       
       this.errorMessage = `🔄 Sử dụng dữ liệu mô phỏng cho ngày ${selectedDate.toLocaleDateString('vi-VN')}`;
-      setTimeout(() => this.initChart(), 100);
+      setTimeout(() => {
+        this.initChart();
+        // Scroll after simulated data is loaded
+        setTimeout(() => this.scrollToTop(), 200);
+      }, 100);
       
     } catch (error) {
       console.error('❌ Error loading simulated data for selected day:', error);
       this.errorMessage = `❌ Lỗi tải dữ liệu cho ngày ${selectedDate.toLocaleDateString('vi-VN')}`;
+      // Scroll even on error
+      setTimeout(() => this.scrollToTop(), 300);
     }
   }
 
@@ -364,9 +448,9 @@ export class TideComponent implements OnInit, OnDestroy {
     tableHtml += `</tbody></table>`;
     return tableHtml;
   }
-  private processTideApiData(data: { extremes?: TideExtreme[], heights?: TideHeight[], tableHtml?: string }) {
+  private processTideApiData(data: { extremes?: TideExtreme[], heights?: TideHeight[], tableHtml?: string }, targetDate?: Date) {
     if (data.extremes && data.extremes.length > 0) {
-      this.processExtremesData(data.extremes);
+      this.processExtremesData(data.extremes, targetDate);
     }
 
     if (data.heights && data.heights.length > 0) {
@@ -380,7 +464,7 @@ export class TideComponent implements OnInit, OnDestroy {
     
     this.updateChart();
     
-    console.log(`📊 Processed tide data: ${data.extremes?.length || 0} extremes, ${data.heights?.length || 0} heights, table: ${!!data.tableHtml}`);
+    console.log(`📊 Processed tide data: ${data.extremes?.length || 0} extremes, ${data.heights?.length || 0} heights, table: ${!!data.tableHtml}, target date: ${targetDate?.toLocaleDateString('vi-VN') || 'today'}`);
   }
 
   private generateHeightsFromExtremes(extremes: any[]): TideHeight[] {
@@ -394,6 +478,38 @@ export class TideComponent implements OnInit, OnDestroy {
     
     const now = new Date();
     const startTime = new Date(now);
+    startTime.setHours(0, 0, 0, 0);
+    
+    const intervalMinutes = 15;
+    
+    for (let minute = 0; minute <= 24 * 60; minute += intervalMinutes) {
+      const currentTime = new Date(startTime.getTime() + minute * 60 * 1000);
+      const height = this.interpolateHeightAtTime(currentTime, sortedExtremes);
+      
+      heights.push({
+        timestamp: currentTime.toISOString(),
+        height: Math.round(height * 100) / 100
+      });
+    }
+    
+    return heights;
+  }
+
+  // Generate heights for a specific selected day
+  private generateHeightsFromExtremesForDay(extremes: any[], selectedDate: Date): TideHeight[] {
+    const heights: TideHeight[] = [];
+    
+    if (extremes.length < 2) {
+      // If not enough extremes, generate simulated heights for the day
+      const simulatedExtremes = this.generateSimulatedDataForSpecificDay(selectedDate);
+      return this.generateHeightsFromExtremesForDay(simulatedExtremes, selectedDate);
+    }
+    
+    const sortedExtremes = extremes.sort((a, b) => 
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+    
+    const startTime = new Date(selectedDate);
     startTime.setHours(0, 0, 0, 0);
     
     const intervalMinutes = 15;
@@ -444,11 +560,11 @@ export class TideComponent implements OnInit, OnDestroy {
     return before.height + (after.height - before.height) * sineProgress;
   }
 
-  private processExtremesData(extremes: TideExtreme[]) {
-    const now = new Date();
-    const startOfDay = new Date(now);
+  private processExtremesData(extremes: TideExtreme[], targetDate?: Date) {
+    const referenceDate = targetDate || new Date();
+    const startOfDay = new Date(referenceDate);
     startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(now);
+    const endOfDay = new Date(referenceDate);
     endOfDay.setHours(23, 59, 59, 999);
     
     const filteredExtremes = extremes
@@ -468,7 +584,7 @@ export class TideComponent implements OnInit, OnDestroy {
       label: extreme.type === 'high' ? 'Nước lớn' : 'Nước ròng'
     }));
 
-    console.log(`📈 Processed ${this.tideEvents.length} tide events for day ${now.getDate()}`);
+    console.log(`📈 Processed ${this.tideEvents.length} tide events for day ${referenceDate.getDate()}/${referenceDate.getMonth() + 1}/${referenceDate.getFullYear()}`);
   }
 
   private updateChart() {
@@ -675,5 +791,11 @@ export class TideComponent implements OnInit, OnDestroy {
     this.tideEvents = [];
     
     this.loadDataForCurrentLocation();
+  }
+
+  // Debug method to test scrolling
+  testScroll() {
+    console.log('🧪 Testing scroll functionality...');
+    this.scrollToTop();
   }
 }
