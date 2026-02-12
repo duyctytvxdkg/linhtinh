@@ -61,7 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Track current route for back button handling
     this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.currentRoute = event.url;
       console.log('📍 Current route:', this.currentRoute);
@@ -82,8 +82,8 @@ export class AppComponent implements OnInit, OnDestroy {
       if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
         console.log('🔙 Initializing Android back button handling');
         
-        App.addListener('backButton', (data: { canGoBack: boolean }) => {
-          console.log('🔙 Back button pressed, canGoBack:', data.canGoBack, 'currentRoute:', this.currentRoute);
+        App.addListener('backButton', ({ canGoBack }) => {
+          console.log('🔙 Back button pressed, canGoBack:', canGoBack, 'currentRoute:', this.currentRoute);
           
           // If we're on the home page, exit the app
           if (this.currentRoute === '/' || this.currentRoute === '') {
