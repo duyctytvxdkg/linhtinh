@@ -1,13 +1,16 @@
 // Mobile layout compatibility
 .mobile-content {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  overflow-x: hidden; // Prevent horizontal scroll
 }
 
 .content-box-minor {
   background: transparent;
-  padding: 20px;
+  padding: 15px; // Giảm padding để tránh tràn
   padding-bottom: 60px;
   margin: 0;
+  max-width: 100%; // Đảm bảo không vượt quá màn hình
+  box-sizing: border-box;
 }
 
 .mobile-content::after {

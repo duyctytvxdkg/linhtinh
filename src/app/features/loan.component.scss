@@ -69,37 +69,39 @@
   flex: none !important;
   overflow-y: visible !important;
   max-height: none !important;
+  padding-right: 10px; // Thêm padding để tránh bị cắt mép phải
+  box-sizing: border-box;
 
   table {
     width: 100%;
-    min-width: 600px; /* Ép bảng có độ rộng tối thiểu để không bị dồn chữ */
+    min-width: 550px; /* Giảm từ 600px xuống 550px */
     table-layout: fixed; /* Fixed layout để control độ rộng cột */
   }
 
-  // Điều chỉnh độ rộng các cột
+  // Điều chỉnh độ rộng các cột để cân đối hơn
   .mat-column-period {
-    width: 50px; // Cột Kỳ - nhỏ nhất (tối đa 3 chữ số)
-    flex: 0 0 50px;
+    width: 45px; // Cột Kỳ - nhỏ nhất
+    flex: 0 0 45px;
   }
   
   .mat-column-startingBalance {
-    width: 28%; // Vốn đầu kỳ - rộng
-    flex: 0 0 28%;
+    width: 25%; // Giảm từ 28% xuống 25%
+    flex: 0 0 25%;
   }
   
   .mat-column-interestPaid {
-    width: 18%; // Trả lãi - nhỏ hơn
+    width: 18%; // Giữ nguyên
     flex: 0 0 18%;
   }
   
   .mat-column-principalPaid {
-    width: 18%; // Trả gốc - nhỏ hơn
+    width: 18%; // Giữ nguyên
     flex: 0 0 18%;
   }
   
   .mat-column-endingBalance {
-    width: 28%; // Dư cuối - rộng
-    flex: 0 0 28%;
+    width: calc(34% - 45px); // Tăng lên để lấp đầy, trừ đi cột Kỳ
+    flex: 0 0 calc(34% - 45px);
   }
 
   .mat-mdc-header-cell {

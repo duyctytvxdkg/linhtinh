@@ -146,7 +146,27 @@ export class MagicHatComponent implements AfterViewInit {
     
     // Tính GCD để tìm pattern nhỏ nhất
     const quantities = prizes.map(p => this.decreaseMode ? p.remaining : p.quantity);
-    const gcd = this.findGCD(quantities);
+    let gcd = this.findGCD(quantities);
+    
+    // Nếu GCD quá nhỏ (< 3), dùng shuffle đơn giản để tránh pattern quá dài
+    if (gcd < 3) {
+      prizes.forEach(prize => {
+        const quantity = this.decreaseMode ? prize.remaining : prize.quantity;
+        for (let i = 0; i < quantity; i++) {
+          result.push(prize);
+        }
+      });
+      
+      // Shuffle toàn bộ
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      
+      console.log('Distribution result (shuffled):', result.map(p => p.name));
+      console.log('Total segments:', result.length);
+      return result;
+    }
     
     // Tạo pattern cơ bản dựa trên tỷ lệ
     const pattern: Prize[] = [];
