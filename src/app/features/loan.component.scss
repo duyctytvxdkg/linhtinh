@@ -11,7 +11,10 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 100vw; // Giới hạn theo viewport
+  box-sizing: border-box;
   gap: 20px;
+  overflow-x: hidden; // Ngăn tràn ngang
 }
 
 /* 1. KHỐI FORM NHẬP LIỆU */
@@ -61,6 +64,7 @@
 .table-scroll {
   width: 100%;
   overflow-x: auto; /* Cho phép vuốt ngang bảng trên mobile */
+  -webkit-overflow-scrolling: touch; // Smooth scroll trên iOS
   margin-top: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -69,39 +73,30 @@
   flex: none !important;
   overflow-y: visible !important;
   max-height: none !important;
-  padding-right: 10px; // Thêm padding để tránh bị cắt mép phải
   box-sizing: border-box;
 
   table {
     width: 100%;
-    min-width: 550px; /* Giảm từ 600px xuống 550px */
-    table-layout: fixed; /* Fixed layout để control độ rộng cột */
+    min-width: 500px; /* Giảm từ 550px xuống 500px */
+    table-layout: auto; /* Đổi từ fixed sang auto để linh hoạt hơn */
   }
 
-  // Điều chỉnh độ rộng các cột để cân đối hơn
+  // Điều chỉnh độ rộng các cột
   .mat-column-period {
-    width: 45px; // Cột Kỳ - nhỏ nhất
-    flex: 0 0 45px;
+    width: 50px; // Cột Kỳ - cố định
+    min-width: 50px;
   }
   
-  .mat-column-startingBalance {
-    width: 25%; // Giảm từ 28% xuống 25%
-    flex: 0 0 25%;
-  }
-  
-  .mat-column-interestPaid {
-    width: 18%; // Giữ nguyên
-    flex: 0 0 18%;
-  }
-  
-  .mat-column-principalPaid {
-    width: 18%; // Giữ nguyên
-    flex: 0 0 18%;
-  }
-  
+  .mat-column-startingBalance,
   .mat-column-endingBalance {
-    width: calc(34% - 45px); // Tăng lên để lấp đầy, trừ đi cột Kỳ
-    flex: 0 0 calc(34% - 45px);
+    width: 28%; // Các cột số tiền lớn
+    min-width: 100px;
+  }
+  
+  .mat-column-interestPaid,
+  .mat-column-principalPaid {
+    width: 22%; // Các cột số tiền nhỏ hơn
+    min-width: 90px;
   }
 
   .mat-mdc-header-cell {
@@ -129,27 +124,41 @@
   // Responsive: Thu nhỏ bảng trên mobile
   @media (max-width: 768px) {
     table {
-      min-width: 480px; // Giảm min-width
+      min-width: 450px; // Giảm min-width cho mobile
     }
     
     .mat-column-period {
-      width: 45px;
-      flex: 0 0 45px;
+      width: 40px;
+      min-width: 40px;
     }
     
     .mat-mdc-header-cell {
-      padding: 10px 5px;
+      padding: 10px 6px;
       font-size: 0.75rem;
     }
     
     .mat-mdc-cell {
-      padding: 10px 5px;
+      padding: 10px 6px;
       font-size: 0.75rem;
     }
   }
   
   @media (max-width: 480px) {
     table {
+      min-width: 420px; // Giảm thêm cho màn hình rất nhỏ
+    }
+    
+    .mat-mdc-header-cell {
+      padding: 8px 4px;
+      font-size: 0.7rem;
+    }
+    
+    .mat-mdc-cell {
+      padding: 8px 4px;
+      font-size: 0.7rem;
+    }
+  }
+}
       min-width: 420px; // Giảm thêm cho màn hình nhỏ
     }
     

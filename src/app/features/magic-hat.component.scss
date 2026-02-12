@@ -1,15 +1,14 @@
 // Mobile layout compatibility
 .mobile-content {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  overflow-x: hidden; // Prevent horizontal scroll
 }
 
 .content-box-minor {
-  background: transparent;
-  padding: 15px; // Giảm padding để tránh tràn
-  padding-bottom: 60px;
-  margin: 0;
-  max-width: 100%; // Đảm bảo không vượt quá màn hình
+  background: transparent !important;
+  padding: 20px !important;
+  padding-bottom: 60px !important;
+  margin: 0 !important;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -204,8 +203,8 @@
 
 .wheel-container {
   position: relative;
-  width: 350px;
-  height: 350px;
+  width: 320px; // Giảm từ 350px xuống 320px cho mobile
+  height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -213,10 +212,13 @@
   border-radius: 50%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   padding: 10px;
+  margin: 0 auto; // Center wheel
 }
 
 .wheel-canvas {
   border-radius: 50%;
+  width: 320px !important;
+  height: 320px !important;
 }
 
 .center-spin-btn {
@@ -577,17 +579,17 @@
 // Mobile responsive
 @media (max-width: 768px) {
   .content-box-minor {
-    padding: 15px;
+    padding: 15px !important;
   }
   
   .wheel-container {
-    width: 300px;
-    height: 300px;
+    width: 280px;
+    height: 280px;
   }
   
   .wheel-canvas {
-    width: 300px !important;
-    height: 300px !important;
+    width: 280px !important;
+    height: 280px !important;
   }
   
   .center-spin-btn {
@@ -618,12 +620,16 @@
 
 @media (max-width: 400px) {
   .wheel-container {
-    width: 280px;
-    height: 280px;
+    width: 260px;
+    height: 260px;
   }
   
   .wheel-canvas {
-    width: 280px !important;
-    height: 280px !important;
+    width: 260px !important;
+    height: 260px !important;
+  }
+  
+  .prizes-input {
+    padding: 15px;
   }
 }
