@@ -9,6 +9,7 @@ import { ExchangeRateComponent } from './features/exchange-rate.component';
 import { RealEstateTaxComponent } from './features/real-estate-tax.component';
 import { ShippingCalculatorComponent } from './features/shipping-calculator.component';
 import { UtilityCalculatorComponent } from './features/utility-calculator.component';
+import { MagicHatComponent } from './features/magic-hat.component';
 
 export const routes: Routes = [
   {
@@ -51,6 +52,10 @@ export const routes: Routes = [
   {
     path: 'diennuoc',
     component: UtilityCalculatorComponent,
+  },
+  {
+    path: 'non',
+    component: MagicHatComponent,
   },
   {
     path: '**',

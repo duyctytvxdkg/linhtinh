@@ -1,0 +1,191 @@
+<app-mobile-header 
+  title="🎩 Chiếc nón kỳ diệu" 
+  subtitle="Quay số trúng thưởng may mắn">
+</app-mobile-header>
+
+<div class="mobile-content">
+  <div class="content-box-minor">
+
+    <!-- Setup Section -->
+    <div class="setup-section" *ngIf="!isInitialized">
+      <div class="section-header">
+        <h3>🎁 Thiết lập giải thưởng</h3>
+        <p>Nhập tối đa 5 loại giải thưởng và số lượng</p>
+      </div>
+
+      <div class="prizes-input">
+        <div class="prize-input-row" *ngFor="let prize of prizes; let i = index">
+          <div class="prize-number">{{ i + 1 }}</div>
+          <div class="color-indicator" [style.background]="colors[i]"></div>
+          <input 
+            type="text" 
+            [(ngModel)]="prize.name" 
+            placeholder="Tên giải thưởng"
+            class="prize-name-input"
+            maxlength="30"
+          />
+          <input 
+            type="number" 
+            [(ngModel)]="prize.quantity" 
+            placeholder="SL"
+            class="prize-quantity-input"
+            min="0"
+            max="999"
+          />
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button mat-raised-button class="init-btn" (click)="initializeHat()">
+          <mat-icon>casino</mat-icon>
+          Khởi tạo nón kỳ diệu
+        </button>
+      </div>
+    </div>
+
+    <!-- Game Section -->
+    <div class="game-section" *ngIf="isInitialized">
+      
+      <!-- Magic Hat Display -->
+      <div class="hat-container">
+        <div class="hat-icon">🎩</div>
+        <div class="hat-stats">
+          <div class="stat-item">
+            <span class="stat-label">Tổng giải:</span>
+            <span class="stat-value">{{ getTotalPrizes() }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Còn lại:</span>
+            <span class="stat-value remaining">{{ getRemainingTotal() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Display -->
+      <div class="result-display" [class.spinning]="isSpinning">
+        <div class="result-card" *ngIf="currentResult" [style.background]="currentResult.color">
+          <div class="result-icon">🎁</div>
+          <div class="result-text">{{ currentResult.name }}</div>
+        </div>
+        <div class="result-placeholder" *ngIf="!currentResult">
+          <div class="placeholder-icon">❓</div>
+          <div class="placeholder-text">Nhấn Play để quay thưởng</div>
+        </div>
+      </div>
+
+      <!-- Play Button -->
+      <div class="play-button-container">
+        <button 
+          mat-fab 
+          class="play-btn" 
+          (click)="spin()"
+          [disabled]="isSpinning || getRemainingTotal() === 0"
+        >
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+        <div class="play-label">{{ isSpinning ? 'Đang quay...' : 'PLAY' }}</div>
+      </div>
+
+      <!-- Prize Status -->
+      <div class="prize-status">
+        <h4>📊 Trạng thái giải thưởng</h4>
+        <div class="prize-list">
+          <div 
+            class="prize-item" 
+            *ngFor="let prize of prizes"
+            [class.empty]="prize.remaining === 0"
+            [class.hidden]="!prize.name"
+          >
+            <div class="prize-color" [style.background]="prize.color"></div>
+            <div class="prize-info">
+              <div class="prize-name">{{ prize.name }}</div>
+              <div class="prize-count">{{ prize.remaining }} / {{ prize.quantity }}</div>
+            </div>
+            <div class="prize-progress">
+              <div 
+                class="progress-bar" 
+                [style.width.%]="getProgressPercentage(prize)"
+                [style.background]="prize.color"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="history-section" *ngIf="history.length > 0">
+        <h4>📜 Lịch sử quay thưởng</h4>
+        <div class="history-list">
+          <div class="history-item" *ngFor="let item of history; let i = index">
+            <div class="history-number">#{{ i + 1 }}</div>
+            <div class="history-prize" [style.background]="item.prize.color">
+              {{ item.prize.name }}
+            </div>
+            <div class="history-time">{{ item.timestamp | date:'HH:mm:ss' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Button -->
+      <div class="reset-container">
+        <button mat-stroked-button class="reset-btn" (click)="reset()">
+          <mat-icon>refresh</mat-icon>
+          Thiết lập lại
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Info Button -->
+<div class="info-button-container">
+  <button mat-fab color="primary" (click)="openInfoModal()" class="info-fab">
+    <mat-icon>info</mat-icon>
+  </button>
+  <span class="info-label">Hướng dẫn</span>
+</div>
+
+<!-- Info Modal -->
+<app-info-modal 
+  [isOpen]="isInfoModalOpen" 
+  [title]="'🎩 Hướng dẫn Chiếc nón kỳ diệu'"
+  (close)="closeInfoModal()">
+  
+  <div class="info-grid">
+    <div class="info-item">
+      <h4>🎯 Cách sử dụng</h4>
+      <ul>
+        <li>Nhập tên và số lượng cho mỗi loại giải thưởng (tối đa 5 loại)</li>
+        <li>Nhấn "Khởi tạo nón kỳ diệu" để bắt đầu</li>
+        <li>Nhấn nút "PLAY" để quay số trúng thưởng</li>
+        <li>Mỗi lần quay sẽ giảm số lượng giải tương ứng</li>
+        <li>Xem lịch sử các lần quay ở phía dưới</li>
+      </ul>
+    </div>
+    
+    <div class="info-item">
+      <h4>✨ Tính năng</h4>
+      <ul>
+        <li>Random công bằng theo tỷ lệ số lượng còn lại</li>
+        <li>Animation quay số sinh động</li>
+        <li>Tracking số lượng giải còn lại real-time</li>
+        <li>Lưu lịch sử 10 lần quay gần nhất</li>
+        <li>Màu sắc phân biệt rõ ràng cho từng loại giải</li>
+      </ul>
+    </div>
+    
+    <div class="info-item">
+      <h4>💡 Ứng dụng</h4>
+      <ul>
+        <li>Quay thưởng trong sự kiện, tiệc tùng</li>
+        <li>Rút thăm may mắn cho nhóm bạn</li>
+        <li>Phân phối quà tặng ngẫu nhiên</li>
+        <li>Mini game trong các buổi họp mặt</li>
+        <li>Công cụ hỗ trợ tổ chức event</li>
+      </ul>
+    </div>
+  </div>
+  
+</app-info-modal>

@@ -96,3 +96,62 @@ npx cap open android
 - Android back button chỉ hoạt động trên native Android app
 - Scroll functionality có multiple fallbacks để ensure compatibility
 - Tide data processing now works correctly cho mọi selected date
+
+
+## Ngày: 12/02/2026
+
+### 🔧 Các thay đổi được đồng bộ:
+
+#### 1. 📅 Social Insurance - Date Format Update (MM/yyyy)
+- **Files**: `src/app/features/socialinsurrance.component.html`, `src/app/features/socialinsurrance.component.ts`, `src/app/features/socialinsurrance.component.scss`
+- **Issue**: Cột Từ/Đến trong bảng lương hưu sử dụng `type="month"` hiển thị theo browser locale, tốn không gian
+- **Fix**: 
+  - Đổi input type từ `month` sang `text` với placeholder "MM/yyyy"
+  - Thêm pattern validation: `(0[1-9]|1[0-2])\/\d{4}`
+  - Implement `parseMonthYear()` helper để parse cả MM/yyyy và yyyy-MM formats
+  - Implement `formatMonthYear()` helper để convert dates sang MM/yyyy display
+  - Update CSV import/export để tự động convert format
+  - Loại bỏ month-specific CSS styling
+- **Impact**: 
+  - Date columns hiển thị compact hơn (01/2020 thay vì browser locale format)
+  - Tiết kiệm không gian trên mobile
+  - Backward compatible với CSV files cũ (yyyy-MM format)
+  - User có thể nhập trực tiếp theo format MM/yyyy
+
+**Build Status:** ✅ Success (12.776 seconds)
+**Sync Status:** ✅ Success (0.523 seconds)
+
+
+## Ngày: 12/02/2026 (Buổi chiều)
+
+### 🎉 Tính năng mới: Chiếc nón kỳ diệu
+
+#### 1. 🎩 Magic Hat - Công cụ quay thưởng
+- **Files**: `src/app/features/magic-hat.component.ts`, `src/app/features/magic-hat.component.html`, `src/app/features/magic-hat.component.scss`
+- **Route**: `/non`
+- **Tính năng**:
+  - Nhập tối đa 5 loại giải thưởng với tên và số lượng
+  - Nút "Khởi tạo nón kỳ diệu" để tạo pool giải thưởng
+  - Nút "PLAY" để quay số random trúng thưởng
+  - Animation quay số sinh động với hiệu ứng spin
+  - Tracking số lượng còn lại của từng loại giải real-time
+  - Progress bar hiển thị tỷ lệ giải còn lại
+  - Lịch sử 10 lần quay gần nhất với timestamp
+  - Màu sắc phân biệt rõ ràng cho 5 loại giải
+  - Weighted random: xác suất dựa trên số lượng còn lại
+  - Responsive design với gradient vàng đẹp mắt
+- **UI/UX**:
+  - Icon nón 🎩 với animation float
+  - Nút Play đỏ nổi bật kích thước lớn (80x80px)
+  - Result card với màu tương ứng loại giải
+  - Spin animation khi đang quay
+  - Scale-in animation khi hiển thị kết quả
+  - Info modal với hướng dẫn chi tiết
+- **Ứng dụng**: Quay thưởng sự kiện, rút thăm may mắn, phân phối quà tặng ngẫu nhiên
+
+**Build Status:** ✅ Success (17.121 seconds)
+**Sync Status:** ✅ Success (0.376 seconds)
+
+**Home Page Update:**
+- Cập nhật subtitle: "10 công cụ hữu ích cho cuộc sống"
+- Thêm tool card mới: 🎩 Nón kỳ diệu - Quay số trúng thưởng
