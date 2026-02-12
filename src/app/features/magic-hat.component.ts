@@ -148,22 +148,30 @@ export class MagicHatComponent implements AfterViewInit {
     
     // Lặp pattern cho đến khi đủ số lượng
     const remaining = [...quantities];
-    let patternIndex = 0;
+    let cycleCount = 0;
     
     while (remaining.some(q => q > 0)) {
-      const prize = pattern[patternIndex % pattern.length];
-      const prizeIndex = prizes.indexOf(prize);
-      
-      if (remaining[prizeIndex] > 0) {
-        result.push(prize);
-        remaining[prizeIndex]--;
+      // Duyệt qua pattern
+      for (let i = 0; i < pattern.length; i++) {
+        const prize = pattern[i];
+        const prizeIndex = prizes.indexOf(prize);
+        
+        if (remaining[prizeIndex] > 0) {
+          result.push(prize);
+          remaining[prizeIndex]--;
+        }
+        
+        // Nếu đã đủ số lượng thì dừng
+        if (remaining.every(q => q === 0)) break;
       }
       
-      patternIndex++;
-      
+      cycleCount++;
       // Tránh vòng lặp vô hạn
-      if (patternIndex > totalQuantity * 2) break;
+      if (cycleCount > 1000) break;
     }
+    
+    console.log('Distribution result:', result.map(p => p.name));
+    console.log('Total segments:', result.length);
     
     return result;
   }
@@ -261,6 +269,11 @@ export class MagicHatComponent implements AfterViewInit {
     const randomSegmentIndex = Math.floor(Math.random() * this.wheelSegments.length);
     const targetSegment = this.wheelSegments[randomSegmentIndex];
     
+    console.log('Total segments:', this.wheelSegments.length);
+    console.log('Random segment index:', randomSegmentIndex);
+    console.log('Target segment:', targetSegment);
+    console.log('Target prize:', targetSegment.prize.name);
+    
     if (!targetSegment) return;
     
     // Calculate target angle (arrow points at top, so we need to rotate to align segment center with top)
@@ -268,6 +281,10 @@ export class MagicHatComponent implements AfterViewInit {
     const targetAngle = 360 - segmentMidAngle + 90; // Adjust for arrow at top
     const spinRotations = 5 + Math.random() * 3; // 5-8 full rotations
     const totalRotation = spinRotations * 360 + targetAngle;
+    
+    console.log('Segment mid angle:', segmentMidAngle);
+    console.log('Target angle:', targetAngle);
+    console.log('Total rotation:', totalRotation);
     
     const duration = 4000; // 4 seconds
     const startTime = Date.now();
