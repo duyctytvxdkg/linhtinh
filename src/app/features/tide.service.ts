@@ -640,11 +640,7 @@ export class TideService {
         <thead>
           <tr style="background: #4a90e2; color: white;">
             <th rowspan="2">NGÀY</th>
-            <th rowspan="2">🌙</th>
-            <th rowspan="2">☀️</th>
             <th colspan="4">THỦY TRIỀU Ở ${locationName || 'TIDE LOCATION'} - THÁNG ${month}/${year}</th>
-            <th rowspan="2">HỆ SỐ</th>
-            <th rowspan="2">HOẠT ĐỘNG CỦA CÁ</th>
           </tr>
           <tr style="background: #4a90e2; color: white;">
             <th>ĐỢT TRIỀU THỨ 1</th>
@@ -679,8 +675,6 @@ export class TideService {
       tableHtml += `
         <tr style="${rowStyle}">
           <td style="${cellStyle}">${day} ${dayName}</td>
-          <td style="${isToday ? cellStyle : ''}">${dayData.moonPhase || ''}</td>
-          <td style="${isToday ? cellStyle : ''}">${dayData.sunrise || ''}</td>
       `;
       
       // Hiển thị các điểm triều có sẵn, còn lại để trống
@@ -706,8 +700,6 @@ export class TideService {
       }
       
       tableHtml += `
-          <td style="${isToday ? cellStyle : ''}">${dayData.coefficient || ''}</td>
-          <td style="${isToday ? cellStyle : ''}">${dayData.fishActivity || ''}</td>
         </tr>
       `;
     }
@@ -874,11 +866,7 @@ export class TideService {
         <thead>
           <tr style="background: #4a90e2; color: white;">
             <th rowspan="2">NGÀY</th>
-            <th rowspan="2">🌙</th>
-            <th rowspan="2">☀️</th>
             <th colspan="4">THỦY TRIỀU Ở CORAL BANK</th>
-            <th rowspan="2">HỆ SỐ</th>
-            <th rowspan="2">HOẠT ĐỘNG CỦA CÁ</th>
           </tr>
           <tr style="background: #4a90e2; color: white;">
             <th>ĐỢT TRIỀU THỨ 1</th>
@@ -903,14 +891,10 @@ export class TideService {
       tableHtml += `
         <tr style="${rowStyle}">
           <td style="${cellStyle}">${day} ${dayName}</td>
-          <td style="${isToday ? cellStyle : ''}">${dayData.moonPhase}</td>
-          <td style="${isToday ? cellStyle : ''}">🌅 ${dayData.sunrise}<br/>🌇 ${dayData.sunset}</td>
           <td style="color: #28a745; font-weight: 600; ${isToday ? cellStyle : ''}">${dayData.tide1.time} h<br/>▲ ${dayData.tide1.height} m</td>
           <td style="color: #dc3545; font-weight: 600; ${isToday ? cellStyle : ''}">${dayData.tide2.time} h<br/>▼ ${dayData.tide2.height} m</td>
           <td style="color: #28a745; font-weight: 600; ${isToday ? cellStyle : ''}">${dayData.tide3.time} h<br/>▲ ${dayData.tide3.height} m</td>
           <td style="color: #dc3545; font-weight: 600; ${isToday ? cellStyle : ''}">${dayData.tide4.time} h<br/>▼ ${dayData.tide4.height} m</td>
-          <td style="background: linear-gradient(90deg, #28a745 0%, #ffc107 50%, #dc3545 100%); color: white; font-weight: 600; ${isToday ? 'border: 2px solid #2196f3 !important;' : ''}">${dayData.coefficient}</td>
-          <td style="${isToday ? cellStyle : ''}">${dayData.fishActivity}</td>
         </tr>
       `;
     }
