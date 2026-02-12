@@ -23,6 +23,8 @@
 
 // Setup Section
 .setup-section {
+  max-width: 100%;
+  
   .section-header {
     text-align: center;
     margin-bottom: 25px;
@@ -44,16 +46,19 @@
 .prizes-input {
   background: white;
   border-radius: 16px;
-  padding: 20px;
+  padding: 15px; // Giảm từ 20px xuống 15px
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .prize-input-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; // Giảm từ 8px xuống 6px
   margin-bottom: 12px;
+  max-width: 100%;
   
   &:last-child {
     margin-bottom: 0;
@@ -74,13 +79,15 @@
   }
   
   .prize-emoji-input {
-    width: 45px;
+    width: 40px; // Giảm từ 45px xuống 40px
     padding: 8px 4px;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
     font-size: 1.2rem;
     text-align: center;
     outline: none;
+    flex-shrink: 0;
+    box-sizing: border-box;
     
     &:focus {
       border-color: #f59e0b;
@@ -89,11 +96,13 @@
   
   .prize-name-input {
     flex: 1;
+    min-width: 0; // Cho phép shrink
     padding: 8px 10px;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
     font-size: 0.85rem;
     outline: none;
+    box-sizing: border-box;
     
     &:focus {
       border-color: #f59e0b;
@@ -101,13 +110,15 @@
   }
   
   .prize-quantity-input {
-    width: 55px;
-    padding: 8px 6px;
+    width: 50px; // Giảm từ 55px xuống 50px
+    padding: 8px 4px;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
     font-size: 0.85rem;
     text-align: center;
     outline: none;
+    flex-shrink: 0;
+    box-sizing: border-box;
     
     &:focus {
       border-color: #f59e0b;
@@ -115,8 +126,8 @@
   }
   
   .color-indicator {
-    width: 20px;
-    height: 20px;
+    width: 18px; // Giảm từ 20px xuống 18px
+    height: 18px;
     border-radius: 4px;
     flex-shrink: 0;
     border: 2px solid white;
@@ -172,6 +183,9 @@
 // Game Section
 .game-section {
   animation: fadeIn 0.5s ease;
+  padding-bottom: 80px; // Thêm padding để có không gian scroll
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {
@@ -579,7 +593,43 @@
 // Mobile responsive
 @media (max-width: 768px) {
   .content-box-minor {
-    padding: 15px !important;
+    padding: 12px !important; // Giảm padding hơn nữa
+  }
+  
+  .prizes-input {
+    padding: 12px;
+  }
+  
+  .prize-input-row {
+    gap: 4px; // Giảm gap
+    
+    .prize-number {
+      width: 24px;
+      height: 24px;
+      font-size: 0.75rem;
+    }
+    
+    .prize-emoji-input {
+      width: 35px;
+      font-size: 1rem;
+      padding: 6px 2px;
+    }
+    
+    .prize-name-input {
+      font-size: 0.8rem;
+      padding: 6px 8px;
+    }
+    
+    .prize-quantity-input {
+      width: 45px;
+      font-size: 0.8rem;
+      padding: 6px 2px;
+    }
+    
+    .color-indicator {
+      width: 16px;
+      height: 16px;
+    }
   }
   
   .wheel-container {
@@ -619,6 +669,26 @@
 }
 
 @media (max-width: 400px) {
+  .content-box-minor {
+    padding: 10px !important;
+  }
+  
+  .prizes-input {
+    padding: 10px;
+  }
+  
+  .prize-input-row {
+    gap: 3px;
+    
+    .prize-emoji-input {
+      width: 32px;
+    }
+    
+    .prize-quantity-input {
+      width: 42px;
+    }
+  }
+  
   .wheel-container {
     width: 260px;
     height: 260px;
@@ -627,9 +697,5 @@
   .wheel-canvas {
     width: 260px !important;
     height: 260px !important;
-  }
-  
-  .prizes-input {
-    padding: 15px;
   }
 }

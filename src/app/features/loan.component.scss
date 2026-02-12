@@ -87,16 +87,24 @@
     min-width: 50px;
   }
   
-  .mat-column-startingBalance,
-  .mat-column-endingBalance {
-    width: 28%; // Các cột số tiền lớn
-    min-width: 100px;
+  .mat-column-startingBalance {
+    width: 26%; // Giảm từ 28%
+    min-width: 95px;
   }
   
-  .mat-column-interestPaid,
+  .mat-column-interestPaid {
+    width: 20%; // Giảm từ 22%
+    min-width: 85px;
+  }
+  
   .mat-column-principalPaid {
-    width: 22%; // Các cột số tiền nhỏ hơn
-    min-width: 90px;
+    width: 20%; // Giảm từ 22%
+    min-width: 85px;
+  }
+  
+  .mat-column-endingBalance {
+    width: calc(34% - 50px); // Tăng lên để đủ chỗ
+    min-width: 100px;
   }
 
   .mat-mdc-header-cell {
@@ -132,6 +140,22 @@
       min-width: 40px;
     }
     
+    .mat-column-startingBalance {
+      width: 25%;
+      min-width: 90px;
+    }
+    
+    .mat-column-interestPaid,
+    .mat-column-principalPaid {
+      width: 19%;
+      min-width: 80px;
+    }
+    
+    .mat-column-endingBalance {
+      width: calc(37% - 40px); // Tăng để đủ chỗ
+      min-width: 95px;
+    }
+    
     .mat-mdc-header-cell {
       padding: 10px 6px;
       font-size: 0.75rem;
@@ -149,7 +173,24 @@
     }
     
     .mat-column-period {
-      width: 40px;
+      width: 35px;
+      min-width: 35px;
+    }
+    
+    .mat-column-startingBalance {
+      width: 24%;
+      min-width: 85px;
+    }
+    
+    .mat-column-interestPaid,
+    .mat-column-principalPaid {
+      width: 18%;
+      min-width: 75px;
+    }
+    
+    .mat-column-endingBalance {
+      width: calc(40% - 35px); // Tăng thêm
+      min-width: 90px;
     }
     
     .mat-mdc-header-cell {

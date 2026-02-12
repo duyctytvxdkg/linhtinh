@@ -23,15 +23,13 @@
 /* Container chính */
 .content-box-minor {
   width: 100%;
-  max-width: 100vw; /* Giới hạn theo viewport width */
+  max-width: 100vw;
   margin: 0 auto;
   box-sizing: border-box;
-  overflow-x: hidden; /* Ẩn scroll ngang */
-  padding: 0 15px; /* Thêm padding để không sát mép */
+  padding: 0 3px; /* Giảm từ 5px xuống 3px */
   
   * {
     box-sizing: border-box;
-    max-width: 100%;
   }
 }
 
@@ -41,30 +39,52 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  width: 100%;
 
   /* Headers */
   .mat-mdc-header-cell {
     background-color: #f1f5f9;
     color: #1e293b;
     font-weight: 700;
-    padding: 12px 8px;
+    padding: 12px 2px; // Giảm từ 4px xuống 2px
   }
 
   /* Cells */
   .mat-mdc-cell {
-    padding: 8px;
+    padding: 8px 2px; // Giảm từ 4px xuống 2px
+  }
+  
+  /* Column widths - áp dụng cho cả desktop và mobile */
+  .mat-column-from,
+  .mat-column-to {
+    width: 16%; // Giảm từ 17% xuống 16%
+    max-width: 80px;
+  }
+  
+  .mat-column-salary {
+    width: 40%; // Giảm từ 44% xuống 40%
+    min-width: 110px;
+  }
+  
+  .mat-column-actions {
+    width: 28%; // Tăng từ 22% lên 28%
+    min-width: 70px;
+    text-align: center;
+    padding-right: 8px !important; // Thêm padding bên phải
   }
 }
 
 /* Custom Input bên trong bảng */
 input.border {
   width: 100%;
-  min-width: 100px; /* Tránh input bị teo quá nhỏ */
-  padding: 8px;
+  min-width: 0; /* Bỏ min-width để input co giãn theo cell */
+  padding: 4px 2px;
   border-radius: 6px;
   border: 1px solid #cbd5e1;
   outline: none;
   transition: border-color 0.2s;
+  font-size: 0.75rem; // Giảm font size
+  box-sizing: border-box;
 
   &:focus {
     border-color: #3b82f6;
@@ -84,26 +104,43 @@ input.border {
   }
 
   .mat-table {
-    min-width: 500px; /* Giảm từ 600px xuống 500px */
+    min-width: 100%; // Thay đổi từ 450px thành 100% để fit màn hình
+    width: 100%;
+    table-layout: fixed; // Bắt buộc các cột tuân theo width đã set
     
-    // Điều chỉnh độ rộng các cột để cân đối hơn
+    // Override lại column widths cho mobile
     .mat-column-from,
     .mat-column-to {
-      width: 25%; // Giảm cột Từ/Đến từ 35% xuống 25%
+      width: 15%; // Giảm thêm
+      max-width: none; // Bỏ max-width
     }
     
     .mat-column-salary {
-      width: 40%; // Tăng cột Lương BHXH từ 25% lên 40%
+      width: 38%; // Giảm thêm
+      min-width: 0; // Bỏ min-width
     }
     
     .mat-column-actions {
-      width: 10%; // Tăng cột nút xóa từ 5% lên 10%
+      width: 32%; // Tăng lên để đủ chỗ cho nút X
+      min-width: 0;
+      text-align: center;
+      padding-right: 5px !important;
     }
     
     .mat-mdc-header-cell,
     .mat-mdc-cell {
-      padding: 8px 4px;
-      font-size: 0.75rem;
+      padding: 8px 1px;
+      font-size: 0.72rem;
+      overflow: hidden; // Ngăn nội dung tràn
+      text-overflow: ellipsis; // Hiển thị ... nếu quá dài
+    }
+    
+    // Giảm padding cho input trong cell
+    input.border {
+      padding: 4px 2px;
+      font-size: 0.8rem;
+      min-width: 0; // Bỏ min-width
+      width: 100%;
     }
   }
 
