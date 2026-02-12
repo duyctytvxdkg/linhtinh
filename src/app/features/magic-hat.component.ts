@@ -105,73 +105,67 @@ export class MagicHatComponent implements AfterViewInit {
     const totalSegments = distributedPrizes.length;
     const anglePerSegment = 360 / totalSegments;
     
-    let currentAngle = 0;
+    // Bắt đầu từ góc -90° để segment đầu tiên ở 12 giờ (mũi tên)
+    // Điều này đồng bộ giữa logic và rendering
+    let currentAngle = -90;
     
     distributedPrizes.forEach(prize => {
+      let startAngle = currentAngle;
+      let endAngle = currentAngle + anglePerSegment;
+      
+      // Normalize về [0, 360)
+      while (startAngle < 0) startAngle += 360;
+      while (endAngle < 0) endAngle += 360;
+      while (startAngle >= 360) startAngle -= 360;
+      while (endAngle >= 360) endAngle -= 360;
+      
       this.wheelSegments.push({
         prize,
-        startAngle: currentAngle,
-        endAngle: currentAngle + anglePerSegment,
+        startAngle,
+        endAngle,
         color: prize.color
       });
       
       currentAngle += anglePerSegment;
     });
     
+    console.log('Wheel segments built:', this.wheelSegments.length);
+    console.log('First segment:', this.wheelSegments[0]);
+    console.log('Angle per segment:', anglePerSegment);
+    console.log('All segments:', this.wheelSegments.map((s, i) => `${i}: ${s.startAngle}-${s.endAngle} ${s.prize.name} ${s.color}`));
+    
     this.drawWheel();
   }
 
   /**
-   * Phân bố đều các giải theo tỷ lệ
-   * Ví dụ: G3=18, G2=12, G1=6 → tỷ lệ 3:2:1 → pattern [G3,G3,G3,G2,G2,G1] lặp lại
+   * Phân bố đều các giải - Shuffle để phân tán ngẫu nhiên
    */
   private distributeEvenly(prizes: Prize[]): Prize[] {
     const result: Prize[] = [];
     
-    // Lấy số lượng của từng giải
-    const quantities = prizes.map(p => this.decreaseMode ? p.remaining : p.quantity);
-    const totalQuantity = quantities.reduce((sum, q) => sum + q, 0);
-    
-    if (totalQuantity === 0) return result;
-    
-    // Tìm ước chung lớn nhất để tính tỷ lệ
-    const gcd = this.findGCD(quantities);
-    const ratios = quantities.map(q => q / gcd);
-    
-    // Tạo pattern lặp lại dựa trên tỷ lệ
-    const pattern: Prize[] = [];
-    prizes.forEach((prize, index) => {
-      for (let i = 0; i < ratios[index]; i++) {
-        pattern.push(prize);
+    // Tạo mảng tất cả các giải
+    prizes.forEach(prize => {
+      const quantity = this.decreaseMode ? prize.remaining : prize.quantity;
+      for (let i = 0; i < quantity; i++) {
+        result.push(prize);
       }
     });
     
-    // Lặp pattern cho đến khi đủ số lượng
-    const remaining = [...quantities];
-    let cycleCount = 0;
-    
-    while (remaining.some(q => q > 0)) {
-      // Duyệt qua pattern
-      for (let i = 0; i < pattern.length; i++) {
-        const prize = pattern[i];
-        const prizeIndex = prizes.indexOf(prize);
-        
-        if (remaining[prizeIndex] > 0) {
-          result.push(prize);
-          remaining[prizeIndex]--;
-        }
-        
-        // Nếu đã đủ số lượng thì dừng
-        if (remaining.every(q => q === 0)) break;
-      }
-      
-      cycleCount++;
-      // Tránh vòng lặp vô hạn
-      if (cycleCount > 1000) break;
+    // Shuffle để phân tán đều (Fisher-Yates shuffle)
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
     }
     
     console.log('Distribution result:', result.map(p => p.name));
     console.log('Total segments:', result.length);
+    
+    // Count each prize
+    const counts: { [key: string]: number } = {};
+    result.forEach(p => {
+      counts[p.name] = (counts[p.name] || 0) + 1;
+    });
+    console.log('Prize counts:', counts);
     
     return result;
   }
@@ -201,7 +195,11 @@ export class MagicHatComponent implements AfterViewInit {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
     ctx.translate(centerX, centerY);
+    
+    // Rotate the entire wheel based on currentRotation
     ctx.rotate((this.currentRotation * Math.PI) / 180);
+    
+    // KHÔNG cần offset -90° nữa vì segments đã được build với offset
     
     this.wheelSegments.forEach((segment, index) => {
       const startAngle = (segment.startAngle * Math.PI) / 180;
@@ -220,9 +218,17 @@ export class MagicHatComponent implements AfterViewInit {
       
       // Draw text only if segment is large enough
       const angleSize = segment.endAngle - segment.startAngle;
-      if (angleSize > 8) { // Only draw text if segment > 8 degrees
+      // Handle wrap-around case
+      const actualAngleSize = angleSize < 0 ? angleSize + 360 : angleSize;
+      
+      if (actualAngleSize > 8) {
         ctx.save();
-        const midAngle = (startAngle + endAngle) / 2;
+        let midAngle = (startAngle + endAngle) / 2;
+        // Handle wrap-around
+        if (endAngle < startAngle) {
+          midAngle = ((segment.startAngle + segment.endAngle + 360) / 2 * Math.PI) / 180;
+        }
+        
         ctx.rotate(midAngle);
         ctx.textAlign = 'center';
         ctx.fillStyle = '#fff';
@@ -230,13 +236,13 @@ export class MagicHatComponent implements AfterViewInit {
         ctx.shadowBlur = 3;
         
         // Draw emoji
-        if (angleSize > 15) {
+        if (actualAngleSize > 15) {
           ctx.font = 'bold 20px Arial';
           ctx.fillText(segment.prize.emoji, radius * 0.7, -5);
         }
         
         // Draw name only if segment is large enough
-        if (angleSize > 25) {
+        if (actualAngleSize > 25) {
           ctx.font = 'bold 12px Arial';
           const name = segment.prize.name.length > 10 
             ? segment.prize.name.substring(0, 8) + '...' 
@@ -265,6 +271,24 @@ export class MagicHatComponent implements AfterViewInit {
 
     this.isSpinning = true;
     
+    // Reset wheel về 0° ngay lập tức khi bấm Play
+    this.currentRotation = 0;
+    
+    // Chỉ rebuild wheel khi ở chế độ giảm trừ
+    // Chế độ không giảm trừ: giữ nguyên segments, chỉ vẽ lại
+    if (this.decreaseMode) {
+      this.buildWheel();
+    } else {
+      this.drawWheel();
+    }
+    
+    // Đợi 0.5s để user thấy wheel đã reset, sau đó mới quay
+    setTimeout(() => {
+      this.startSpin();
+    }, 500);
+  }
+
+  private startSpin(): void {
     // Random chọn một segment từ wheel
     const randomSegmentIndex = Math.floor(Math.random() * this.wheelSegments.length);
     const targetSegment = this.wheelSegments[randomSegmentIndex];
@@ -274,21 +298,45 @@ export class MagicHatComponent implements AfterViewInit {
     console.log('Target segment:', targetSegment);
     console.log('Target prize:', targetSegment.prize.name);
     
-    if (!targetSegment) return;
+    if (!targetSegment) {
+      this.isSpinning = false;
+      return;
+    }
     
-    // Calculate target angle (arrow points at top, so we need to rotate to align segment center with top)
-    const segmentMidAngle = (targetSegment.startAngle + targetSegment.endAngle) / 2;
-    const targetAngle = 360 - segmentMidAngle + 90; // Adjust for arrow at top
-    const spinRotations = 5 + Math.random() * 3; // 5-8 full rotations
+    // Tính góc giữa của segment
+    let segmentMidAngle = (targetSegment.startAngle + targetSegment.endAngle) / 2;
+    
+    // Handle wrap-around case
+    if (targetSegment.endAngle < targetSegment.startAngle) {
+      segmentMidAngle = ((targetSegment.startAngle + targetSegment.endAngle + 360) / 2);
+      if (segmentMidAngle >= 360) segmentMidAngle -= 360;
+    }
+    
+    // QUAN TRỌNG: Mũi tên ở 12 giờ = 270° trong canvas coordinate (không phải 90°!)
+    // Canvas: 0°=phải, 90°=dưới, 180°=trái, 270°=trên
+    const arrowAngle = 270;
+    
+    // Canvas rotate counter-clockwise: khi rotate +X, segment ở góc A xuất hiện ở A + X
+    // Để segment ở góc segmentMidAngle xuất hiện tại arrow (270°):
+    // segmentMidAngle + rotation = 270 (mod 360)
+    // => rotation = 270 - segmentMidAngle
+    let targetAngle = arrowAngle - segmentMidAngle;
+    
+    // Normalize về [0, 360)
+    while (targetAngle < 0) targetAngle += 360;
+    while (targetAngle >= 360) targetAngle -= 360;
+    
+    const spinRotations = 5 + Math.random() * 3; // 5-8 vòng
     const totalRotation = spinRotations * 360 + targetAngle;
     
     console.log('Segment mid angle:', segmentMidAngle);
+    console.log('Arrow angle:', arrowAngle);
     console.log('Target angle:', targetAngle);
     console.log('Total rotation:', totalRotation);
     
-    const duration = 4000; // 4 seconds
+    const duration = 4000;
     const startTime = Date.now();
-    const startRotation = this.currentRotation;
+    const startRotation = 0;
     
     const animate = () => {
       const elapsed = Date.now() - startTime;
@@ -311,23 +359,62 @@ export class MagicHatComponent implements AfterViewInit {
   }
 
   private finalizeSpin(prize: Prize): void {
-    this.currentResult = prize;
+    // DEBUG: Tính toán segment thực tế mà mũi tên đang chỉ
+    const finalRotation = this.currentRotation % 360;
+    const arrowAngle = 270; // Mũi tên ở 12 giờ = 270° trong canvas coordinate
     
-    if (this.decreaseMode) {
-      prize.remaining--;
-      setTimeout(() => this.buildWheel(), 500);
-    }
+    // Canvas rotate counter-clockwise: khi rotate +X, segment ở góc A xuất hiện ở A + X
+    // Mũi tên cố định ở 270°, segment tại arrow có góc gốc là: 270 - rotation
+    let relativeAngle = (arrowAngle - finalRotation) % 360;
     
-    this.history.unshift({
-      prize: { ...prize },
-      timestamp: new Date(),
+    // Normalize về [0, 360)
+    while (relativeAngle < 0) relativeAngle += 360;
+    while (relativeAngle >= 360) relativeAngle -= 360;
+    
+    // Tìm segment mà mũi tên đang chỉ vào
+    const actualSegment = this.wheelSegments.find(seg => {
+      // Handle wrap-around case (segment crosses 0°)
+      if (seg.endAngle < seg.startAngle) {
+        return relativeAngle >= seg.startAngle || relativeAngle < seg.endAngle;
+      }
+      return relativeAngle >= seg.startAngle && relativeAngle < seg.endAngle;
     });
     
-    if (this.history.length > 10) {
-      this.history.pop();
-    }
+    console.log('=== FINALIZE SPIN DEBUG ===');
+    console.log('Final rotation:', finalRotation);
+    console.log('Arrow angle:', arrowAngle);
+    console.log('Relative angle (segment angle at arrow):', relativeAngle);
+    console.log('Expected prize:', prize.name, prize.color);
+    console.log('Actual segment at arrow:', actualSegment);
+    console.log('Actual prize:', actualSegment?.prize.name, actualSegment?.prize.color);
+    console.log('Match:', actualSegment?.prize === prize ? '✅ CORRECT' : '❌ WRONG');
     
-    this.isSpinning = false;
+    // Sử dụng actual segment thay vì prize được truyền vào
+    const actualPrize = actualSegment ? actualSegment.prize : prize;
+    
+    // Delay nhỏ để đảm bảo animation hoàn tất trước khi hiển thị result
+    setTimeout(() => {
+      this.currentResult = actualPrize;
+      console.log('Result displayed:', this.currentResult.name, this.currentResult.color);
+      
+      // Giảm số lượng nhưng KHÔNG rebuild wheel ngay
+      // Wheel sẽ được rebuild khi bấm Play lần tiếp theo
+      if (this.decreaseMode) {
+        actualPrize.remaining--;
+        console.log('Remaining after win:', actualPrize.name, actualPrize.remaining);
+      }
+      
+      this.history.unshift({
+        prize: { ...actualPrize },
+        timestamp: new Date(),
+      });
+      
+      if (this.history.length > 10) {
+        this.history.pop();
+      }
+      
+      this.isSpinning = false;
+    }, 100);
   }
 
   reset(): void {
