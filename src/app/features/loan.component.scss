@@ -148,6 +148,10 @@
       min-width: 420px; // Giảm thêm cho màn hình rất nhỏ
     }
     
+    .mat-column-period {
+      width: 40px;
+    }
+    
     .mat-mdc-header-cell {
       padding: 8px 4px;
       font-size: 0.7rem;
@@ -159,25 +163,6 @@
     }
   }
 }
-      min-width: 420px; // Giảm thêm cho màn hình nhỏ
-    }
-    
-    .mat-column-period {
-      width: 40px;
-      flex: 0 0 40px;
-    }
-    
-    .mat-mdc-header-cell {
-      padding: 8px 3px;
-      font-size: 0.7rem;
-      white-space: nowrap;
-    }
-    
-    .mat-mdc-cell {
-      padding: 8px 3px;
-      font-size: 0.7rem;
-    }
-  }
   
   @media (max-width: 360px) {
     table {
