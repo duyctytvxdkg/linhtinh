@@ -99,27 +99,84 @@ export class MagicHatComponent implements AfterViewInit {
     if (activePrizes.length === 0) return;
 
     this.wheelSegments = [];
-    const totalWeight = this.decreaseMode
-      ? activePrizes.reduce((sum, p) => sum + p.remaining, 0)
-      : activePrizes.reduce((sum, p) => sum + p.quantity, 0);
+    
+    // Tạo mảng phân bố đều các giải
+    const distributedPrizes = this.distributeEvenly(activePrizes);
+    const totalSegments = distributedPrizes.length;
+    const anglePerSegment = 360 / totalSegments;
     
     let currentAngle = 0;
     
-    activePrizes.forEach(prize => {
-      const weight = this.decreaseMode ? prize.remaining : prize.quantity;
-      const angleSize = (weight / totalWeight) * 360;
-      
+    distributedPrizes.forEach(prize => {
       this.wheelSegments.push({
         prize,
         startAngle: currentAngle,
-        endAngle: currentAngle + angleSize,
+        endAngle: currentAngle + anglePerSegment,
         color: prize.color
       });
       
-      currentAngle += angleSize;
+      currentAngle += anglePerSegment;
     });
     
     this.drawWheel();
+  }
+
+  /**
+   * Phân bố đều các giải theo tỷ lệ
+   * Ví dụ: G3=18, G2=12, G1=6 → tỷ lệ 3:2:1 → pattern [G3,G3,G3,G2,G2,G1] lặp lại
+   */
+  private distributeEvenly(prizes: Prize[]): Prize[] {
+    const result: Prize[] = [];
+    
+    // Lấy số lượng của từng giải
+    const quantities = prizes.map(p => this.decreaseMode ? p.remaining : p.quantity);
+    const totalQuantity = quantities.reduce((sum, q) => sum + q, 0);
+    
+    if (totalQuantity === 0) return result;
+    
+    // Tìm ước chung lớn nhất để tính tỷ lệ
+    const gcd = this.findGCD(quantities);
+    const ratios = quantities.map(q => q / gcd);
+    
+    // Tạo pattern lặp lại dựa trên tỷ lệ
+    const pattern: Prize[] = [];
+    prizes.forEach((prize, index) => {
+      for (let i = 0; i < ratios[index]; i++) {
+        pattern.push(prize);
+      }
+    });
+    
+    // Lặp pattern cho đến khi đủ số lượng
+    const remaining = [...quantities];
+    let patternIndex = 0;
+    
+    while (remaining.some(q => q > 0)) {
+      const prize = pattern[patternIndex % pattern.length];
+      const prizeIndex = prizes.indexOf(prize);
+      
+      if (remaining[prizeIndex] > 0) {
+        result.push(prize);
+        remaining[prizeIndex]--;
+      }
+      
+      patternIndex++;
+      
+      // Tránh vòng lặp vô hạn
+      if (patternIndex > totalQuantity * 2) break;
+    }
+    
+    return result;
+  }
+
+  /**
+   * Tìm ước chung lớn nhất của mảng số
+   */
+  private findGCD(numbers: number[]): number {
+    const gcdTwo = (a: number, b: number): number => {
+      return b === 0 ? a : gcdTwo(b, a % b);
+    };
+    
+    return numbers.reduce((acc, num) => gcdTwo(acc, num));
   }
 
   drawWheel(): void {
@@ -138,10 +195,11 @@ export class MagicHatComponent implements AfterViewInit {
     ctx.translate(centerX, centerY);
     ctx.rotate((this.currentRotation * Math.PI) / 180);
     
-    this.wheelSegments.forEach(segment => {
+    this.wheelSegments.forEach((segment, index) => {
       const startAngle = (segment.startAngle * Math.PI) / 180;
       const endAngle = (segment.endAngle * Math.PI) / 180;
       
+      // Draw segment
       ctx.beginPath();
       ctx.moveTo(0, 0);
       ctx.arc(0, 0, radius, startAngle, endAngle);
@@ -149,25 +207,37 @@ export class MagicHatComponent implements AfterViewInit {
       ctx.fillStyle = segment.color;
       ctx.fill();
       ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2;
       ctx.stroke();
       
-      ctx.save();
-      const midAngle = (startAngle + endAngle) / 2;
-      ctx.rotate(midAngle);
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 16px Arial';
-      ctx.shadowColor = 'rgba(0,0,0,0.5)';
-      ctx.shadowBlur = 4;
-      
-      ctx.font = '24px Arial';
-      ctx.fillText(segment.prize.emoji, radius * 0.7, -10);
-      
-      ctx.font = 'bold 14px Arial';
-      ctx.fillText(segment.prize.name, radius * 0.7, 10);
-      
-      ctx.restore();
+      // Draw text only if segment is large enough
+      const angleSize = segment.endAngle - segment.startAngle;
+      if (angleSize > 8) { // Only draw text if segment > 8 degrees
+        ctx.save();
+        const midAngle = (startAngle + endAngle) / 2;
+        ctx.rotate(midAngle);
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 3;
+        
+        // Draw emoji
+        if (angleSize > 15) {
+          ctx.font = 'bold 20px Arial';
+          ctx.fillText(segment.prize.emoji, radius * 0.7, -5);
+        }
+        
+        // Draw name only if segment is large enough
+        if (angleSize > 25) {
+          ctx.font = 'bold 12px Arial';
+          const name = segment.prize.name.length > 10 
+            ? segment.prize.name.substring(0, 8) + '...' 
+            : segment.prize.name;
+          ctx.fillText(name, radius * 0.7, 10);
+        }
+        
+        ctx.restore();
+      }
     });
     
     ctx.restore();
@@ -187,25 +257,19 @@ export class MagicHatComponent implements AfterViewInit {
 
     this.isSpinning = true;
     
-    const weightedPrizes: Prize[] = [];
-    activePrizes.forEach(prize => {
-      const weight = this.decreaseMode ? prize.remaining : prize.quantity;
-      for (let i = 0; i < weight; i++) {
-        weightedPrizes.push(prize);
-      }
-    });
-    
-    const targetPrize = weightedPrizes[Math.floor(Math.random() * weightedPrizes.length)];
-    const targetSegment = this.wheelSegments.find(s => s.prize === targetPrize);
+    // Random chọn một segment từ wheel
+    const randomSegmentIndex = Math.floor(Math.random() * this.wheelSegments.length);
+    const targetSegment = this.wheelSegments[randomSegmentIndex];
     
     if (!targetSegment) return;
     
+    // Calculate target angle (arrow points at top, so we need to rotate to align segment center with top)
     const segmentMidAngle = (targetSegment.startAngle + targetSegment.endAngle) / 2;
-    const targetAngle = 360 - segmentMidAngle + 90;
-    const spinRotations = 5 + Math.random() * 3;
+    const targetAngle = 360 - segmentMidAngle + 90; // Adjust for arrow at top
+    const spinRotations = 5 + Math.random() * 3; // 5-8 full rotations
     const totalRotation = spinRotations * 360 + targetAngle;
     
-    const duration = 4000;
+    const duration = 4000; // 4 seconds
     const startTime = Date.now();
     const startRotation = this.currentRotation;
     
@@ -213,6 +277,7 @@ export class MagicHatComponent implements AfterViewInit {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
+      // Easing function (ease-out cubic)
       const easeOut = 1 - Math.pow(1 - progress, 3);
       
       this.currentRotation = startRotation + totalRotation * easeOut;
@@ -221,7 +286,7 @@ export class MagicHatComponent implements AfterViewInit {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        this.finalizeSpin(targetPrize);
+        this.finalizeSpin(targetSegment.prize);
       }
     };
     
