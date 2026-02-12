@@ -61,8 +61,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Track current route for back button handling
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe(event => {
       this.currentRoute = event.url;
       console.log('📍 Current route:', this.currentRoute);
     });
