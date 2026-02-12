@@ -73,6 +73,33 @@
   table {
     width: 100%;
     min-width: 600px; /* Ép bảng có độ rộng tối thiểu để không bị dồn chữ */
+    table-layout: fixed; /* Fixed layout để control độ rộng cột */
+  }
+
+  // Điều chỉnh độ rộng các cột
+  .mat-column-period {
+    width: 50px; // Cột Kỳ - nhỏ nhất (tối đa 3 chữ số)
+    flex: 0 0 50px;
+  }
+  
+  .mat-column-startingBalance {
+    width: 28%; // Vốn đầu kỳ - rộng
+    flex: 0 0 28%;
+  }
+  
+  .mat-column-interestPaid {
+    width: 18%; // Trả lãi - nhỏ hơn
+    flex: 0 0 18%;
+  }
+  
+  .mat-column-principalPaid {
+    width: 18%; // Trả gốc - nhỏ hơn
+    flex: 0 0 18%;
+  }
+  
+  .mat-column-endingBalance {
+    width: 28%; // Dư cuối - rộng
+    flex: 0 0 28%;
   }
 
   .mat-mdc-header-cell {
@@ -100,49 +127,64 @@
   // Responsive: Thu nhỏ bảng trên mobile
   @media (max-width: 768px) {
     table {
-      min-width: 500px; // Giảm min-width
+      min-width: 480px; // Giảm min-width
+    }
+    
+    .mat-column-period {
+      width: 45px;
+      flex: 0 0 45px;
     }
     
     .mat-mdc-header-cell {
-      padding: 10px 6px;
+      padding: 10px 5px;
       font-size: 0.75rem;
     }
     
     .mat-mdc-cell {
-      padding: 10px 6px;
+      padding: 10px 5px;
       font-size: 0.75rem;
     }
   }
   
   @media (max-width: 480px) {
     table {
-      min-width: 450px; // Giảm thêm cho màn hình nhỏ
+      min-width: 420px; // Giảm thêm cho màn hình nhỏ
+    }
+    
+    .mat-column-period {
+      width: 40px;
+      flex: 0 0 40px;
     }
     
     .mat-mdc-header-cell {
-      padding: 8px 4px;
+      padding: 8px 3px;
       font-size: 0.7rem;
       white-space: nowrap;
     }
     
     .mat-mdc-cell {
-      padding: 8px 4px;
+      padding: 8px 3px;
       font-size: 0.7rem;
     }
   }
   
   @media (max-width: 360px) {
     table {
-      min-width: 400px; // Rất nhỏ cho màn hình rất nhỏ
+      min-width: 380px; // Rất nhỏ cho màn hình rất nhỏ
+    }
+    
+    .mat-column-period {
+      width: 35px;
+      flex: 0 0 35px;
     }
     
     .mat-mdc-header-cell {
-      padding: 6px 3px;
+      padding: 6px 2px;
       font-size: 0.65rem;
     }
     
     .mat-mdc-cell {
-      padding: 6px 3px;
+      padding: 6px 2px;
       font-size: 0.65rem;
     }
   }
