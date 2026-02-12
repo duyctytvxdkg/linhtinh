@@ -138,27 +138,41 @@ export class MagicHatComponent implements AfterViewInit {
   }
 
   /**
-   * Phân bố đều các giải - Shuffle để phân tán ngẫu nhiên
+   * Phân bổ đều các giải theo tỷ lệ - Pattern lặp lại
+   * Ví dụ: 6A, 12B, 18C (tỷ lệ 1:2:3) → pattern: C-C-C-B-B-A lặp lại 6 lần
    */
   private distributeEvenly(prizes: Prize[]): Prize[] {
     const result: Prize[] = [];
     
-    // Tạo mảng tất cả các giải
+    // Tính GCD để tìm pattern nhỏ nhất
+    const quantities = prizes.map(p => this.decreaseMode ? p.remaining : p.quantity);
+    const gcd = this.findGCD(quantities);
+    
+    // Tạo pattern cơ bản dựa trên tỷ lệ
+    const pattern: Prize[] = [];
     prizes.forEach(prize => {
       const quantity = this.decreaseMode ? prize.remaining : prize.quantity;
-      for (let i = 0; i < quantity; i++) {
-        result.push(prize);
+      const ratio = quantity / gcd;
+      for (let i = 0; i < ratio; i++) {
+        pattern.push(prize);
       }
     });
     
-    // Shuffle để phân tán đều (Fisher-Yates shuffle)
-    for (let i = result.length - 1; i > 0; i--) {
+    // Shuffle pattern để phân tán đều hơn (không bị nhóm theo từng loại)
+    for (let i = pattern.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
+      [pattern[i], pattern[j]] = [pattern[j], pattern[i]];
+    }
+    
+    // Lặp lại pattern cho đến khi đủ số lượng
+    for (let i = 0; i < gcd; i++) {
+      result.push(...pattern);
     }
     
     console.log('Distribution result:', result.map(p => p.name));
     console.log('Total segments:', result.length);
+    console.log('Pattern length:', pattern.length);
+    console.log('Repeat times:', gcd);
     
     // Count each prize
     const counts: { [key: string]: number } = {};
