@@ -77,11 +77,10 @@
                 <td mat-cell *matCellDef="let row; let i = index">
                   <button
                     type="button"
-                    mat-icon-button
-                    color="warn"
+                    class="delete-btn"
                     (click)="removeRow(i)"
                   >
-                    ✖
+                    X
                   </button>
                 </td>
               </ng-container>
