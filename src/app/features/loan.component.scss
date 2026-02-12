@@ -163,28 +163,6 @@
     }
   }
 }
-  
-  @media (max-width: 360px) {
-    table {
-      min-width: 380px; // Rất nhỏ cho màn hình rất nhỏ
-    }
-    
-    .mat-column-period {
-      width: 35px;
-      flex: 0 0 35px;
-    }
-    
-    .mat-mdc-header-cell {
-      padding: 6px 2px;
-      font-size: 0.65rem;
-    }
-    
-    .mat-mdc-cell {
-      padding: 6px 2px;
-      font-size: 0.65rem;
-    }
-  }
-}
 
 /* 3. PHÂN TRANG (PAGINATION) */
 .pagination {
