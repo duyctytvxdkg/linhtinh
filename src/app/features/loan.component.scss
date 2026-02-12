@@ -96,6 +96,56 @@
       background-color: #f8fafc;
     }
   }
+  
+  // Responsive: Thu nhỏ bảng trên mobile
+  @media (max-width: 768px) {
+    table {
+      min-width: 500px; // Giảm min-width
+    }
+    
+    .mat-mdc-header-cell {
+      padding: 10px 6px;
+      font-size: 0.75rem;
+    }
+    
+    .mat-mdc-cell {
+      padding: 10px 6px;
+      font-size: 0.75rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    table {
+      min-width: 450px; // Giảm thêm cho màn hình nhỏ
+    }
+    
+    .mat-mdc-header-cell {
+      padding: 8px 4px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    
+    .mat-mdc-cell {
+      padding: 8px 4px;
+      font-size: 0.7rem;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    table {
+      min-width: 400px; // Rất nhỏ cho màn hình rất nhỏ
+    }
+    
+    .mat-mdc-header-cell {
+      padding: 6px 3px;
+      font-size: 0.65rem;
+    }
+    
+    .mat-mdc-cell {
+      padding: 6px 3px;
+      font-size: 0.65rem;
+    }
+  }
 }
 
 /* 3. PHÂN TRANG (PAGINATION) */
