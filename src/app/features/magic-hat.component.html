@@ -1,6 +1,6 @@
 <app-mobile-header 
-  title="🎩 Chiếc nón kỳ diệu" 
-  subtitle="Quay số trúng thưởng may mắn">
+  title="🎩 Vòng quay may mắn" 
+  subtitle="Quay số trúng thưởng">
 </app-mobile-header>
 
 <div class="mobile-content">
@@ -10,19 +10,25 @@
     <div class="setup-section" *ngIf="!isInitialized">
       <div class="section-header">
         <h3>🎁 Thiết lập giải thưởng</h3>
-        <p>Nhập tối đa 5 loại giải thưởng và số lượng</p>
+        <p>Nhập tối đa 5 loại giải thưởng</p>
       </div>
 
       <div class="prizes-input">
         <div class="prize-input-row" *ngFor="let prize of prizes; let i = index">
           <div class="prize-number">{{ i + 1 }}</div>
-          <div class="color-indicator" [style.background]="colors[i]"></div>
+          <input 
+            type="text" 
+            [(ngModel)]="prize.emoji" 
+            placeholder="🎁"
+            class="prize-emoji-input"
+            maxlength="2"
+          />
           <input 
             type="text" 
             [(ngModel)]="prize.name" 
-            placeholder="Tên giải thưởng"
+            placeholder="Tên giải"
             class="prize-name-input"
-            maxlength="30"
+            maxlength="20"
           />
           <input 
             type="number" 
@@ -32,13 +38,23 @@
             min="0"
             max="999"
           />
+          <div class="color-indicator" [style.background]="colors[i]"></div>
         </div>
+      </div>
+
+      <div class="option-section">
+        <mat-slide-toggle [(ngModel)]="decreaseMode" color="primary">
+          <span class="toggle-label">Giảm trừ giải khi trúng</span>
+        </mat-slide-toggle>
+        <p class="option-desc">
+          {{ decreaseMode ? '✅ Giải trúng sẽ bị loại và vòng quay tái bố trí' : '❌ Giữ nguyên tất cả giải, quay liên tục' }}
+        </p>
       </div>
 
       <div class="action-buttons">
         <button mat-raised-button class="init-btn" (click)="initializeHat()">
           <mat-icon>casino</mat-icon>
-          Khởi tạo nón kỳ diệu
+          Khởi tạo vòng quay
         </button>
       </div>
     </div>
@@ -46,67 +62,80 @@
     <!-- Game Section -->
     <div class="game-section" *ngIf="isInitialized">
       
-      <!-- Magic Hat Display -->
-      <div class="hat-container">
-        <div class="hat-icon">🎩</div>
-        <div class="hat-stats">
-          <div class="stat-item">
-            <span class="stat-label">Tổng giải:</span>
-            <span class="stat-value">{{ getTotalPrizes() }}</span>
+      <!-- Wheel Container -->
+      <div class="wheel-wrapper">
+        <!-- Arrow Pointer -->
+        <div class="arrow-pointer">▼</div>
+        
+        <!-- Wheel Canvas -->
+        <div class="wheel-container">
+          <canvas 
+            #wheelCanvas 
+            width="350" 
+            height="350"
+            class="wheel-canvas"
+          ></canvas>
+          
+          <!-- Center Button -->
+          <button 
+            mat-fab 
+            class="center-spin-btn" 
+            (click)="spin()"
+            [disabled]="isSpinning || getRemainingTotal() === 0"
+          >
+            <mat-icon *ngIf="!isSpinning">play_arrow</mat-icon>
+            <mat-icon *ngIf="isSpinning" class="spinning-icon">autorenew</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-info">
+            <div class="stat-label">Tổng giải</div>
+            <div class="stat-value">{{ getTotalPrizes() }}</div>
           </div>
-          <div class="stat-item">
-            <span class="stat-label">Còn lại:</span>
-            <span class="stat-value remaining">{{ getRemainingTotal() }}</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🎁</div>
+          <div class="stat-info">
+            <div class="stat-label">Còn lại</div>
+            <div class="stat-value remaining">{{ getRemainingTotal() }}</div>
           </div>
         </div>
       </div>
 
-      <!-- Result Display -->
-      <div class="result-display" [class.spinning]="isSpinning">
-        <div class="result-card" *ngIf="currentResult" [style.background]="currentResult.color">
-          <div class="result-icon">🎁</div>
-          <div class="result-text">{{ currentResult.name }}</div>
-        </div>
-        <div class="result-placeholder" *ngIf="!currentResult">
-          <div class="placeholder-icon">❓</div>
-          <div class="placeholder-text">Nhấn Play để quay thưởng</div>
+      <!-- Current Result -->
+      <div class="result-banner" *ngIf="currentResult && !isSpinning">
+        <div class="result-content" [style.background]="currentResult.color">
+          <div class="result-emoji">{{ currentResult.emoji }}</div>
+          <div class="result-text">
+            <div class="result-title">🎉 Chúc mừng!</div>
+            <div class="result-prize">{{ currentResult.name }}</div>
+          </div>
         </div>
       </div>
 
-      <!-- Play Button -->
-      <div class="play-button-container">
-        <button 
-          mat-fab 
-          class="play-btn" 
-          (click)="spin()"
-          [disabled]="isSpinning || getRemainingTotal() === 0"
-        >
-          <mat-icon>play_arrow</mat-icon>
-        </button>
-        <div class="play-label">{{ isSpinning ? 'Đang quay...' : 'PLAY' }}</div>
-      </div>
-
-      <!-- Prize Status -->
+      <!-- Prize List -->
       <div class="prize-status">
-        <h4>📊 Trạng thái giải thưởng</h4>
+        <h4>📊 Danh sách giải thưởng</h4>
         <div class="prize-list">
           <div 
             class="prize-item" 
             *ngFor="let prize of prizes"
-            [class.empty]="prize.remaining === 0"
+            [class.empty]="prize.remaining === 0 && decreaseMode"
             [class.hidden]="!prize.name"
           >
+            <div class="prize-emoji-display">{{ prize.emoji }}</div>
             <div class="prize-color" [style.background]="prize.color"></div>
             <div class="prize-info">
               <div class="prize-name">{{ prize.name }}</div>
-              <div class="prize-count">{{ prize.remaining }} / {{ prize.quantity }}</div>
-            </div>
-            <div class="prize-progress">
-              <div 
-                class="progress-bar" 
-                [style.width.%]="getProgressPercentage(prize)"
-                [style.background]="prize.color"
-              ></div>
+              <div class="prize-count">
+                <span *ngIf="decreaseMode">{{ prize.remaining }} / {{ prize.quantity }}</span>
+                <span *ngIf="!decreaseMode">{{ prize.quantity }} giải</span>
+              </div>
             </div>
           </div>
         </div>
@@ -118,6 +147,7 @@
         <div class="history-list">
           <div class="history-item" *ngFor="let item of history; let i = index">
             <div class="history-number">#{{ i + 1 }}</div>
+            <div class="history-emoji">{{ item.prize.emoji }}</div>
             <div class="history-prize" [style.background]="item.prize.color">
               {{ item.prize.name }}
             </div>
@@ -150,29 +180,28 @@
 <!-- Info Modal -->
 <app-info-modal 
   [isOpen]="isInfoModalOpen" 
-  [title]="'🎩 Hướng dẫn Chiếc nón kỳ diệu'"
+  [title]="'🎩 Hướng dẫn Vòng quay may mắn'"
   (close)="closeInfoModal()">
   
   <div class="info-grid">
     <div class="info-item">
       <h4>🎯 Cách sử dụng</h4>
       <ul>
-        <li>Nhập tên và số lượng cho mỗi loại giải thưởng (tối đa 5 loại)</li>
-        <li>Nhấn "Khởi tạo nón kỳ diệu" để bắt đầu</li>
-        <li>Nhấn nút "PLAY" để quay số trúng thưởng</li>
-        <li>Mỗi lần quay sẽ giảm số lượng giải tương ứng</li>
-        <li>Xem lịch sử các lần quay ở phía dưới</li>
+        <li>Nhập emoji, tên và số lượng cho mỗi loại giải (tối đa 5 loại)</li>
+        <li>Chọn chế độ "Giảm trừ giải" hoặc "Giữ nguyên"</li>
+        <li>Nhấn "Khởi tạo vòng quay" để tạo wheel</li>
+        <li>Nhấn nút giữa vòng quay để spin</li>
+        <li>Mũi tên ở trên sẽ chỉ giải trúng thưởng</li>
       </ul>
     </div>
     
     <div class="info-item">
-      <h4>✨ Tính năng</h4>
+      <h4>⚙️ Chế độ hoạt động</h4>
       <ul>
-        <li>Random công bằng theo tỷ lệ số lượng còn lại</li>
-        <li>Animation quay số sinh động</li>
-        <li>Tracking số lượng giải còn lại real-time</li>
-        <li>Lưu lịch sử 10 lần quay gần nhất</li>
-        <li>Màu sắc phân biệt rõ ràng cho từng loại giải</li>
+        <li><b>Giảm trừ giải:</b> Giải trúng sẽ bị loại, vòng quay tự động tái bố trí</li>
+        <li><b>Giữ nguyên:</b> Tất cả giải luôn có mặt, có thể trúng lặp lại</li>
+        <li>Xác suất trúng dựa trên tỷ lệ số lượng giải</li>
+        <li>Animation quay 4 giây với 5-8 vòng xoay</li>
       </ul>
     </div>
     
@@ -180,7 +209,7 @@
       <h4>💡 Ứng dụng</h4>
       <ul>
         <li>Quay thưởng trong sự kiện, tiệc tùng</li>
-        <li>Rút thăm may mắn cho nhóm bạn</li>
+        <li>Rút thăm may mắn công bằng</li>
         <li>Phân phối quà tặng ngẫu nhiên</li>
         <li>Mini game trong các buổi họp mặt</li>
         <li>Công cụ hỗ trợ tổ chức event</li>
