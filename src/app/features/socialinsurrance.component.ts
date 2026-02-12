@@ -190,10 +190,14 @@ export class SocialInsurranceComponent implements AfterViewInit, OnInit, OnDestr
     for (let i = 1; i < lines.length; i++) {
       const [from, to, salary] = lines[i].split(',');
 
+      // Convert yyyy-MM to MM/yyyy format for display
+      const fromFormatted = this.formatMonthYear(from);
+      const toFormatted = this.formatMonthYear(to);
+
       this.periods.push(
         this.fb.group({
-          from: [from, Validators.required],
-          to: [to, Validators.required],
+          from: [fromFormatted, Validators.required],
+          to: [toFormatted, Validators.required],
           salary: [Number(salary), Validators.required],
         })
       );
@@ -238,8 +242,11 @@ export class SocialInsurranceComponent implements AfterViewInit, OnInit, OnDestr
     periods.forEach((p: any) => {
       if (!p.from || !p.to || !p.salary) return;
 
-      const from = new Date(p.from);
-      const to = new Date(p.to);
+      // Convert MM/yyyy to Date object
+      const from = this.parseMonthYear(p.from);
+      const to = this.parseMonthYear(p.to);
+      
+      if (!from || !to) return;
 
       // Tính số tháng đóng
       const months =
@@ -404,10 +411,14 @@ export class SocialInsurranceComponent implements AfterViewInit, OnInit, OnDestr
       for (let i = 1; i < lines.length; i++) {
         const [from, to, salary] = lines[i].split(',');
 
+        // Convert yyyy-MM to MM/yyyy format for display
+        const fromFormatted = this.formatMonthYear(from);
+        const toFormatted = this.formatMonthYear(to);
+
         this.periods.push(
           this.fb.group({
-            from: [from, Validators.required],
-            to: [to, Validators.required],
+            from: [fromFormatted, Validators.required],
+            to: [toFormatted, Validators.required],
             salary: [Number(salary), Validators.required],
           })
         );
@@ -422,5 +433,49 @@ export class SocialInsurranceComponent implements AfterViewInit, OnInit, OnDestr
 
   formatCurrency(val: any): string {
     return new Intl.NumberFormat('vi-VN').format(Math.round(val || 0));
+  }
+
+  /**
+   * Parse MM/yyyy or yyyy-MM format to Date object
+   */
+  private parseMonthYear(input: string): Date | null {
+    if (!input) return null;
+    
+    // Handle MM/yyyy format
+    if (input.includes('/')) {
+      const parts = input.split('/');
+      if (parts.length === 2) {
+        const month = parseInt(parts[0], 10);
+        const year = parseInt(parts[1], 10);
+        if (month >= 1 && month <= 12 && year > 1900) {
+          return new Date(year, month - 1, 1);
+        }
+      }
+    }
+    
+    // Handle yyyy-MM format (from CSV or old data)
+    if (input.includes('-')) {
+      const date = new Date(input);
+      if (!isNaN(date.getTime())) {
+        return date;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Convert Date to MM/yyyy format
+   */
+  private formatMonthYear(date: Date | string): string {
+    if (typeof date === 'string') {
+      const parsed = this.parseMonthYear(date);
+      if (!parsed) return date;
+      date = parsed;
+    }
+    
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}/${year}`;
   }
 }

@@ -84,7 +84,27 @@ input.border {
   }
 
   .mat-table {
-    min-width: 600px; /* Ép bảng giữ độ rộng tối thiểu để người dùng nhập liệu */
+    min-width: 500px; /* Giảm từ 600px xuống 500px */
+    
+    // Điều chỉnh độ rộng các cột
+    .mat-column-from,
+    .mat-column-to {
+      width: 35%; // Cột Từ/Đến rộng hơn
+    }
+    
+    .mat-column-salary {
+      width: 25%; // Cột Lương BHX nhỏ hơn
+    }
+    
+    .mat-column-actions {
+      width: 5%; // Cột nút xóa rất nhỏ
+    }
+    
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding: 8px 4px;
+      font-size: 0.75rem;
+    }
   }
 
   /* Chỉnh lại các nút thao tác trên mobile */
@@ -101,6 +121,68 @@ input.border {
   button[mat-raised-button].primary {
     width: 100%;
     padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mat-table {
+    min-width: 450px; /* Giảm thêm cho màn hình nhỏ */
+    
+    .mat-column-from,
+    .mat-column-to {
+      width: 36%;
+    }
+    
+    .mat-column-salary {
+      width: 24%;
+    }
+    
+    .mat-column-actions {
+      width: 4%;
+    }
+    
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding: 6px 3px;
+      font-size: 0.7rem;
+    }
+    
+    input.border {
+      min-width: 80px;
+      padding: 6px;
+      font-size: 0.7rem;
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .mat-table {
+    min-width: 400px; /* Rất nhỏ cho màn hình rất nhỏ */
+    
+    .mat-column-from,
+    .mat-column-to {
+      width: 37%;
+    }
+    
+    .mat-column-salary {
+      width: 23%;
+    }
+    
+    .mat-column-actions {
+      width: 3%;
+    }
+    
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding: 5px 2px;
+      font-size: 0.65rem;
+    }
+    
+    input.border {
+      min-width: 70px;
+      padding: 5px;
+      font-size: 0.65rem;
+    }
   }
 }
 
