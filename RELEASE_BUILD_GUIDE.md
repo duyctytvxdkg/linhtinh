@@ -18,9 +18,9 @@
 2. Chọn **Android App Bundle** (khuyến nghị) hoặc **APK**
 3. Chọn keystore: `android/linhtinhapp-release-key.jks`
 4. Nhập thông tin:
-   - **Key store password**: `mdbAbc!23`
+   - **Key store password**: `mdbAbc23`
    - **Key alias**: `linhtinhapp-key-alias`
-   - **Key password**: `mdbAbc!23`
+   - **Key password**: `mdbAbc23`
 5. Chọn **release** build variant
 6. Click **Finish**
 
@@ -109,8 +109,8 @@ gradlew bundleRelease      # Cho AAB
 ```
 Keystore: linhtinhapp-release-key.jks
 Key Alias: linhtinhapp-key-alias
-Store Password: mdbAbc!23
-Key Password: mdbAbc!23
+Store Password: mdbAbc23
+Key Password: mdbAbc23
 ```
 
 ### Version Management

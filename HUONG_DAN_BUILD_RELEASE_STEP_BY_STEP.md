@@ -42,9 +42,9 @@ Tạo file APK/AAB đã ký (signed) để upload lên Google Play Store
 3. **Chọn file keystore** và click "OK"
 4. **Nhập thông tin**:
    ```
-   Key store password: mdbAbc!23
+   Key store password: mdbAbc23
    Key alias: linhtinhapp-key-alias
-   Key password: mdbAbc!23
+   Key password: mdbAbc23
    ```
 5. **✅ Check "Remember passwords"** (tùy chọn)
 6. **Click "Next"**
@@ -212,8 +212,8 @@ keytool -printcert -jarfile android\app\build\outputs\apk\release\app-release.ap
 ```
 Keystore file: linhtinhapp-release-key.jks
 Key alias: linhtinhapp-key-alias
-Store password: mdbAbc!23
-Key password: mdbAbc!23
+Store password: mdbAbc23
+Key password: mdbAbc23
 ```
 
 ---
@@ -229,7 +229,7 @@ Key password: mdbAbc!23
 
 #### 2. "Wrong password"
 **Giải pháp**:
-- Kiểm tra lại password: `mdbAbc!23`
+- Kiểm tra lại password: `mdbAbc23`
 - Đảm bảo không có space thừa
 
 #### 3. "Build failed"

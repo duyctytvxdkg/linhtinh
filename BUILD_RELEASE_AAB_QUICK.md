@@ -23,9 +23,9 @@ Google Play Store yêu cầu app target API level 35, đã cập nhật:
 1. **Key store path**: `android/linhtinhapp-release-key.jks`
 2. **Nhập thông tin**:
    ```
-   Key store password: mdbAbc!23
+   Key store password: mdbAbc23
    Key alias: linhtinhapp-key-alias  
-   Key password: mdbAbc!23
+   Key password: mdbAbc23
    ```
 3. **Next**
 

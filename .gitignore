@@ -49,4 +49,5 @@ amplifyconfiguration*
 # Android keystore 
 *.jks 
 *.keystore 
-android/key.properties 
+android/key.properties
+android/keystore.properties
