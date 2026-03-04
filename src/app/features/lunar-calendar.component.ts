@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Lunar } from 'lunar-javascript';
 import { CommonModule } from '@angular/common';
 import { MobileHeaderComponent } from '../shared/mobile-header.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-calendar',
@@ -42,6 +43,11 @@ export class LunarCalendarComponent implements OnInit {
   tietZh: string = '';
   zodiacHoursVi: string[] = [];
   zodiacHoursZh: string[] = [];
+  
+  randomQuote: string = 'Ăn quả nhớ kẻ trồng cây';
+  private quotes: string[] = [];
+
+  constructor(private http: HttpClient) {}
 
   private canMap: { [han: string]: string } = {
     甲: 'Giáp ',
@@ -108,6 +114,8 @@ export class LunarCalendarComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.loadQuotes();
+    
     const today = new Date();
     this.currentMonth = today.getMonth();
     this.currentYear = today.getFullYear();
@@ -122,6 +130,27 @@ export class LunarCalendarComponent implements OnInit {
 
     this.generateMonthCalendar();
     this.updateLunarData(this.selectedDate);
+  }
+  
+  loadQuotes() {
+    this.http.get('assets/quotes.csv', { responseType: 'text' }).subscribe({
+      next: (data) => {
+        const lines = data.split('\n').filter(line => line.trim() && !line.startsWith('quote'));
+        this.quotes = lines.map(line => line.replace(/"/g, '').trim());
+        this.setRandomQuote();
+      },
+      error: (err) => {
+        console.error('Error loading quotes:', err);
+        this.randomQuote = 'Ăn quả nhớ kẻ trồng cây';
+      }
+    });
+  }
+  
+  setRandomQuote() {
+    if (this.quotes.length > 0) {
+      const randomIndex = Math.floor(Math.random() * this.quotes.length);
+      this.randomQuote = this.quotes[randomIndex];
+    }
   }
   updateLunarData(date: Date) {
     const lunar = Lunar.fromDate(date);
