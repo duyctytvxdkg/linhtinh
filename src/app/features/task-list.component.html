@@ -4,8 +4,10 @@
   <!-- Export/Import buttons -->
   <div class="sync-bar">
     <button class="btn-export" (click)="exportCSV()">📤 Xuất CSV</button>
-    <button class="btn-import" (click)="triggerImport()">📥 Nhập CSV</button>
+    <button class="btn-import" (click)="triggerFileInput()">📥 Nhập CSV</button>
+    <input type="file" id="csvFileInput" (change)="onFileSelected($event)" style="display:none" />
   </div>
+  <div class="import-message" *ngIf="importMessage">{{ importMessage }}</div>
 
   <!-- Task Ngày -->
   <div class="task-section">

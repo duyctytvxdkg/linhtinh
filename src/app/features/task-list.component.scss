@@ -54,6 +54,16 @@
   }
 }
 
+.import-message {
+  background: #10b981;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -366,6 +376,10 @@
     input[type="checkbox"] {
       width: 18px;
       height: 18px;
+    }
+
+    .task-actions {
+      opacity: 1;
     }
   }
   

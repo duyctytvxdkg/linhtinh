@@ -36,6 +36,7 @@ export class TaskListComponent implements OnInit {
   newTaskTitle = '';
   editingTask: Task | null = null;
   editTaskTitle = '';
+  importMessage = '';
 
   ngOnInit() {
     this.loadTasks();
@@ -235,8 +236,6 @@ export class TaskListComponent implements OnInit {
   }
 
   deleteTask(task: Task, type: 'year' | 'month' | 'day') {
-    if (!confirm('Bạn có chắc muốn xóa task này?')) return;
-
     switch (type) {
       case 'year':
         this.yearTasks = this.yearTasks.filter(t => t.id !== task.id);
@@ -294,27 +293,32 @@ export class TaskListComponent implements OnInit {
     URL.revokeObjectURL(url);
   }
 
-  // === Import CSV ===
-  triggerImport() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.csv';
-    input.onchange = (event: any) => {
-      const file = event.target.files[0];
-      if (file) this.readCSVFile(file);
-    };
-    input.click();
+  // === Import CSV from file ===
+  triggerFileInput() {
+    const input = document.getElementById('csvFileInput') as HTMLInputElement;
+    if (input) {
+      input.value = ''; // reset để chọn lại cùng file
+      input.click();
+    }
   }
 
-  private readCSVFile(file: File) {
+  onFileSelected(event: any) {
+    const file = event.target?.files?.[0];
+    if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (e: any) => {
       try {
         const text = e.target.result as string;
         this.parseCSV(text);
       } catch (error) {
-        alert('Lỗi đọc file CSV!');
+        this.importMessage = 'Lỗi đọc file!';
+        setTimeout(() => this.importMessage = '', 3000);
       }
+    };
+    reader.onerror = () => {
+      this.importMessage = 'Không thể đọc file!';
+      setTimeout(() => this.importMessage = '', 3000);
     };
     reader.readAsText(file, 'UTF-8');
   }
@@ -324,7 +328,8 @@ export class TaskListComponent implements OnInit {
     
     // Skip header
     if (lines.length < 2) {
-      alert('File CSV trống!');
+      this.importMessage = 'File CSV trống!';
+      setTimeout(() => this.importMessage = '', 3000);
       return;
     }
 
@@ -351,15 +356,15 @@ export class TaskListComponent implements OnInit {
     }
 
     if (yearTasks.length + monthTasks.length + dayTasks.length === 0) {
-      alert('Không tìm thấy task hợp lệ trong file!');
+      this.importMessage = 'Không tìm thấy task hợp lệ trong file!';
       return;
     }
 
-    if (confirm(`Import ${yearTasks.length} task năm, ${monthTasks.length} task tháng, ${dayTasks.length} task ngày?\n\nDữ liệu hiện tại sẽ bị thay thế.`)) {
-      this.yearTasks = yearTasks;
-      this.monthTasks = monthTasks;
-      this.dayTasks = dayTasks;
-      this.saveTasks();
-    }
+    this.yearTasks = yearTasks;
+    this.monthTasks = monthTasks;
+    this.dayTasks = dayTasks;
+    this.saveTasks();
+    this.importMessage = `Đã import ${yearTasks.length} task năm, ${monthTasks.length} task tháng, ${dayTasks.length} task ngày`;
+    setTimeout(() => this.importMessage = '', 3000);
   }
 }
