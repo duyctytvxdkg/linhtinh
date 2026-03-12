@@ -10,6 +10,7 @@ import { RealEstateTaxComponent } from './features/real-estate-tax.component';
 import { ShippingCalculatorComponent } from './features/shipping-calculator.component';
 import { UtilityCalculatorComponent } from './features/utility-calculator.component';
 import { MagicHatComponent } from './features/magic-hat.component';
+import { TaskListSimpleComponent } from './features/task-list-simple.component';
 
 export const routes: Routes = [
   {
@@ -56,6 +57,10 @@ export const routes: Routes = [
   {
     path: 'non',
     component: MagicHatComponent,
+  },
+  {
+    path: 'task',
+    component: TaskListSimpleComponent,
   },
   {
     path: '**',
