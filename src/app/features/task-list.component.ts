@@ -272,4 +272,94 @@ export class TaskListComponent implements OnInit {
   getCompletionRate(stat: TaskStats): number {
     return stat.total > 0 ? Math.round((stat.completed / stat.total) * 100) : 0;
   }
+
+  // === Export CSV ===
+  exportCSV() {
+    const rows: string[] = [];
+    rows.push('type,title,completed');
+    
+    this.yearTasks.forEach(t => rows.push(`year,"${t.title.replace(/"/g, '""')}",${t.completed}`));
+    this.monthTasks.forEach(t => rows.push(`month,"${t.title.replace(/"/g, '""')}",${t.completed}`));
+    this.dayTasks.forEach(t => rows.push(`day,"${t.title.replace(/"/g, '""')}",${t.completed}`));
+
+    const csvContent = '\uFEFF' + rows.join('\n'); // BOM for UTF-8
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `tasks_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    
+    URL.revokeObjectURL(url);
+  }
+
+  // === Import CSV ===
+  triggerImport() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv';
+    input.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) this.readCSVFile(file);
+    };
+    input.click();
+  }
+
+  private readCSVFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      try {
+        const text = e.target.result as string;
+        this.parseCSV(text);
+      } catch (error) {
+        alert('Lỗi đọc file CSV!');
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  private parseCSV(text: string) {
+    const lines = text.split('\n').filter(l => l.trim());
+    
+    // Skip header
+    if (lines.length < 2) {
+      alert('File CSV trống!');
+      return;
+    }
+
+    const yearTasks: Task[] = [];
+    const monthTasks: Task[] = [];
+    const dayTasks: Task[] = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const match = lines[i].match(/^(\w+),"(.+)",(true|false)$/);
+      if (!match) continue;
+
+      const task: Task = {
+        id: this.generateId(),
+        title: match[2].replace(/""/g, '"'),
+        completed: match[3] === 'true',
+        createdAt: new Date()
+      };
+
+      switch (match[1]) {
+        case 'year': yearTasks.push(task); break;
+        case 'month': monthTasks.push(task); break;
+        case 'day': dayTasks.push(task); break;
+      }
+    }
+
+    if (yearTasks.length + monthTasks.length + dayTasks.length === 0) {
+      alert('Không tìm thấy task hợp lệ trong file!');
+      return;
+    }
+
+    if (confirm(`Import ${yearTasks.length} task năm, ${monthTasks.length} task tháng, ${dayTasks.length} task ngày?\n\nDữ liệu hiện tại sẽ bị thay thế.`)) {
+      this.yearTasks = yearTasks;
+      this.monthTasks = monthTasks;
+      this.dayTasks = dayTasks;
+      this.saveTasks();
+    }
+  }
 }

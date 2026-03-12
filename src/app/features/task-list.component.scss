@@ -19,6 +19,41 @@
   flex-shrink: 0;
 }
 
+.sync-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  justify-content: flex-end;
+}
+
+.btn-export,
+.btn-import {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-export {
+  background: #3b82f6;
+  color: white;
+  
+  &:hover {
+    background: #2563eb;
+  }
+}
+
+.btn-import {
+  background: #f59e0b;
+  color: white;
+  
+  &:hover {
+    background: #d97706;
+  }
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
