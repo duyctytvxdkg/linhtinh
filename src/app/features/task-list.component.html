@@ -1,94 +1,6 @@
 <app-mobile-header title="Quản lý công việc"></app-mobile-header>
 
 <div class="task-container">
-  <!-- Task Năm -->
-  <div class="task-section">
-    <div class="section-header">
-      <h2>📅 Mục tiêu năm</h2>
-      <button class="btn-add" (click)="openAddModal('year')">+ Thêm</button>
-    </div>
-    
-    <div class="task-columns">
-      <div class="task-column">
-        <h3>Đang thực hiện ({{ getInProgressTasks('year').length }})</h3>
-        <div class="task-list">
-          <div class="task-item" *ngFor="let task of getInProgressTasks('year')">
-            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
-            <span class="task-title">{{ task.title }}</span>
-            <div class="task-actions">
-              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
-              <button class="btn-delete" (click)="deleteTask(task, 'year')">🗑️</button>
-            </div>
-          </div>
-          <div class="empty-state" *ngIf="getInProgressTasks('year').length === 0">
-            Chưa có mục tiêu nào
-          </div>
-        </div>
-      </div>
-      
-      <div class="task-column completed">
-        <h3>Hoàn thành ({{ getCompletedTasks('year').length }})</h3>
-        <div class="task-list">
-          <div class="task-item" *ngFor="let task of getCompletedTasks('year')">
-            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
-            <span class="task-title completed">{{ task.title }}</span>
-            <div class="task-actions">
-              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
-              <button class="btn-delete" (click)="deleteTask(task, 'year')">🗑️</button>
-            </div>
-          </div>
-          <div class="empty-state" *ngIf="getCompletedTasks('year').length === 0">
-            Chưa hoàn thành mục tiêu nào
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Task Tháng -->
-  <div class="task-section">
-    <div class="section-header">
-      <h2>📆 Mục tiêu tháng</h2>
-      <button class="btn-add" (click)="openAddModal('month')">+ Thêm</button>
-    </div>
-    
-    <div class="task-columns">
-      <div class="task-column">
-        <h3>Đang thực hiện ({{ getInProgressTasks('month').length }})</h3>
-        <div class="task-list">
-          <div class="task-item" *ngFor="let task of getInProgressTasks('month')">
-            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
-            <span class="task-title">{{ task.title }}</span>
-            <div class="task-actions">
-              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
-              <button class="btn-delete" (click)="deleteTask(task, 'month')">🗑️</button>
-            </div>
-          </div>
-          <div class="empty-state" *ngIf="getInProgressTasks('month').length === 0">
-            Chưa có mục tiêu nào
-          </div>
-        </div>
-      </div>
-      
-      <div class="task-column completed">
-        <h3>Hoàn thành ({{ getCompletedTasks('month').length }})</h3>
-        <div class="task-list">
-          <div class="task-item" *ngFor="let task of getCompletedTasks('month')">
-            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
-            <span class="task-title completed">{{ task.title }}</span>
-            <div class="task-actions">
-              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
-              <button class="btn-delete" (click)="deleteTask(task, 'month')">🗑️</button>
-            </div>
-          </div>
-          <div class="empty-state" *ngIf="getCompletedTasks('month').length === 0">
-            Chưa hoàn thành mục tiêu nào
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Task Ngày -->
   <div class="task-section">
     <div class="section-header">
@@ -143,6 +55,94 @@
           <div class="progress-bar" [style.width.%]="getCompletionRate(stat)"></div>
         </div>
         <div class="stat-label">{{ stat.completed }}/{{ stat.total }} ({{ getCompletionRate(stat) }}%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Tháng -->
+  <div class="task-section">
+    <div class="section-header">
+      <h2>📆 Mục tiêu tháng</h2>
+      <button class="btn-add" (click)="openAddModal('month')">+ Thêm</button>
+    </div>
+    
+    <div class="task-columns">
+      <div class="task-column">
+        <h3>Đang thực hiện ({{ getInProgressTasks('month').length }})</h3>
+        <div class="task-list">
+          <div class="task-item" *ngFor="let task of getInProgressTasks('month')">
+            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
+            <span class="task-title">{{ task.title }}</span>
+            <div class="task-actions">
+              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
+              <button class="btn-delete" (click)="deleteTask(task, 'month')">🗑️</button>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="getInProgressTasks('month').length === 0">
+            Chưa có mục tiêu nào
+          </div>
+        </div>
+      </div>
+      
+      <div class="task-column completed">
+        <h3>Hoàn thành ({{ getCompletedTasks('month').length }})</h3>
+        <div class="task-list">
+          <div class="task-item" *ngFor="let task of getCompletedTasks('month')">
+            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
+            <span class="task-title completed">{{ task.title }}</span>
+            <div class="task-actions">
+              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
+              <button class="btn-delete" (click)="deleteTask(task, 'month')">🗑️</button>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="getCompletedTasks('month').length === 0">
+            Chưa hoàn thành mục tiêu nào
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Năm -->
+  <div class="task-section">
+    <div class="section-header">
+      <h2>📅 Mục tiêu năm</h2>
+      <button class="btn-add" (click)="openAddModal('year')">+ Thêm</button>
+    </div>
+    
+    <div class="task-columns">
+      <div class="task-column">
+        <h3>Đang thực hiện ({{ getInProgressTasks('year').length }})</h3>
+        <div class="task-list">
+          <div class="task-item" *ngFor="let task of getInProgressTasks('year')">
+            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
+            <span class="task-title">{{ task.title }}</span>
+            <div class="task-actions">
+              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
+              <button class="btn-delete" (click)="deleteTask(task, 'year')">🗑️</button>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="getInProgressTasks('year').length === 0">
+            Chưa có mục tiêu nào
+          </div>
+        </div>
+      </div>
+      
+      <div class="task-column completed">
+        <h3>Hoàn thành ({{ getCompletedTasks('year').length }})</h3>
+        <div class="task-list">
+          <div class="task-item" *ngFor="let task of getCompletedTasks('year')">
+            <input type="checkbox" [checked]="task.completed" (change)="toggleTask(task)" />
+            <span class="task-title completed">{{ task.title }}</span>
+            <div class="task-actions">
+              <button class="btn-edit" (click)="openEditModal(task)">✏️</button>
+              <button class="btn-delete" (click)="deleteTask(task, 'year')">🗑️</button>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="getCompletedTasks('year').length === 0">
+            Chưa hoàn thành mục tiêu nào
+          </div>
+        </div>
       </div>
     </div>
   </div>
